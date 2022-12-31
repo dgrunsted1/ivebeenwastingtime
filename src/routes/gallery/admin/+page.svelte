@@ -30,7 +30,7 @@
 
     .row {
         width: 100%;
-        padding-top: 40px;
+        /* padding-top: 40px; */
         display: flex;
 
     }
@@ -41,7 +41,7 @@
     form p {
         height: 100%;
         text-align: center;
-        /* line-height: 170px; */
+        line-height: 200px;
         color: rgb(46, 1, 42);
         font-family: Arial;
         /* line-height: 50px; */
@@ -51,20 +51,31 @@
         /* margin-top: -100px; */
         /* margin-left: -250px; */
         height: 200px;
-        border: 4px dashed rgb(46, 1, 42);
+        border: 2px dashed rgb(46, 1, 42);
     }
 
-    #submit {
-        
+    input[type=submit] {
+        /* margin: 0; */
+        color: #fff;
+        background: #4916a0b7;
+        border: none;
+        /* width: 508px; */
+        /* height: 35px; */
+        /* margin-top: -20px; */
+        /* margin-left: -4px; */
+        border-radius: 4px;
+        border-bottom: 4px solid #4916a0b7;
+        transition: all .2s ease;
+        outline: none;
+        padding: 20px 0;
+        width: 60%;
+        margin:auto;
+        font-size: 25px; 
     }
 
     #photo {
         display: flex;
         flex-direction:column;
-    }
-    input[type=submit] {
-        margin: auto;
-        
     }
 
     input[type=file] {
@@ -76,6 +87,14 @@
         height: 100%;
         outline: none;
         opacity: 0;
+    }
+
+    input[type=submit]:hover{
+        background: #4916a0;
+        color: #806f9c;
+    }
+    input[type=submit]:active{
+        border:0;
     }
 
 
