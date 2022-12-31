@@ -1,10 +1,18 @@
 <script>
-
+let albums = {};
 
 </script>
+
+
 <div id="main">
     <form action="">
-        <div class="row"><label for="album">Album: </label><input type="text" name="album" id="album"></div>
+        <div class="row"><label for="album_dropdown">Album: </label><select name="album_dropdown" id="album_dropdown">
+            {#each albums as album}
+                <option value={album}>{album}</option>
+            {/each}
+            <option value="new">New Album</option>
+        </select></div>
+        <div class="row" id="new_album_input"><label for="album">Album: </label><input type="text" name="album" id="album"></div>
         <div class="row" id="photo"><input type="file" name="photo" id="photo" multiple><p>Drag your files here or click to browse</p></div>
         <div class="row" id="submit"><input type="submit" value="upload" multiple></div>    
     </form>
@@ -91,12 +99,15 @@
 
     input[type=submit]:hover{
         background: #4916a0;
-        color: #806f9c;
+        color: #fff09e;
     }
     input[type=submit]:active{
         border:0;
     }
 
+    #new_album_input {
+        /* display: none; */
+    }
 
     
 </style>
