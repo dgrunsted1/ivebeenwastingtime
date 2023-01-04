@@ -1,5 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
 	<head>
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
@@ -10,4 +8,3 @@
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>
 	</body>
-</html>

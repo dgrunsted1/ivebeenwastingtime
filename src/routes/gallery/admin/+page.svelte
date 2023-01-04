@@ -1,23 +1,41 @@
 <script>
-let albums = {};
+let albums = ['loas cabos', 'santa barbara', 'Italy'];
+let curr_album = "";
+let new_album = "";
 
+const update_album = (selected_album) => {
+    if (selected_album == "new"){
+        curr_album = "";
+        let text_box =  document.getElementById("album");
+        text_box.style.display = 'flex'; 
+        text_box.focus();       //open text box to enter new album
+    }else {
+        if (new_album) {
+            curr_album = new_album;
+            new_album = "";
+        }
+        else curr_album = selected_album;
+
+        document.getElementById("album").style.display = 'none';
+    }
+    document.getElementById("dropdown").checked = false;
+}
 </script>
 
 
 <div id="main">
-    <form action="">
+    <form>
         <div class="sec-center"> 	
             <input class="dropdown" type="checkbox" id="dropdown" name="dropdown"/>
-            <label class="for-dropdown" for="dropdown">Album <i class="uil uil-arrow-down"></i></label>
+            <label class="for-dropdown" for="dropdown">{#if curr_album == ""}Album{:else}{curr_album}{/if}</label>
             <div class="section-dropdown"> 
                 {#each albums as album}
-                <a href="#">Dropdown Link <i class="uil uil-arrow-right"></i></a>
+                <div class="option" on:click={() =>{update_album(album)}}>{album}</div>
                 {/each}
-                <a>New Album <i class="uil uil-arrow-right"></i></a>
+                <div class="option" on:click={() =>{update_album("new")}}>New Album</div>
             </div>
-            <input type="text" name="album" id="album">
         </div>
-        <div class="row" id="new_album_input"><label for="album">Album: </label><input type="text" name="album" id="album"></div>
+        <div class="row" id="new_album_input"><input type="text" name="album" id="album" on:change={update_album} bind:value={new_album}></div>
         <div class="row" id="photo"><input type="file" name="photo" id="photo" multiple><p>Drag your files here or click to browse</p></div>
         <div class="row" id="submit"><input type="submit" value="upload" multiple></div>    
     </form>
@@ -56,7 +74,7 @@ let albums = {};
         text-align: center;
         line-height: 200px;
         color: rgb(46, 1, 42);
-        font-family: Arial;
+        /* font-family: Arial; */
         /* line-height: 50px; */
         /* position: absolute; */
         /* top: 50%; */
@@ -110,10 +128,6 @@ let albums = {};
         border:0;
     }
 
-    #new_album_input {
-        /* display: none; */
-    }
-
     .sec-center {
         position: relative;
         max-width: 100%;
@@ -130,7 +144,7 @@ let albums = {};
 
     .dropdown:checked + label, .dropdown:not(:checked) + label{
         position: relative;
-        font-family: 'Roboto', sans-serif;
+        /* font-family: 'Roboto', sans-serif; */
         font-weight: 500;
         font-size: 15px;
         line-height: 2;
@@ -173,20 +187,12 @@ let albums = {};
     .dropdown:checked + label:before{
         pointer-events: auto;
     }
-    .dropdown:not(:checked) + label .uil {
-        font-size: 24px;
-        margin-left: 10px;
-        transition: transform 200ms linear;
-    }
-    .dropdown:checked + label .uil {
-        transform: rotate(180deg);
-        font-size: 24px;
-        margin-left: 10px;
-        transition: transform 200ms linear;
-    }
+
+
     .section-dropdown {
         position: relative;
         width: 60%;
+        max-width: 180px;
         padding: 5px;
         margin: auto;
         background-color: rgb(226, 226, 226);
@@ -212,7 +218,7 @@ let albums = {};
         position: absolute;
         top: -20px;
         left: 0;
-        /* width: 100%; */
+        /* width: 50%; */
         height: 20px;
         content: '';
         display: block;
@@ -233,11 +239,11 @@ let albums = {};
         transition: all 200ms linear;
     }
 
-    a {
+    .option {
         position: relative;
         color: #381070;
         transition: all 200ms linear;
-        font-family: 'Roboto', sans-serif;
+        /* font-family: 'Roboto', sans-serif; */
         font-weight: 500;
         font-size: 15px;
         border-radius: 2px;
@@ -257,75 +263,18 @@ let albums = {};
             -ms-flex-pack: distribute;
     }
 
-    a:hover {
+    .option:hover {
         color: #102770;
         background-color: hsl(261, 100%, 92%);
     }
 
-    a .uil {
-        font-size: 22px;
-    }
-    .dropdown-sub:checked + label, .dropdown-sub:not(:checked) + label{
-        position: relative;
-        color: #381070;
-        transition: all 200ms linear;
-        font-family: 'Roboto', sans-serif;
-        font-weight: 500;
-        font-size: 15px;
-        border-radius: 2px;
-        padding: 5px 0;
-        padding-left: 20px;
-        padding-right: 15px;
-        text-align: left;
-        text-decoration: none;
-        display: -ms-flexbox;
-        display: flex;
-        -webkit-align-items: center;
-        -moz-align-items: center;
-        -ms-align-items: center;
-        align-items: center;
-        justify-content: space-between;
-        -ms-flex-pack: distribute;
-        cursor: pointer;
+    input[type="text"] {
+        display: none;
+        line-height: 2em;
+        font-size: 2em;
+        margin: auto;
+        max-width: 90%;
     }
 
-    .dropdown-sub:checked + label .uil, .dropdown-sub:not(:checked) + label .uil{
-        font-size: 22px;
-    }
-    .dropdown-sub:not(:checked) + label .uil {
-        transition: transform 200ms linear;
-    }
-    .dropdown-sub:checked + label .uil {
-        transform: rotate(135deg);
-        transition: transform 200ms linear;
-    }
-    .dropdown-sub:checked + label:hover,
-    .dropdown-sub:not(:checked) + label:hover{
-        color: #102770;
-        background-color: hsl(261, 100%, 92%);
-    }
-
-    .section-dropdown-sub {
-        position: relative;
-        display: block;
-        width: 100%;
-        pointer-events: none;
-        opacity: 0;
-        max-height: 0;
-        padding-left: 10px;
-        padding-right: 3px;
-        overflow: hidden;
-        transition: all 200ms linear;
-    }
-    .dropdown-sub:checked ~ .section-dropdown-sub{
-        pointer-events: auto;
-        opacity: 1;
-        max-height: 999px;
-    }
-    .section-dropdown-sub a {
-        font-size: 14px;
-    }
-    .section-dropdown-sub a .uil {
-        font-size: 20px;
-    }
+    
 </style>
