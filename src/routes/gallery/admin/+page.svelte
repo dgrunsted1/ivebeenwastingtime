@@ -20,6 +20,14 @@ const update_album = (selected_album) => {
     }
     document.getElementById("dropdown").checked = false;
 }
+
+const update_image_upload = () => {
+    const fileList = event.target.files;
+    console.log(fileList);
+    // upload to s3 temporary fole
+    //show img element on page using src
+}
+
 </script>
 
 
@@ -36,7 +44,7 @@ const update_album = (selected_album) => {
             </div>
         </div>
         <div class="row" id="new_album_input"><input type="text" name="album" id="album" on:change={update_album} bind:value={new_album}></div>
-        <div class="row" id="photo"><input type="file" name="photo" id="photo" multiple><p>Drag your files here or click to browse</p></div>
+        <div class="row" id="photo"><input type="file" name="photo" id="photo" on:change={update_image_upload} multiple><p>Drag your files here or click to browse</p></div>
         <div class="row" id="submit"><input type="submit" value="upload" multiple></div>    
     </form>
 </div>
@@ -110,14 +118,16 @@ const update_album = (selected_album) => {
     }
 
     input[type=file] {
-        margin: auto;
-        /* position: absolute; */
-        /* margin: 0;
-        padding: 0; */
-        width: 100%;
-        height: 100%;
+        /* margin: auto; */
+        position: absolute;
+        max-width: 605px;
+        width: 92%;
+        height: 225px;
+        /* width: 100%;
+        height: 100%; */
         outline: none;
         opacity: 0;
+        
     }
 
     input[type=submit]:hover{
@@ -268,13 +278,17 @@ const update_album = (selected_album) => {
         background-color: hsl(261, 100%, 92%);
     }
 
-    input[type="text"] {
+    input[type=text] {
         display: none;
         line-height: 2em;
         font-size: 2em;
         margin: auto;
         max-width: 90%;
     }
+
+
+
+    
 
     
 </style>
