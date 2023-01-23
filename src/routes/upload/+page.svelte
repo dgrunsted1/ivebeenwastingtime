@@ -1,5 +1,13 @@
+
+
 <script>
-let albums = ['loas cabos', 'santa barbara', 'Italy'];
+export let data;
+console.log(data, "<<data");
+
+
+
+
+let albums = ['Los Cabos', 'Santa Barbara', 'Italy'];
 let curr_album = "";
 let new_album = "";
 
