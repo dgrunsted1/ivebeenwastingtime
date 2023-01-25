@@ -8,6 +8,7 @@
 		<a href="/">Home</a>
 		<a href="/upload">upload</a>
 		<a href="/gallery">Gallery</a>
+		<a href="/groceries">Groceries</a>
 	</header>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>
