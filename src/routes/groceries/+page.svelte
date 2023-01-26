@@ -1,4 +1,7 @@
 <script>
+    import { get_store_value } from "svelte/internal";
+
+
     let grocery_list = [];
     let input_count = 2;
 
@@ -12,14 +15,53 @@
         Array.from(recipe_list).forEach(function (element) {
             let ingredient_list_in = element.value.split("\n");
             ingredient_list_in.forEach((element) => {
-                if (is_ingredient(element)) ingredients[ingredients.size] = element;
+                if (is_ingredient(element)) {
+
+                    ingredients[Object.keys(ingredients).length] = {
+                        value: get_value(element),
+                        unit: get_unit(element),
+                        name: get_name(element)
+                    };
+                    // 
+                }
             });
         });
         console.log(ingredients);
     }
 
-    const is_ingredient = (ingredient) => {
-        return (ingredient.match(/^\d/) || ingredient.includes("for serving"));
+    const is_ingredient = (ingredient_string) => {
+        return (ingredient_string.trim().substring(0, 1).match(/\d/) || ingredient_string.includes("for serving"));
+    }
+
+    const get_value = (ingredient_string) => {
+        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+            return ingredient_string.substring(0, ingredient_string.indexOf(" "));
+        }
+        return false;
+    }
+    const get_unit = (ingredient_string) => {
+        let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft"];
+        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+            ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
+            let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
+            // console.log("unit",unit);
+            if (!non_units.includes(unit)) {
+                return unit;
+            }else return "none";
+        }
+        return false;
+    }
+
+    const get_name = (ingredient_string) => {
+        console.log("get_name ingredient_string",ingredient_string);
+        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+            ingredient_string = ingredient_string.trim();
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            let name = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(",")).trim() : ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            
+            return name.replace(/\([^()]*\)/g, '').trim();
+        }
+        return ingredient_string
     }
 </script>
 
