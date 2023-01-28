@@ -151,20 +151,20 @@
     <div id="recipes" class="column">
         <form action="">
             {#each Array(input_count) as _, index (index)}
-                <div id="recipe_label">
+                <div class="recipe_label">
                     <div>
                         <label for="recipe_{index}">Recipe {index}:</label>
                     </div>
                     <div>
                         <label for="recipe_servings_{index}">recipe servings</label>
-                        <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:change|preventDefault={process_recipes} min=1>
+                        <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                     </div>
                     <div>
                         <label for="desired_servings_{index}">desired servings</label>
-                        <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:change|preventDefault={process_recipes} min=1>
+                        <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                     </div>
                 </div>
-                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:change|preventDefault={process_recipes} on:paste|preventDefault={process_recipes}></textarea>
+                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
             {/each}
             <input type="button" value="add recipe" on:click={add_text_box}>
         </form>
@@ -189,7 +189,6 @@
         display: flex;
         flex-direction: column;
         width: 45%;
-        margin-top: 20px;
     }
 
     p {
@@ -208,7 +207,6 @@
     }
 
     label {
-        padding-top: 10px;
         padding-bottom: 3px;
         margin: auto;
     }
@@ -216,16 +214,20 @@
     input {
         width: 150px;
         margin: auto;
-        margin-top: 10px;
     }
     input[type=number] {
         font-size: large;
         width: 3em;
+        margin: 0;
     }
 
     #recipe_label {
         display: flex;
         flex-direction: column;
         align-items: left;
+    }
+
+    .recipe_label {
+        margin-top: 10px;
     }
 </style>
