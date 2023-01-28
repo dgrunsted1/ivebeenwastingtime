@@ -16,16 +16,14 @@
             let ingredient_list_in = element.value.split("\n");
             ingredient_list_in.forEach((element) => {
                 if (is_ingredient(element)) {
-                    console.log("here");
                     ingredients[Object.keys(ingredients).length] = {
-                        value: get_value(element),
+                        value: parseInt(get_value(element)),
                         unit: get_unit(element),
                         name: get_name(element)
                     };
                 }
             });
         });
-        console.log(ingredients);
         grocery_list = merge_ingredients(ingredients);
     }
     
@@ -38,31 +36,46 @@
                 if (i != j && (ingredients[i].name.includes(ingredients[j].name) || ingredients[j].name.includes(ingredients[i].name))){
                     found = true;
                     if (ingredients[i].unit == ingredients[j].unit){
-                        output.push({
+                        let temp = {
                             value: ingredients[i].value + ingredients[j].value,
                             unit: ingredients[i].unit,
                             name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
-                        });
+                        };
+                        if (not_already_added(output, temp.name)){
+                            output.push(temp);
+                        }
+                        
                     }else {
-                        output.push({
+                        let temp = {
                             value: ingredients[i].value + " " +ingredients[i].unit + " and " + ingredients[j].value + " " +ingredients[j].unit,
                             unit: false,
                             name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
-                        });
+                        };
+                        if (not_already_added(output, temp.name)){
+                            output.push(temp);
+                        }
                     }
-                    ingredients.splice(i, 1);
-                    ingredients.splice(j, 1);
                 }
             });
             if (!found) {
-                output.push({
+                let temp = {
                     value: ingredients[i].value,
                     unit: ingredients[i].unit,
                     name: ingredients[i].name
-                });
+                };
+                if (not_already_added(output, temp.name)){
+                    output.push(temp);
+                }
             }
         });
         return output;
+    }
+
+    const not_already_added = (list_in, name_in) => {
+        for (let i = 0; i < list_in.length; i++) {
+            if (list_in[i].name == name_in) return false;
+        }
+        return true;
     }
 
     const is_ingredient = (ingredient_string) => {
@@ -119,6 +132,7 @@
         </form>
     </div>
     <div id="grocery_list" class="column">
+        {#if grocery_list.length > 0}<h3>{grocery_list.length} items</h3>{/if}
         {#each grocery_list as curr}
             <p class="list_item">{display(curr)}</p>
         {/each}
@@ -137,6 +151,11 @@
         display: flex;
         flex-direction: column;
         width: 45%;
+        margin-top: 20px;
+    }
+
+    p {
+        margin:2px;
     }
 
     form {
@@ -146,20 +165,19 @@
     }
 
     textarea {
-        /* height: 100px; */
         width: 350px;
-        margin: auto;
-    }
-    label {
-        margin-top: 20px;
-    }
-    input {
-        width: 150px;
-        margin-top: 20px;
         margin: auto;
     }
 
     label {
-        margin:auto;
+        padding-top: 10px;
+        padding-bottom: 3px;
+        margin: auto;
+    }
+
+    input {
+        width: 150px;
+        margin: auto;
+        margin-top: 10px;
     }
 </style>
