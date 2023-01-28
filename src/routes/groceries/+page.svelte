@@ -17,7 +17,7 @@
             ingredient_list_in.forEach((element) => {
                 if (is_ingredient(element)) {
                     ingredients[Object.keys(ingredients).length] = {
-                        value: parseInt(get_value(element)),
+                        value: get_value(element.trim()),
                         unit: get_unit(element),
                         name: get_name(element)
                     };
@@ -83,15 +83,30 @@
     }
 
     const get_value = (ingredient_string) => {
-        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
-            return ingredient_string.substring(0, ingredient_string.indexOf(" "));
+        if (ingredient_string.substring(0, 1).match(/\d/) && ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
+            let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            let high = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")));
+            let temp = (low + high) / 2;
+            return temp;
+
+        }else if (ingredient_string.substring(0, 1).match(/\d/)) {
+            let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
+            if (temp.includes("/")){
+                temp = temp.split("/");
+                let value = parseInt(temp[0]) / parseInt(temp[1]);
+                return value;
+            }else {
+                return parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")));
+            }
         }
         return false;
     }
 
     const get_unit = (ingredient_string) => {
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft"];
-        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+        if (ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -102,7 +117,12 @@
     }
 
     const get_name = (ingredient_string) => {
-        if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+        if (ingredient_string.trim().substring(0, 1).match(/\d/) && ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            return ingredient_string.substring(0, ingredient_string.indexOf(","));
+        }else if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
             ingredient_string = ingredient_string.trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             let name = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(",")).trim() : ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -113,7 +133,9 @@
     }
 
     const display = (ingredient) => {
-        if ([false, "none"].includes(ingredient.unit)){
+        if ([false, "none"].includes(ingredient.unit) && [0, null].includes(ingredient.value)){
+            return `${ingredient.name}`;
+        }else if ([false, "none"].includes(ingredient.unit)){
             return `${ingredient.value} ${ingredient.name}`;
         } else {
             return `${ingredient.value} ${ingredient.unit} ${ingredient.name}`;
