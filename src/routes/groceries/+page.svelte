@@ -12,17 +12,21 @@
     const process_recipes = () => {
         let ingredients = {};
         let recipe_list = document.getElementsByClassName('recipe');
+        let index = 0;
         Array.from(recipe_list).forEach(function (element) {
             let ingredient_list_in = element.value.split("\n");
+            let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
+            console.log({multiplier});
             ingredient_list_in.forEach((element) => {
                 if (is_ingredient(element)) {
                     ingredients[Object.keys(ingredients).length] = {
-                        value: get_value(element.trim()),
+                        value: get_value(element.trim()) * multiplier,
                         unit: get_unit(element),
                         name: get_name(element)
                     };
                 }
             });
+            index++;
         });
         grocery_list = merge_ingredients(ingredients);
     }
@@ -136,9 +140,9 @@
         if ([false, "none"].includes(ingredient.unit) && [0, null].includes(ingredient.value)){
             return `${ingredient.name}`;
         }else if ([false, "none"].includes(ingredient.unit)){
-            return `${ingredient.value} ${ingredient.name}`;
+            return `${Math.round((ingredient.value + Number.EPSILON) * 100) / 100} ${ingredient.name}`;
         } else {
-            return `${ingredient.value} ${ingredient.unit} ${ingredient.name}`;
+            return `${Math.round((ingredient.value + Number.EPSILON) * 100) / 100} ${ingredient.unit} ${ingredient.name}`;
         }
     }
 </script>
@@ -147,8 +151,20 @@
     <div id="recipes" class="column">
         <form action="">
             {#each Array(input_count) as _, index (index)}
-                <label for="recipe_{index}">Recipe {index}:</label>
-                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:change={process_recipes} on:paste={process_recipes}></textarea>
+                <div id="recipe_label">
+                    <div>
+                        <label for="recipe_{index}">Recipe {index}:</label>
+                    </div>
+                    <div>
+                        <label for="recipe_servings_{index}">recipe servings</label>
+                        <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:change|preventDefault={process_recipes} min=1>
+                    </div>
+                    <div>
+                        <label for="desired_servings_{index}">desired servings</label>
+                        <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:change|preventDefault={process_recipes} min=1>
+                    </div>
+                </div>
+                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:change|preventDefault={process_recipes} on:paste|preventDefault={process_recipes}></textarea>
             {/each}
             <input type="button" value="add recipe" on:click={add_text_box}>
         </form>
@@ -201,5 +217,15 @@
         width: 150px;
         margin: auto;
         margin-top: 10px;
+    }
+    input[type=number] {
+        font-size: large;
+        width: 3em;
+    }
+
+    #recipe_label {
+        display: flex;
+        flex-direction: column;
+        align-items: left;
     }
 </style>
