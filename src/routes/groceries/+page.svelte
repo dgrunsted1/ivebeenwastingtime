@@ -235,13 +235,13 @@
             {#each Array(input_count) as _, index (index)}
                 <div class="recipe_label">
                     <div>
-                        <label for="recipe_{index}">Recipe {index}:</label>
+                        <label for="recipe_{index}" class="label_main">Recipe {index + 1}:</label>
                     </div>
-                    <div>
+                    <div class="seperated">
                         <label for="recipe_servings_{index}">recipe servings</label>
                         <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                     </div>
-                    <div>
+                    <div class="seperated">
                         <label for="desired_servings_{index}">desired servings</label>
                         <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                     </div>
@@ -266,7 +266,7 @@
         flex-direction: row;
         justify-content: space-evenly;
         font-variant: small-caps;
-        background-color: #fcf8f4;
+        /* background-color: #fcf8f4; */
         padding-bottom: 100px;
     }
 
@@ -284,6 +284,7 @@
         display: flex;
         flex-direction: column;
         margin:auto;
+        font-variant: small-caps;
     }
 
     textarea {
@@ -291,9 +292,13 @@
         margin: auto;
     }
 
+    .label_main {
+        font-weight: 900;
+    }
+
     label {
         padding-bottom: 3px;
-        margin: auto;
+        /* margin: auto; */
     }
 
     input {
@@ -320,6 +325,7 @@
 
     .recipe_label {
         margin-top: 10px;
+        padding-bottom: 8px;
     }
 
     .btn, input[type=number] {
@@ -359,6 +365,14 @@
     #item_count {
         font-size: 25px;
         padding-right: 25px;
+    }
+
+    .seperated {
+        /* padding: 0 5px; */
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        /* width: 100%; */
     }
 
     input[type=number] {
