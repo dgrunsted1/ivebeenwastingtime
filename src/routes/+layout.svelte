@@ -6,7 +6,7 @@
 	</head>
     <header>
 		<a href="/">Home</a>
-		<a href="/upload">upload</a>
+		<a href="/upload">Upload</a>
 		<a href="/gallery">Gallery</a>
 		<a href="/groceries">Groceries</a>
 	</header>
