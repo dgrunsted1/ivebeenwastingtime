@@ -4,7 +4,7 @@
 
     let grocery_list = [];
     let input_count = 2;
-    let number_string_converter = [ one => 1, two => 2, three => 3, four => 4, five => 5, six => 6, seven => 7, eight => 8, nine => 9];
+    let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
 
     const add_text_box = () => {
         input_count++;
@@ -18,6 +18,7 @@
             let ingredient_list_in = element.value.split("\n");
             let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
             ingredient_list_in.forEach((element) => {
+                element = element.trim();
                 if (is_ingredient(element)) {
                     ingredients[Object.keys(ingredients).length] = {
                         value: get_value(element.trim()) * multiplier,
@@ -96,8 +97,8 @@
     }
 
     const is_ingredient = (ingredient_string) => {
-        if (ingredient_string.trim().substring(0, 1).match(/\d/) || ingredient_string.includes("for serving") || ingredient_string.match(/^Half of [0-9]*/) ||
-            ingredient_string.match(/^Quarter of [0-9]*/) || ingredient_string.match(/^Eighth of [0-9]*/)){
+        if (ingredient_string.substring(0, 1).match(/\d/) || ingredient_string.includes("for serving") || ingredient_string.match(/^Half of [0-9]*/) ||
+            ingredient_string.match(/^Quarter of [0-9]*/) || ingredient_string.match(/^Eighth of [0-9]*/) || Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
                 return true;
         }
         if (ingredient_string) console.log("line skipped", ingredient_string);
@@ -105,7 +106,10 @@
     }
 
     const get_value = (ingredient_string) => {
-        if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
+        if (ingredient_string.includes("piece fresh ginger")){
+
+        }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
+            // console.log("1in get value", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -114,7 +118,8 @@
             temp = Math.round((temp + Number.EPSILON) * 100) / 100;
             return temp;
 
-        }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
+        }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
+            // console.log("2in get value", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1)));
             temp = temp.split(" ");
             let whole_num = parseInt(temp[0]);
@@ -123,6 +128,7 @@
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (ingredient_string.substring(0, 1).match(/\d/)) {
+            // console.log("3in get value", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
                 temp = temp.split("/");
@@ -135,24 +141,32 @@
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
+            // console.log("4in get value", ingredient_string);
             let temp = ingredient_string.split(" ");
             let value = parseInt(temp[2]) / 2;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
+        }else if (Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
+            console.log("5in get value", ingredient_string);
+            let temp = number_string_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
+            return temp;
         }
+
         return false;
     }
 
     const get_unit = (ingredient_string) => {
-        let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft"];
-        let check = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
+        let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
+        let check = (ingredient_string.indexOf(",") > -10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
         if (check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z]*s$/)){
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
             unit = unit.substring(0, unit.indexOf(" "));
-            return unit;
+            if (!non_units.includes(unit)) {
+                return unit;
+            }else return "none";
         }else if (ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
@@ -164,14 +178,16 @@
     }
 
     const get_name = (ingredient_string) => {
-        if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
+        if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
+            console.log(ingredient_string);
+        }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.replace(/\([^()]*\)/g, '').trim();
             let comma_index = ingredient_string.indexOf(",");
             let semi_colon_index = ingredient_string.indexOf(";");
-            if (comma_index > 15 || semi_colon_index > 15){
+            if (comma_index > 10 || semi_colon_index > 10){
                 ingredient_string = (comma_index < semi_colon_index) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string.substring(0, ingredient_string.indexOf(";"));
             }
             return ingredient_string;
@@ -186,7 +202,7 @@
             
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
-            return (ingredient_string.indexOf(",") > 15) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
+            return (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         }else if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
             let check = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
             check = check.replace(/\([^()]*\)/g, '').trim();
@@ -197,13 +213,13 @@
                 ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             }
             
-            let name = (ingredient_string.indexOf(",") > 15) ? ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(",")).trim() : ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
+            let name = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(",")).trim() : ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             
             return name.replace(/\([^()]*\)/g, '').trim();
         }else if (ingredient_string.match(/^Half of [0-9]*/)){
             let temp = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             temp = temp.substring(ingredient_string.indexOf(" ")).trim();
-            temp = (temp.indexOf(",") > 15) ? temp.substring(temp.indexOf(" "), temp.indexOf(",")).trim() : temp.substring(temp.indexOf(" ")).trim();
+            temp = (temp.indexOf(",") > 10) ? temp.substring(temp.indexOf(" "), temp.indexOf(",")).trim() : temp.substring(temp.indexOf(" ")).trim();
             temp = temp.replace(/\([^()]*\)/g, '').trim();
             return temp;
         }
