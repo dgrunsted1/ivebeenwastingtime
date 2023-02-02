@@ -5,6 +5,7 @@
     let grocery_list = [];
     let input_count = 2;
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+    let conversions = {'tablespoon/teaspoon': 1/3, 'teaspoon/tablespoon': 3};
 
     const add_text_box = () => {
         input_count++;
@@ -20,8 +21,9 @@
             ingredient_list_in.forEach((element) => {
                 element = element.trim();
                 if (is_ingredient(element)) {
+                    let value = get_value(element.trim());
                     ingredients[Object.keys(ingredients).length] = {
-                        value: get_value(element.trim()) * multiplier,
+                        value: (Number.isInteger(value)) ? value * multiplier : value,
                         unit: get_unit(element),
                         name: get_name(element)
                     };
@@ -48,7 +50,7 @@
                             name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
                         };
                         if (isNaN(temp.value)) {
-                            console.log(temp);
+                            console.log("52", temp);
                             console.log(ingredients[i]);
                         }
                         if (not_already_added(output, temp.name)){
@@ -56,14 +58,18 @@
                         }
                         
                     }else {
+                        ingredients[j].unit = (ingredients[j].unit.substring(-1) == "s") ? ingredients[j].unit.substring(0, -1) : ingredients[j].unit;
+                        let conv_index = `${ingredients[j].unit}/${ingredients[i].unit}`;
+                        console.log(62, conv_index);
                         let temp = {
-                            value: ingredients[i].value + " " +ingredients[i].unit + " and " + ingredients[j].value + " " +ingredients[j].unit,
+                            value: conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value + ingredients[i].value,
                             unit: false,
                             name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
                         };
                         if (isNaN(temp.value)) {
-                            console.log(temp);
-                            console.log(ingredients[i]);
+                            console.log("66", temp);
+                            console.log("i",ingredients[i]);
+                            console.log("j", ingredients[j]);
                         }
                         if (not_already_added(output, temp.name)){
                             output.push(temp);
@@ -78,7 +84,7 @@
                     name: ingredients[i].name
                 };
                 if (isNaN(temp.value)) {
-                    console.log(temp);
+                    console.log("81", temp);
                     console.log(ingredients[i]);
                 }
                 if (not_already_added(output, temp.name)){
@@ -107,9 +113,9 @@
 
     const get_value = (ingredient_string) => {
         if (ingredient_string.includes("piece fresh ginger")){
-
+            let temp = ingredient_string.match(/[0-9]-[iI]nch/);
+            return temp;
         }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
-            // console.log("1in get value", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -119,7 +125,6 @@
             return temp;
 
         }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
-            // console.log("2in get value", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1)));
             temp = temp.split(" ");
             let whole_num = parseInt(temp[0]);
@@ -128,7 +133,6 @@
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (ingredient_string.substring(0, 1).match(/\d/)) {
-            // console.log("3in get value", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
                 temp = temp.split("/");
@@ -141,13 +145,11 @@
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
-            // console.log("4in get value", ingredient_string);
             let temp = ingredient_string.split(" ");
             let value = parseInt(temp[2]) / 2;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
-            console.log("5in get value", ingredient_string);
             let temp = number_string_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
         }
@@ -157,9 +159,9 @@
 
     const get_unit = (ingredient_string) => {
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
-        let check = (ingredient_string.indexOf(",") > -10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
+        let check = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
-        if (check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z]*s$/)){
+        if (check.split(" ")[check.length - 1] == "seeds" || check.match(/[A-Za-z ]*s$/)){
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
@@ -167,6 +169,8 @@
             if (!non_units.includes(unit)) {
                 return unit;
             }else return "none";
+        }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
+            return "none";
         }else if (ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
@@ -178,8 +182,11 @@
     }
 
     const get_name = (ingredient_string) => {
-        if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
-            console.log(ingredient_string);
+        if (ingredient_string.includes("piece fresh ginger")){
+            return "piece fresh ginger";
+        }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
+            let temp = ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(","));
+            return temp;
         }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
