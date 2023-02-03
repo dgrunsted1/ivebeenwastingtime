@@ -5,7 +5,7 @@
     let grocery_list = [];
     let input_count = 2;
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
-    let conversions = {'tablespoon/teaspoon': 1/3, 'teaspoon/tablespoon': 3};
+    let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3};
 
     const add_text_box = () => {
         input_count++;
@@ -58,16 +58,20 @@
                         }
                         
                     }else {
-                        ingredients[j].unit = (ingredients[j].unit.substring(-1) == "s") ? ingredients[j].unit.substring(0, -1) : ingredients[j].unit;
+                        ingredients[j].unit = (ingredients[j].unit.sunstring(ingredients[j].unit.length - 1) == "s") ? ingredients[j].unit.substring(0, -1) : ingredients[j].unit;
+                        ingredients[i].unit = (ingredients[i].unit.substring(ingredients[j].unit.length - 1) == "s") ? ingredients[i].unit.substring(0, -1) : ingredients[i].unit;
                         let conv_index = `${ingredients[j].unit}/${ingredients[i].unit}`;
-                        console.log(62, conv_index);
+                        console.log(63, conv_index);
+                        
+                        console.log(65, conversions[`${ingredients[j].unit}/${ingredients[i].unit}`]);
+                        console.log(65, conversions[conv_index]);
                         let temp = {
                             value: conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value + ingredients[i].value,
                             unit: false,
                             name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
                         };
                         if (isNaN(temp.value)) {
-                            console.log("66", temp);
+                            console.log("71", temp);
                             console.log("i",ingredients[i]);
                             console.log("j", ingredients[j]);
                         }
