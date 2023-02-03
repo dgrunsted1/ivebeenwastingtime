@@ -58,7 +58,7 @@
                         }
                         
                     }else {
-                        ingredients[j].unit = (ingredients[j].unit.sunstring(ingredients[j].unit.length - 1) == "s") ? ingredients[j].unit.substring(0, -1) : ingredients[j].unit;
+                        ingredients[j].unit = (ingredients[j].unit.substring(ingredients[j].unit.length - 1) == "s") ? ingredients[j].unit.substring(0, -1) : ingredients[j].unit;
                         ingredients[i].unit = (ingredients[i].unit.substring(ingredients[j].unit.length - 1) == "s") ? ingredients[i].unit.substring(0, -1) : ingredients[i].unit;
                         let conv_index = `${ingredients[j].unit}/${ingredients[i].unit}`;
                         console.log(63, conv_index);
@@ -293,7 +293,6 @@
         flex-direction: row;
         justify-content: space-evenly;
         font-variant: small-caps;
-        /* background-color: #fcf8f4; */
         padding-bottom: 100px;
     }
 
@@ -325,7 +324,6 @@
 
     label {
         padding-bottom: 3px;
-        /* margin: auto; */
     }
 
     input {
@@ -387,6 +385,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 20px;
     }
     
     #item_count {
@@ -395,11 +394,9 @@
     }
 
     .seperated {
-        /* padding: 0 5px; */
         display: flex;
         justify-content: space-around;
         align-items: center;
-        /* width: 100%; */
     }
 
     input[type=number] {
