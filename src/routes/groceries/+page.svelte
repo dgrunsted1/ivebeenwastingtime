@@ -58,17 +58,16 @@
         let output = [];
         
         Object.keys(ingredients).forEach(function(i) {
+            let temp = ingredients[i];
             let found = false;
             Object.keys(ingredients).forEach(function(j) {
                 if (i != j && (ingredients[i].name.includes(ingredients[j].name) || ingredients[j].name.includes(ingredients[i].name))){
                     console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
                     found = true;
                     if (ingredients[i].unit == ingredients[j].unit){
-                        let temp = {
-                            value: ingredients[i].value + ingredients[j].value,
-                            unit: ingredients[i].unit,
-                            name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
-                        };
+                        temp.value += ingredients[j].value;
+                        temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
+                        
                         if (isNaN(temp.value)) {
                             console.log("52", temp);
                             console.log(ingredients[i]);
@@ -90,11 +89,11 @@
                             let value = conversions[conv_index_b] * ingredients[j].unit + ingredients[i].unit;
                         }
                         
-                        let temp = {
-                            value: value,
-                            unit: unit,
-                            name: (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
-                        };
+                        console.log(65, conversions[`${ingredients[j].unit}/${ingredients[i].unit}`]);
+                        console.log(65, conversions[conv_index]);
+                        temp.value += conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value;
+                        temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
+                        
                         if (isNaN(temp.value)) {
                             console.log("71", temp);
                             console.log("i",ingredients[i]);
@@ -107,11 +106,7 @@
                 }
             });
             if (!found) {
-                let temp = {
-                    value: ingredients[i].value,
-                    unit: ingredients[i].unit,
-                    name: ingredients[i].name
-                };
+                
                 if (isNaN(temp.value)) {
                     console.log("81", temp);
                     console.log(ingredients[i]);
