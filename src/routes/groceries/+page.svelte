@@ -3,6 +3,7 @@
 
 
     let grocery_list = [];
+    let recipe_items = [];
     let input_count = 2;
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3};
@@ -17,6 +18,7 @@
         let index = 0;
         let value = null;
         Array.from(recipe_list).forEach(function (element) {
+            recipe_items.push([]);
             let ingredient_list_in = element.value.split("\n");
             let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
             ingredient_list_in.forEach((element) => {
@@ -30,21 +32,25 @@
                     element = element.trim();
                     if (is_ingredient(element)) {
                         let value = get_value(element.trim());
-                        ingredients[Object.keys(ingredients).length] = {
+                        let temp = {
                             value: (Number.isInteger(value)) ? value * multiplier : value,
                             unit: get_unit(element),
                             name: get_name(element)
                         };
+                        ingredients[Object.keys(ingredients).length] = temp;
+                        recipe_items[index].push(temp);
                     }
                 }else {
                     element = element.trim();
                     if (is_ingredient(element)) {
                         let value = get_value(element.trim());
-                        ingredients[Object.keys(ingredients).length] = {
+                        let temp = {
                             value: (Number.isInteger(value)) ? value * multiplier : value,
                             unit: get_unit(element),
                             name: get_name(element)
                         };
+                        ingredients[Object.keys(ingredients).length] = temp;
+                        recipe_items[index].push(temp);
                     }
                 }
                 
@@ -90,7 +96,6 @@
                         }
                         
                         console.log(65, conversions[`${ingredients[j].unit}/${ingredients[i].unit}`]);
-                        console.log(65, conversions[conv_index]);
                         temp.value += conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
                         
@@ -219,7 +224,6 @@
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
-            // ingredient_string = ingredient_string.replace(/\([^()]*\)/g, '').trim();
             let comma_index = ingredient_string.indexOf(",");
             let semi_colon_index = ingredient_string.indexOf(";");
             if (comma_index > 10 || semi_colon_index > 10){
@@ -228,7 +232,6 @@
             return ingredient_string;
         }else if (ingredient_string.trim().substring(0, 1).match(/\d/) && ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
             let check = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
-            // check = check.replace(/\([^()]*\)/g, '').trim();
             if (check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z]*s$/)){
 
             }else {
@@ -240,7 +243,6 @@
             return (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         }else if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
             let check = (ingredient_string.indexOf(",") > -1) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
-            // check = check.replace(/\([^()]*\)/g, '').trim();
             if (check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z]*s$/)){
 
             }else {
@@ -250,12 +252,11 @@
             
             let name = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(ingredient_string.indexOf(" "), ingredient_string.indexOf(",")).trim() : ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             
-            // return name.replace(/\([^()]*\)/g, '').trim();
+            return name.replace(/\([^()]*\)/g, '').trim();
         }else if (ingredient_string.match(/^Half of [0-9]*/)){
             let temp = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             temp = temp.substring(ingredient_string.indexOf(" ")).trim();
             temp = (temp.indexOf(",") > 10) ? temp.substring(temp.indexOf(" "), temp.indexOf(",")).trim() : temp.substring(temp.indexOf(" ")).trim();
-            // temp = temp.replace(/\([^()]*\)/g, '').trim();
             return temp;
         }
         return ingredient_string
@@ -265,9 +266,9 @@
         if ([false, "none"].includes(ingredient.unit) && [0, null, false].includes(ingredient.value)){
             return `${ingredient.name}`;
         }else if ([false, "none"].includes(ingredient.unit)){
-            return `${ingredient.value} | ${ingredient.name}`;
+            return `${ingredient.value} ${ingredient.name}`;
         } else {
-            return `${ingredient.value} | ${ingredient.unit} | ${ingredient.name}`;
+            return `${ingredient.value} ${ingredient.unit} ${ingredient.name}`;
         }
     }
 
