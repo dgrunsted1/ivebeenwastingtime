@@ -70,7 +70,7 @@
             let found = false;
             Object.keys(ingredients).forEach(function(j) {
                 if (i != j && (ingredients[i].name.includes(ingredients[j].name) || ingredients[j].name.includes(ingredients[i].name))){
-                    console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
+                    // console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
                     found = true;
                     if (ingredients[i].unit == ingredients[j].unit){
                         temp.value += ingredients[j].value;
@@ -89,6 +89,7 @@
                         let conv_index_b = `${ingredients[i].unit}/${ingredients[j].unit}`;
                         let value = null;
                         let unit = null;
+                        console.log(92, `${conv_index_a} < ${conv_index_b}`);
                         if (conversions[conv_index_a] < conversions[conv_index_b]){
                             let unit = ingredients[j].unit;
                             let value = conversions[conv_index_a] * ingredients[i].unit + ingredients[j].unit;
@@ -97,8 +98,8 @@
                             let value = conversions[conv_index_b] * ingredients[j].unit + ingredients[i].unit;
                         }
                         
-                        console.log(65, conversions[`${ingredients[j].unit}/${ingredients[i].unit}`]);
                         temp.value += conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value;
+                        temp.unit = unit;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
                         
                         if (isNaN(temp.value)) {
@@ -215,7 +216,7 @@
 
     const get_name = (ingredient_string, unit) => {
         ingredient_string = ingredient_string.replace(/\([^()]*\)/g, '').trim();
-        console.log(215, ingredient_string);
+        // console.log(215, ingredient_string);
 
         if (ingredient_string.includes("piece fresh ginger")){
             return "piece fresh ginger";
