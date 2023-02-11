@@ -6,6 +6,7 @@
     let recipe_items = [];
     let input_count = 2;
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
+    let fraction_converter = { '¼' : .25, '½' : .5, '⅕': .2, '⅙': .167, '⅛': .125, '⅔': .67, '¾': .75, '⅓': .33};
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3};
 
     const add_text_box = () => {
@@ -22,10 +23,13 @@
             let ingredient_list_in = element.value.split("\n");
             let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
             ingredient_list_in.forEach((element) => {
+                // console.log(26, element.substring(0, element.indexOf(" ")), element);
                 if (element.match(/^[0-9]+$/)){
                     // console.log(23, element);
                     // console.log(34, element.trim());
                     value = element.trim();
+                }else if (Object.keys(fraction_converter).includes(element)){
+                    value = fraction_converter[element];
                 }else if (value){
                     element = value + " " + element;
                     value = null;
@@ -89,7 +93,7 @@
                         let conv_index_b = `${ingredients[i].unit}/${ingredients[j].unit}`;
                         let value = null;
                         let unit = null;
-                        console.log(92, `${conv_index_a} < ${conv_index_b}`);
+                        // console.log(92, `${conv_index_a} < ${conv_index_b}`);
                         if (conversions[conv_index_a] < conversions[conv_index_b]){
                             let unit = ingredients[j].unit;
                             let value = conversions[conv_index_a] * ingredients[i].unit + ingredients[j].unit;
@@ -135,8 +139,10 @@
     }
 
     const is_ingredient = (ingredient_string) => {
-        if (ingredient_string.substring(0, 1).match(/\d/) || ingredient_string.includes("for serving") || ingredient_string.match(/^Half of [0-9]*/) ||
-            ingredient_string.match(/^Quarter of [0-9]*/) || ingredient_string.match(/^Eighth of [0-9]*/) || Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
+        // console.log("is ingredient", ingredient_string.substring(0, ingredient_string.indexOf(" ")));
+        if (ingredient_string.substring(0, 1).match(/\d/) || ingredient_string.includes("for serving") || ingredient_string.includes("for garnish") || ingredient_string.match(/^Half of [0-9]*/) ||
+            ingredient_string.match(/^Quarter of [0-9]*/) || ingredient_string.match(/^Eighth of [0-9]*/) || Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" "))) ||
+            Object.keys(fraction_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
                 return true;
         }
         if (ingredient_string) console.log("line skipped", ingredient_string);
@@ -145,9 +151,11 @@
 
     const get_value = (ingredient_string) => {
         if (ingredient_string.includes("piece fresh ginger")){
+            // console.log("value 1", ingredient_string);
             let temp = ingredient_string.match(/[0-9]-[iI]nch/);
             return temp;
-        }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)){
+        }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/^[0-9]* to [0-9]*[A-Za-z]*/)){
+            // console.log("value 2", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -157,6 +165,7 @@
             return temp;
 
         }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
+            // console.log("value 3", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1)));
             temp = temp.split(" ");
             let whole_num = parseInt(temp[0]);
@@ -165,27 +174,35 @@
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (ingredient_string.substring(0, 1).match(/\d/)) {
+            // console.log("value 4", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
+
                 temp = temp.split("/");
                 let value = parseInt(temp[0]) / parseInt(temp[1]);
                 value = Math.round((value + Number.EPSILON) * 100) / 100;
                 return value;
             }else {
-                let value = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")));
-                value = Math.round((value + Number.EPSILON) * 100) / 100;
+                console.log(ingredient_string.substring(0, ingredient_string.indexOf(" ")));
+                let value = parseFloat(ingredient_string.substring(0, ingredient_string.indexOf(" "))).toFixed(2) * 1;
+                console.log(44, {value});
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
+            // console.log("value 5", ingredient_string);
             let temp = ingredient_string.split(" ");
             let value = parseInt(temp[2]) / 2;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
+            // console.log("value 6", ingredient_string);
             let temp = number_string_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
+        }else if (Object.keys(fraction_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
+            // console.log("value 7", ingredient_string);
+            let temp = fraction_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
+            return temp;
         }
-
         return false;
     }
 
