@@ -287,8 +287,15 @@
 
     const copy_to_clipboard = () => {
         let copy_text = "";
-        Object.keys(grocery_list).forEach(function(i) {
-            copy_text += display(grocery_list[i]) + "\n";
+        let first = true;
+        let copy_list = document.getElementsByClassName("list_items");
+        Array.from(copy_list).forEach(function (element) {
+            if (!element.getElementsByTagName("input")[0].checked){
+                if (first) first = false;
+                else copy_text += "\n";
+
+                copy_text += element.getElementsByTagName('p')[0].innerHTML;
+            }
         });
         navigator.clipboard.writeText(copy_text);
     }
@@ -319,7 +326,7 @@
     <div id="grocery_list" class="column">
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
-            <div>
+            <div class="list_items">
                 <input type="checkbox" id="{display(curr)}"><p class="list_item">{display(curr)}</p>
             </div>
         {/each}
@@ -366,10 +373,6 @@
         padding-bottom: 3px;
     }
 
-    input {
-        width: 150px;
-        margin: auto;
-    }
     input[type=number] {
         font-size: large;
         width: 3em;
@@ -393,7 +396,7 @@
         padding-bottom: 8px;
     }
 
-    .btn, input[type=number] {
+    .btn, input[type=number]{
         background-color: #fbe4cb;
         border: 2px solid #422800;
         border-radius: 30px;
@@ -446,6 +449,20 @@
         line-height: 20px;
         padding: 0 4px;
         margin: 5px 0;
+    }
+
+    .list_items {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+    }
+
+    input[type=checkbox] {
+        margin: 0 20px;
+    }
+
+    #grocery_list {
+        margin: 0 auto;
     }
 
     @media (min-width: 768px) {
