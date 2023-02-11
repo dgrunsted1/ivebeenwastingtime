@@ -38,7 +38,7 @@
                         let value = get_value(element.trim());
                         let unit = get_unit(element);
                         let temp = {
-                            value: (Number.isInteger(value)) ? value * multiplier : value,
+                            value: (!isNaN(value)) ? value * multiplier : value,
                             unit: unit,
                             name: get_name(element, unit)
                         };
@@ -51,7 +51,7 @@
                         let value = get_value(element.trim());
                         let unit = get_unit(element);
                         let temp = {
-                            value: (Number.isInteger(value)) ? value * multiplier : value,
+                            value: (!isNaN(value)) ? value * multiplier : value,
                             unit: unit,
                             name: get_name(element, unit)
                         };
@@ -319,7 +319,9 @@
     <div id="grocery_list" class="column">
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
-            <p class="list_item">{display(curr)}</p>
+            <div>
+                <input type="checkbox" id="{display(curr)}"><p class="list_item">{display(curr)}</p>
+            </div>
         {/each}
     </div>
 </div>
