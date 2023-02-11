@@ -177,15 +177,12 @@
             // console.log("value 4", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
-
                 temp = temp.split("/");
                 let value = parseInt(temp[0]) / parseInt(temp[1]);
                 value = Math.round((value + Number.EPSILON) * 100) / 100;
                 return value;
             }else {
-                console.log(ingredient_string.substring(0, ingredient_string.indexOf(" ")));
                 let value = parseFloat(ingredient_string.substring(0, ingredient_string.indexOf(" "))).toFixed(2) * 1;
-                console.log(44, {value});
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
