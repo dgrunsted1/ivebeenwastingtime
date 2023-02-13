@@ -151,11 +151,11 @@
 
     const get_value = (ingredient_string) => {
         if (ingredient_string.includes("piece fresh ginger")){
-            // console.log("value 1", ingredient_string);
+            console.log("value 1", ingredient_string);
             let temp = ingredient_string.match(/[0-9]-[iI]nch/);
             return temp;
         }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/^[0-9]* to [0-9]*[A-Za-z]*/)){
-            // console.log("value 2", ingredient_string);
+            console.log("value 2", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -165,7 +165,7 @@
             return temp;
 
         }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
-            // console.log("value 3", ingredient_string);
+            console.log("value 3", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1)));
             temp = temp.split(" ");
             let whole_num = parseInt(temp[0]);
@@ -174,7 +174,7 @@
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (ingredient_string.substring(0, 1).match(/\d/)) {
-            // console.log("value 4", ingredient_string);
+            console.log("value 4", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
                 temp = temp.split("/");
@@ -186,17 +186,17 @@
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
-            // console.log("value 5", ingredient_string);
+            console.log("value 5", ingredient_string);
             let temp = ingredient_string.split(" ");
             let value = parseInt(temp[2]) / 2;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
-            // console.log("value 6", ingredient_string);
+            console.log("value 6", ingredient_string);
             let temp = number_string_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
         }else if (Object.keys(fraction_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
-            // console.log("value 7", ingredient_string);
+            console.log("value 7", ingredient_string);
             let temp = fraction_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
         }
