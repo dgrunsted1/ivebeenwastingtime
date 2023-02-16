@@ -7,7 +7,8 @@
     let input_count = 2;
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     let fraction_converter = { '¼' : .25, '½' : .5, '⅕': .2, '⅙': .167, '⅛': .125, '⅔': .67, '¾': .75, '⅓': .33};
-    let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3};
+    let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
+    let abreviation_converter = {"tbsp": "tablespoon", "tbsp.": "tablespoon", "tsp": "teaspoon", "tsp.": "teaspoon", "c.": "cup", "c": "cup", "lb.": "pound", "lb": "pound"};
 
     const add_text_box = () => {
         input_count++;
@@ -24,9 +25,11 @@
             let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
             ingredient_list_in.forEach((element) => {
                 // console.log(26, element.substring(0, element.indexOf(" ")), element);
+                if (element.match(/^[Aa]bout [0-9]* [A-Za-z ]*/)){
+                    element = element.replace(/^[Aa]bout /, "");
+                    console.log(element);
+                }
                 if (element.match(/^[0-9]+$/)){
-                    // console.log(23, element);
-                    // console.log(34, element.trim());
                     value = element.trim();
                 }else if (Object.keys(fraction_converter).includes(element)){
                     value = fraction_converter[element];
@@ -74,58 +77,20 @@
             let found = false;
             Object.keys(ingredients).forEach(function(j) {
                 if (i != j && (ingredients[i].name.includes(ingredients[j].name) || ingredients[j].name.includes(ingredients[i].name))){
-                    // console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
+                    console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
                     found = true;
                     if (ingredients[i].unit == ingredients[j].unit){
                         temp.value += ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
-                        
-                        if (isNaN(temp.value)) {
-                            console.log("52", temp);
-                            console.log(ingredients[i]);
-                        }
-                        if (not_already_added(output, temp.name)){
-                            output.push(temp);
-                        }
-                        
                     }else {
-                        let conv_index_a = `${ingredients[j].unit}/${ingredients[i].unit}`;
                         let conv_index_b = `${ingredients[i].unit}/${ingredients[j].unit}`;
-                        let value = null;
-                        let unit = null;
-                        // console.log(92, `${conv_index_a} < ${conv_index_b}`);
-                        if (conversions[conv_index_a] < conversions[conv_index_b]){
-                            let unit = ingredients[j].unit;
-                            let value = conversions[conv_index_a] * ingredients[i].unit + ingredients[j].unit;
-                        }else {
-                            let unit = ingredients[i].unit;
-                            let value = conversions[conv_index_b] * ingredients[j].unit + ingredients[i].unit;
-                        }
-                        
-                        temp.value += conversions[`${ingredients[j].unit}/${ingredients[i].unit}`] * ingredients[j].value;
-                        temp.unit = unit;
+                        temp.value += conversions[conv_index_b] * ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
-                        
-                        if (isNaN(temp.value)) {
-                            console.log("71", temp);
-                            console.log("i",ingredients[i]);
-                            console.log("j", ingredients[j]);
-                        }
-                        if (not_already_added(output, temp.name)){
-                            output.push(temp);
-                        }
                     }
                 }
             });
-            if (!found) {
-                
-                if (isNaN(temp.value)) {
-                    console.log("81", temp);
-                    console.log(ingredients[i]);
-                }
-                if (not_already_added(output, temp.name)){
-                    output.push(temp);
-                }
+            if (not_already_added(output, temp.name)){
+                output.push(temp);
             }
         });
         return output;
@@ -151,11 +116,11 @@
 
     const get_value = (ingredient_string) => {
         if (ingredient_string.includes("piece fresh ginger")){
-            console.log("value 1", ingredient_string);
+            // console.log("value 1", ingredient_string);
             let temp = ingredient_string.match(/[0-9]-[iI]nch/);
-            return temp;
+            return temp[0].split("-")[0];
         }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/^[0-9]* to [0-9]*[A-Za-z]*/)){
-            console.log("value 2", ingredient_string);
+            // console.log("value 2", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
@@ -165,7 +130,7 @@
             return temp;
 
         }else if (ingredient_string.match(/^[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
-            console.log("value 3", ingredient_string);
+            // console.log("value 3", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1)));
             temp = temp.split(" ");
             let whole_num = parseInt(temp[0]);
@@ -174,7 +139,7 @@
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (ingredient_string.substring(0, 1).match(/\d/)) {
-            console.log("value 4", ingredient_string);
+            // console.log("value 4", ingredient_string);
             let temp = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (temp.includes("/")){
                 temp = temp.split("/");
@@ -186,17 +151,17 @@
                 return value;
             }
         } else if (ingredient_string.match(/^Half of [0-9]*/)){
-            console.log("value 5", ingredient_string);
+            // console.log("value 5", ingredient_string);
             let temp = ingredient_string.split(" ");
             let value = parseInt(temp[2]) / 2;
             value = Math.round((value + Number.EPSILON) * 100) / 100;
             return value;
         }else if (Object.keys(number_string_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
-            console.log("value 6", ingredient_string);
+            // console.log("value 6", ingredient_string);
             let temp = number_string_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
         }else if (Object.keys(fraction_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
-            console.log("value 7", ingredient_string);
+            // console.log("value 7", ingredient_string);
             let temp = fraction_converter[ingredient_string.substring(0, ingredient_string.indexOf(" "))];
             return temp;
         }
@@ -207,21 +172,29 @@
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
         let check = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
-        if (check.split(" ")[check.length - 1] == "seeds" || check.match(/[A-Za-z ]*s$/)){
+        if (!check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z ]*s$/)){
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
             unit = unit.substring(0, unit.indexOf(" "));
             if (!non_units.includes(unit)) {
-                return (unit.substring(unit.length - 1) == "s") ? unit.substring(0, unit.length - 1) : unit;
+                if (unit.substring(unit.length - 1) == "s") unit = unit.substring(0, unit.length - 1);
+                if (abreviation_converter[unit.toLowerCase()]) unit = abreviation_converter[unit.toLowerCase()];
+                return unit;
             }else return "none";
         }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
             return "none";
-        }else if (ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
+        }else if (ingredient_string.includes("piece fresh ginger") && ingredient_string.includes("inch")){
+            return "inch";
+        }else if(ingredient_string.includes("garlic") && ingredient_string.includes("clove")){
+            return "none"
+        }else if(ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (!non_units.includes(unit)) {
-                return (unit.substring(unit.length - 1) == "s") ? unit.substring(0, unit.length - 1) : unit;
+                if (unit.substring(unit.length - 1) == "s") unit = unit.substring(0, unit.length - 1);
+                if (abreviation_converter[unit.toLowerCase()]) unit = abreviation_converter[unit.toLowerCase()];
+                return unit;
 
             }else return "none";
         }
@@ -279,9 +252,9 @@
         if ([false, "none"].includes(ingredient.unit) && [0, null, false].includes(ingredient.value)){
             return `${ingredient.name}`;
         }else if ([false, "none"].includes(ingredient.unit)){
-            return `${ingredient.value} ${ingredient.name}`;
+            return `${ingredient.value} | ${ingredient.name}`;
         } else {
-            return `${ingredient.value} ${ingredient.unit} ${ingredient.name}`;
+            return `${ingredient.value} | ${ingredient.unit} | ${ingredient.name}`;
         }
     }
 
@@ -298,6 +271,22 @@
             }
         });
         navigator.clipboard.writeText(copy_text);
+    }
+
+    const combine = (i, j) => {
+        let conv_index_a = `${j.unit}/${i.unit}`;
+        let conv_index_b = `${i.unit}/${j.unit}`;
+        let value = null;
+        let unit = null;
+        console.log(92, `${conv_index_a} < ${conv_index_b}`);
+        if (conversions[conv_index_a] < conversions[conv_index_b]){
+            let unit = j.unit;
+            let value = conversions[conv_index_a] * i.unit + j.unit;
+        }else {
+            let unit = i.unit;
+            let value = conversions[conv_index_b] * j.unit + i.unit;
+        }
+        return {'unit': unit, 'value': value};
     }
 </script>
 
