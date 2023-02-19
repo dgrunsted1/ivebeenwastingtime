@@ -31,6 +31,12 @@
                 }
                 if (element.match(/^[0-9]+$/)){
                     value = element.trim();
+                }else if (element.match(/^[0-9]+ to [0-9]+$/)){
+                    let temp = element.split(" ");
+                    let a = parseFloat(temp[0]);
+                    let b = parseFloat(temp[2]);
+                    value = a+b;
+                    value = value / 2;
                 }else if (Object.keys(fraction_converter).includes(element)){
                     value = fraction_converter[element];
                 }else if (value){
@@ -117,8 +123,8 @@
     const get_value = (ingredient_string) => {
         if (ingredient_string.includes("piece fresh ginger")){
             // console.log("value 1", ingredient_string);
-            let temp = ingredient_string.match(/[0-9]-[iI]nch/);
-            return temp[0].split("-")[0];
+            let temp = ingredient_string.match(/[0-9½]-[iI]nch/);
+            return (fraction_converter[temp[0].split("-")[0]]) ? fraction_converter[temp[0].split("-")[0]] : temp[0].split("-")[0];
         }else if (ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/^[0-9]* to [0-9]*[A-Za-z]*/)){
             // console.log("value 2", ingredient_string);
             let low = parseInt(ingredient_string.substring(0, ingredient_string.indexOf(" ")).trim());
@@ -172,9 +178,13 @@
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
         let check = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
-        if (!check.split(" ")[check.length - 1] == "seeds" && check.match(/[A-Za-z ]*s$/)){
+        console.log(181, check);
+        let checkarr = check.split(" ");
+        if (checkarr[checkarr.length - 1] != "seeds" && checkarr[checkarr.length - 1] != "flakes" && check.substring(check.length - 1) == "s"){
+            console.log(1, "unit");
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
+            console.log(2, "unit");
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
             unit = unit.substring(0, unit.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -183,12 +193,14 @@
                 return unit;
             }else return "none";
         }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
+            console.log(3, "unit");
             return "none";
         }else if (ingredient_string.includes("piece fresh ginger") && ingredient_string.includes("inch")){
             return "inch";
         }else if(ingredient_string.includes("garlic") && ingredient_string.includes("clove")){
             return "none"
         }else if(ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
+            console.log(4, "unit");
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -316,7 +328,7 @@
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
             <div class="list_items">
-                <input type="checkbox" id="{display(curr)}"><p class="list_item">{display(curr)}</p>
+                <div class="checks"><input type="checkbox" id="{display(curr)}"></div><p class="list_item">{display(curr)}</p>
             </div>
         {/each}
     </div>
@@ -339,7 +351,7 @@
     }
 
     p {
-        margin:2px;
+        margin: 2px 18px;
     }
 
     form {
@@ -385,7 +397,7 @@
         padding-bottom: 8px;
     }
 
-    .btn, input[type=number]{
+    .btn, input[type=number], .checks{
         background-color: #fbe4cb;
         border: 2px solid #422800;
         border-radius: 30px;
@@ -444,10 +456,18 @@
         display: flex;
         justify-content: flex-start;
         align-items: center;
+        margin: 5px;
     }
 
     input[type=checkbox] {
-        margin: 0 20px;
+        margin: 0 6px;
+        /* Add if not using autoprefixer */
+        -webkit-appearance: none;
+        appearance: none;
+        /* For iOS < 15 to remove gradient background */
+        background-color: #fff;
+        /* Not removed via appearance */
+        /* margin: 0; */
     }
 
     #grocery_list {
