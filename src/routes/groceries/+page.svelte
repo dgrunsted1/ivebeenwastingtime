@@ -39,6 +39,8 @@
                     value = value / 2;
                 }else if (Object.keys(fraction_converter).includes(element)){
                     value = fraction_converter[element];
+                }else if (element.match(/^[0-9]/) && Object.keys(fraction_converter).includes(element[1])){
+                    value = parseInt(element[0]) + fraction_converter[element[1]];
                 }else if (value){
                     element = value + " " + element;
                     value = null;
@@ -178,13 +180,13 @@
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
         let check = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
-        console.log(181, check);
+        // console.log(181, check);
         let checkarr = check.split(" ");
         if (checkarr[checkarr.length - 1] != "seeds" && checkarr[checkarr.length - 1] != "flakes" && check.substring(check.length - 1) == "s"){
-            console.log(1, "unit");
+            // console.log(1, "unit");
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
-            console.log(2, "unit");
+            // console.log(2, "unit");
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
             unit = unit.substring(0, unit.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -193,14 +195,14 @@
                 return unit;
             }else return "none";
         }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
-            console.log(3, "unit");
+            // console.log(3, "unit");
             return "none";
         }else if (ingredient_string.includes("piece fresh ginger") && ingredient_string.includes("inch")){
             return "inch";
         }else if(ingredient_string.includes("garlic") && ingredient_string.includes("clove")){
             return "none"
         }else if(ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
-            console.log(4, "unit");
+            // console.log(4, "unit");
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -416,6 +418,11 @@
         touch-action: manipulation;
     }
 
+    .checks {
+        padding: 2px;
+        border-radius: 50%;
+    }
+
     .btn:hover,  input[type=number]:hover {
         background-color: #fff;
     }
@@ -460,14 +467,37 @@
     }
 
     input[type=checkbox] {
-        margin: 0 6px;
+        margin: 2px;
         /* Add if not using autoprefixer */
         -webkit-appearance: none;
         appearance: none;
         /* For iOS < 15 to remove gradient background */
-        background-color: #fff;
+        background-color: #fbe4cb;
         /* Not removed via appearance */
         /* margin: 0; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    input[type="checkbox"]::before {
+        content: "";
+        width: 2em;
+        height: 2em;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        background-color: black;
+        transform-origin: bottom left;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+        /* clip-path: url('src/lib/style/check_mark.svg');; */
+        /* box-shadow: inset 1em 1em var(--form-control-color); */
+        /* background: url('src/lib/style/check_mark.svg'); */
+    }
+    
+    input[type="checkbox"]:checked::before {
+        transform: scale(1);
+        /* background: url('src/lib/style/check_mark.svg'); */
+
     }
 
     #grocery_list {
