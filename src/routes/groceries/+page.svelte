@@ -4,7 +4,9 @@
 
     let grocery_list = [];
     let recipe_items = [];
-    let input_count = 2;
+    let modes = ["Freestyle", "Meal Prep", "Weekly Grocery Run"];
+    let curr_mode = modes[2];
+    let input_count = (curr_mode == "Freestyle") ? 2 : {"dinner": 4, "lunch": 2, "breakfast": 2, "snack": 2, "dessert": 1};
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     let fraction_converter = { '¼' : .25, '½' : .5, '⅕': .2, '⅙': .167, '⅛': .125, '⅔': .67, '¾': .75, '⅓': .33};
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
@@ -180,13 +182,13 @@
         let non_units = ["medium", "large", "small", "recipe", "white", "yellow", "white or yellow", "soft", "skin-on"];
         let check = (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
         check = check.replace(/\([^()]*\)/g, '').trim();
-        // console.log(181, check);
+        console.log(181, check);
         let checkarr = check.split(" ");
         if (checkarr[checkarr.length - 1] != "seeds" && checkarr[checkarr.length - 1] != "flakes" && check.substring(check.length - 1) == "s"){
-            // console.log(1, "unit");
+            console.log(1, "unit");
             return "none";
         }else if (ingredient_string.match(/[0-9] [0-9]\/[0-9] [A-Za-z]*/)){
-            // console.log(2, "unit");
+            console.log(2, "unit");
             let unit = ingredient_string.substring(ingredient_string.indexOf(" ", (ingredient_string.indexOf(" ")+1))).trim();
             unit = unit.substring(0, unit.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -195,14 +197,15 @@
                 return unit;
             }else return "none";
         }else if (ingredient_string.match(/^[0-9]* [A-Za-z]*, */)){
-            // console.log(3, "unit");
+            console.log(3, "unit");
             return "none";
         }else if (ingredient_string.includes("piece fresh ginger") && ingredient_string.includes("inch")){
             return "inch";
         }else if(ingredient_string.includes("garlic") && ingredient_string.includes("clove")){
             return "none"
-        }else if(ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/)) {
-            // console.log(4, "unit");
+        }else if(ingredient_string.trim().substring(0, 1).match(/\d/) && !ingredient_string.substring(0, ingredient_string.indexOf(",")).match(/[0-9]* to [0-9]*[A-Za-z]*/) ||
+                Object.keys(fraction_converter).includes(ingredient_string.split(" ")[0])) {
+            console.log(4, "unit");
             ingredient_string = ingredient_string.trim().substring(ingredient_string.indexOf(" ")).trim();
             let unit = ingredient_string.substring(0, ingredient_string.indexOf(" "));
             if (!non_units.includes(unit)) {
@@ -243,7 +246,7 @@
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             ingredient_string = ingredient_string.substring(ingredient_string.indexOf(" ")).trim();
             return (ingredient_string.indexOf(",") > 10) ? ingredient_string.substring(0, ingredient_string.indexOf(",")) : ingredient_string;
-        }else if (ingredient_string.trim().substring(0, 1).match(/\d/)) {
+        }else if (ingredient_string.trim().substring(0, 1).match(/\d/) || Object.keys(fraction_converter).includes(ingredient_string.split(" ")[0])) {
 
             if (unit != "none") {
                 ingredient_string = ingredient_string.trim();
@@ -268,7 +271,7 @@
         }else if ([false, "none"].includes(ingredient.unit)){
             return `${ingredient.value} | ${ingredient.name}`;
         } else {
-            return `${ingredient.value} | ${ingredient.unit} | ${ingredient.name}`;
+            return `${ingredient.value} | ${(ingredient.value > 1) ? ingredient.unit+"s" : ingredient.unit} | ${ingredient.name}`;
         }
     }
 
@@ -307,22 +310,48 @@
 <div id="main">
     <div id="recipes" class="column">
         <form action="">
-            {#each Array(input_count) as _, index (index)}
-                <div class="recipe_label">
-                    <div>
-                        <label for="recipe_{index}" class="label_main">Recipe {index + 1}:</label>
+            {#if curr_mode =="Freestyle"}
+                {#each Array(input_count) as _, index (index)}
+                    <div class="recipe_label">
+                        <div>
+                            <label for="recipe_{index}" class="label_main">Recipe {index + 1}:</label>
+                        </div>
+                        <div class="seperated">
+                            <label for="recipe_servings_{index}">recipe servings</label>
+                            <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                        </div>
+                        <div class="seperated">
+                            <label for="desired_servings_{index}">desired servings</label>
+                            <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                        </div>
                     </div>
-                    <div class="seperated">
-                        <label for="recipe_servings_{index}">recipe servings</label>
-                        <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
-                    </div>
-                    <div class="seperated">
-                        <label for="desired_servings_{index}">desired servings</label>
-                        <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
-                    </div>
-                </div>
-                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
-            {/each}
+                    <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
+                {/each}
+            {:else if curr_mode =="Weekly Grocery Run"}
+                {#each Object.entries(input_count) as [key, value]}
+                    <div class="recipe_group">
+                        <!-- <div class="recipe_group_title">{key}</div> -->
+                        <div>
+                        {#each  Array(value) as _, index (index)}
+                            <div class="recipe_label">
+                                <div class="seperated">
+                                    <label for="recipe_servings_{index}">recipe servings</label>
+                                    <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                                </div>
+                                <div class="seperated">
+                                    <label for="desired_servings_{index}">desired servings</label>
+                                    <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                                </div>
+                            </div>
+                            <div class="text_title">
+                                <label for="recipe_{index}" class="label_main">{key} {index + 1}:</label>
+                                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
+                            </div>
+                        {/each}
+                        </div>
+                    </div>    
+                {/each}
+            {/if}
             <div class="btn" id="add_recipe" value="add recipe" on:click={add_text_box}>add recipe</div>
         </form>
     </div>
@@ -370,6 +399,14 @@
 
     .label_main {
         font-weight: 900;
+        transform: rotate(-90deg);
+        height: 50px;
+
+    }
+
+    .text_title{
+        display: flex;
+        align-items: center;
     }
 
     label {
@@ -502,6 +539,21 @@
 
     #grocery_list {
         margin: 0 auto;
+    }
+
+    .recipe_group {
+        display: flex;
+        align-items: flex-start;
+    }
+    .recipe_group_title {
+        transform: rotate(-90deg);
+        letter-spacing: 30px;
+        font-size: 32px;
+        width: 2em;
+        position: relative;
+        top: 280px;
+        /* justify-content: center;
+        align-items: center; */
     }
 
     @media (min-width: 768px) {
