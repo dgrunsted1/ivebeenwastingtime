@@ -12,8 +12,18 @@
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     let abreviation_converter = {"tbsp": "tablespoon", "tbsp.": "tablespoon", "tsp": "teaspoon", "tsp.": "teaspoon", "c.": "cup", "c": "cup", "lb.": "pound", "lb": "pound"};
 
-    const add_text_box = () => {
-        input_count++;
+    const add_text_box = (cat) => {
+        console.log(cat);
+        if (Object.keys(input_count).includes(cat) && !cat.type){
+            if (cat == "dinner") input_count.dinner++;
+            else if (cat == "lunch") input_count.lunch++;
+            else if (cat == "breakfast") input_count.breakfast++;
+            else if (cat == "snack") input_count.snack++;
+            else if (cat == "dessert") input_count.dessert++;
+        }else {
+            if (Number.isInteger(input_count)) input_count++;
+            else input_count = 2;
+        }
     }
 
     const process_recipes = () => {
@@ -306,9 +316,13 @@
         return {'unit': unit, 'value': value};
     }
 </script>
-
 <div id="main">
     <div id="recipes" class="column">
+        <select name="mode" id="mode" bind:value={curr_mode}>
+            {#each modes as curr}
+                <option value="{curr}" >{curr}</option>
+            {/each}
+        </select>
         <form action="">
             {#if curr_mode =="Freestyle"}
                 {#each Array(input_count) as _, index (index)}
@@ -327,6 +341,8 @@
                     </div>
                     <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
                 {/each}
+                <div class="btn" id="add_recipe" value="add recipe" on:click={add_text_box}>add recipe</div>
+
             {:else if curr_mode =="Weekly Grocery Run"}
                 {#each Object.entries(input_count) as [key, value]}
                     <div class="recipe_group">
@@ -335,24 +351,25 @@
                         {#each  Array(value) as _, index (index)}
                             <div class="recipe_label">
                                 <div class="seperated">
-                                    <label for="recipe_servings_{index}">recipe servings</label>
-                                    <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                                    <label for="recipe_servings_{key}_{index}">recipe servings</label>
+                                    <input type="number" name="recipe_servings_{key}_{index}" id="recipe_servings_{key}_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                                 </div>
                                 <div class="seperated">
-                                    <label for="desired_servings_{index}">desired servings</label>
-                                    <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                                    <label for="desired_servings_{key}_{index}">desired servings</label>
+                                    <input type="number" name="desired_servings_{key}_{index}" id="desired_servings_{key}_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                                 </div>
                             </div>
                             <div class="text_title">
-                                <label for="recipe_{index}" class="label_main">{key} {index + 1}:</label>
-                                <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
+                                <label for="recipe_{key}_{index}" class="label_main">{key} {index + 1}:</label>
+                                <textarea class="recipe" name="recipe_{key}_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
                             </div>
                         {/each}
+                        <div class="btn" id="{key}_add_recipe" value="add recipe" on:click={add_text_box(key)}>add {key} recipe</div>
+
                         </div>
                     </div>    
                 {/each}
             {/if}
-            <div class="btn" id="add_recipe" value="add recipe" on:click={add_text_box}>add recipe</div>
         </form>
     </div>
     <div id="grocery_list" class="column">
@@ -409,6 +426,14 @@
         align-items: center;
     }
 
+    select {
+        width: 210px;
+        margin: auto;
+    }
+
+    #recipes {
+        margin: 20px;
+    }
     label {
         padding-bottom: 3px;
     }
@@ -419,8 +444,8 @@
         margin: 0;
     }
 
-    #add_recipe {
-        width: 150px;
+    #add_recipe , .btn{
+        width: 178px;
         margin: auto;   
         margin-top: 10px;
     }
@@ -436,7 +461,7 @@
         padding-bottom: 8px;
     }
 
-    .btn, input[type=number], .checks{
+    .btn, input[type=number], .checks, select{
         background-color: #fbe4cb;
         border: 2px solid #422800;
         border-radius: 30px;
