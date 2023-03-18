@@ -34,7 +34,11 @@
         Array.from(recipe_list).forEach(function (element) {
             recipe_items.push([]);
             let ingredient_list_in = element.value.split("\n");
-            let multiplier = document.getElementById("desired_servings_"+index).value / document.getElementById("recipe_servings_"+index).value;
+            console.log(element.parentElement.previousElementSibling.getElementsByClassName("desired_servings")[0].value);
+            let servings_div = element.parentElement.previousElementSibling;
+            let desired_servings = servings_div.getElementsByClassName("desired_servings")[0].value;
+            let recipe_servings = servings_div.getElementsByClassName("recipe_servings")[0].value;
+            let multiplier = desired_servings / recipe_servings;
             ingredient_list_in.forEach((element) => {
                 // console.log(26, element.substring(0, element.indexOf(" ")), element);
                 if (element.match(/^[Aa]bout [0-9]* [A-Za-z ]*/)){
