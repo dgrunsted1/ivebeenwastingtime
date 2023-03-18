@@ -34,11 +34,7 @@
         Array.from(recipe_list).forEach(function (element) {
             recipe_items.push([]);
             let ingredient_list_in = element.value.split("\n");
-            console.log(element.parentElement.previousElementSibling.getElementsByClassName("desired_servings")[0].value);
-            let servings_div = element.parentElement.previousElementSibling;
-            let desired_servings = servings_div.getElementsByClassName("desired_servings")[0].value;
-            let recipe_servings = servings_div.getElementsByClassName("recipe_servings")[0].value;
-            let multiplier = desired_servings / recipe_servings;
+            let multiplier = get_multiplier(element);
             ingredient_list_in.forEach((element) => {
                 // console.log(26, element.substring(0, element.indexOf(" ")), element);
                 if (element.match(/^[Aa]bout [0-9]* [A-Za-z ]*/)){
@@ -283,9 +279,9 @@
         if ([false, "none"].includes(ingredient.unit) && [0, null, false].includes(ingredient.value)){
             return `${ingredient.name}`;
         }else if ([false, "none"].includes(ingredient.unit)){
-            return `${ingredient.value} | ${ingredient.name}`;
+            return `${Number((ingredient.value).toFixed(2))} | ${ingredient.name}`;
         } else {
-            return `${ingredient.value} | ${(ingredient.value > 1) ? ingredient.unit+"s" : ingredient.unit} | ${ingredient.name}`;
+            return `${Number((ingredient.value).toFixed(2))} | ${(ingredient.value > 1) ? ingredient.unit+"s" : ingredient.unit} | ${ingredient.name}`;
         }
     }
 
@@ -318,6 +314,13 @@
             let value = conversions[conv_index_b] * j.unit + i.unit;
         }
         return {'unit': unit, 'value': value};
+    }
+
+    const get_multiplier = (element) => {
+        let servings_div = element.parentElement.previousElementSibling;
+        let desired_servings = servings_div.getElementsByClassName("desired_servings")[0].value;
+        let recipe_servings = servings_div.getElementsByClassName("recipe_servings")[0].value;
+        return desired_servings / recipe_servings;
     }
 </script>
 <div id="main">
