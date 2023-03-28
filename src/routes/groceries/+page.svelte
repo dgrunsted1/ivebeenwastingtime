@@ -4,9 +4,10 @@
 
     let grocery_list = [];
     let recipe_items = [];
-    let modes = ["Freestyle", "Meal Prep", "Weekly Grocery Run"];
+    let skipped = [];
+    let modes = ["Freestyle", "Weekly Grocery Run"];
     let curr_mode = modes[2];
-    let input_count = (curr_mode == "Freestyle") ? 2 : {"dinner": 4, "lunch": 2, "breakfast": 2, "snack": 2, "dessert": 1};
+    $: input_count = (curr_mode == "Freestyle") ? 2 : {"dinner": 4, "lunch": 2, "breakfast": 2, "snack": 2, "dessert": 1};
     let number_string_converter = { One: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9 };
     let fraction_converter = { '¼' : .25, '½' : .5, '⅕': .2, '⅙': .167, '⅛': .125, '⅔': .67, '¾': .75, '⅓': .33};
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
@@ -31,6 +32,7 @@
         let recipe_list = document.getElementsByClassName('recipe');
         let index = 0;
         let value = null;
+        skipped = [];
         Array.from(recipe_list).forEach(function (element) {
             recipe_items.push([]);
             let ingredient_list_in = element.value.split("\n");
@@ -63,10 +65,18 @@
                         let temp = {
                             value: (!isNaN(value)) ? value * multiplier : value,
                             unit: unit,
-                            name: get_name(element, unit)
+                            name: get_name(element, unit),
+                            original: element
                         };
                         ingredients[Object.keys(ingredients).length] = temp;
                         recipe_items[index].push(temp);
+                    }else {
+                        let temp = {
+                            value: null,
+                            unit: null,
+                            name: null,
+                            original: element
+                        };
                     }
                 }else {
                     element = element.trim();
@@ -76,10 +86,18 @@
                         let temp = {
                             value: (!isNaN(value)) ? value * multiplier : value,
                             unit: unit,
-                            name: get_name(element, unit)
+                            name: get_name(element, unit),
+                            original: element
                         };
                         ingredients[Object.keys(ingredients).length] = temp;
                         recipe_items[index].push(temp);
+                    }else {
+                        let temp = {
+                            value: null,
+                            unit: null,
+                            name: null,
+                            original: element
+                        };
                     }
                 }
                 
@@ -102,10 +120,12 @@
                     if (ingredients[i].unit == ingredients[j].unit){
                         temp.value += ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
+                        temp.original += " "+ingredients[j].originial;
                     }else {
                         let conv_index_b = `${ingredients[i].unit}/${ingredients[j].unit}`;
                         temp.value += conversions[conv_index_b] * ingredients[j].value;
-                        temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name
+                        temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
+                        temp.original += " "+ingredients[j].originial;
                     }
                 }
             });
@@ -130,7 +150,7 @@
             Object.keys(fraction_converter).includes(ingredient_string.substring(0, ingredient_string.indexOf(" ")))){
                 return true;
         }
-        if (ingredient_string) console.log("line skipped", ingredient_string);
+        if (ingredient_string) skipped.push(ingredient_string);
         return false;
     }
 
@@ -317,7 +337,9 @@
     }
 
     const get_multiplier = (element) => {
+        console.log(337, element);
         let servings_div = element.parentElement.previousElementSibling;
+        console.log(339, servings_div);
         let desired_servings = servings_div.getElementsByClassName("desired_servings")[0].value;
         let recipe_servings = servings_div.getElementsByClassName("recipe_servings")[0].value;
         return desired_servings / recipe_servings;
@@ -333,20 +355,20 @@
         <form action="">
             {#if curr_mode =="Freestyle"}
                 {#each Array(input_count) as _, index (index)}
-                    <div class="recipe_label">
-                        <div>
-                            <label for="recipe_{index}" class="label_main">Recipe {index + 1}:</label>
-                        </div>
-                        <div class="seperated">
-                            <label for="recipe_servings_{index}">recipe servings</label>
-                            <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
-                        </div>
-                        <div class="seperated">
-                            <label for="desired_servings_{index}">desired servings</label>
-                            <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
-                        </div>
+                <div class="recipe_label">
+                    <div class="seperated">
+                        <label for="recipe_servings_{index}">recipe servings</label>
+                        <input type="number" name="recipe_servings_{index}" id="recipe_servings_{index}" class="recipe_servings" value=1 on:input|preventDefault={process_recipes} min=1>
                     </div>
+                    <div class="seperated">
+                        <label for="desired_servings_{index}">desired servings</label>
+                        <input type="number" name="desired_servings_{index}" id="desired_servings_{index}" class="desired_servings" value=1 on:input|preventDefault={process_recipes} min=1>
+                    </div>
+                </div>
+                <div class="text_title">
+                    <label for="recipe_{index}" class="label_main">Recipe {index + 1}:</label>
                     <textarea class="recipe" name="recipe_{index}" id="index" cols="30" rows="10" on:input|preventDefault={process_recipes}></textarea>
+                </div>
                 {/each}
                 <div class="btn" id="add_recipe" value="add recipe" on:click={add_text_box}>add recipe</div>
 
@@ -383,9 +405,15 @@
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
             <div class="list_items">
-                <div class="checks"><input type="checkbox" id="{display(curr)}"></div><p class="list_item">{display(curr)}</p>
+                <div class="checks"><input type="checkbox" id="{display(curr)}"></div><div><p class="list_item">{display(curr)}</p><p class="check_original">{curr.original}</p></div>
             </div>
         {/each}
+        <div class="skipped">
+            {#if skipped.length > 0}<p>skipped</p>{/if}
+            {#each skipped as curr}
+                <p>{curr}</p>
+            {/each}
+        </div>
     </div>
 </div>
 
@@ -586,6 +614,11 @@
         top: 280px;
         /* justify-content: center;
         align-items: center; */
+    }
+
+    .check_original {
+        color: #6f6f6f;
+        font-style: normal;
     }
 
     @media (min-width: 768px) {
