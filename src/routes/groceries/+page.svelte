@@ -295,16 +295,6 @@
         return ingredient_string
     }
 
-    const display = (ingredient) => {
-        if ([false, "none"].includes(ingredient.unit) && [0, null, false].includes(ingredient.value)){
-            return `${ingredient.name}`;
-        }else if ([false, "none"].includes(ingredient.unit)){
-            return `${Number((ingredient.value).toFixed(2))} | ${ingredient.name}`;
-        } else {
-            return `${Number((ingredient.value).toFixed(2))} | ${(ingredient.value > 1) ? ingredient.unit+"s" : ingredient.unit} | ${ingredient.name}`;
-        }
-    }
-
     const copy_to_clipboard = () => {
         let copy_text = "";
         let first = true;
@@ -405,7 +395,7 @@
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
             <div class="list_items">
-                <div class="checks"><input type="checkbox" id="{display(curr)}"></div><div><p class="list_item">{display(curr)}</p><p class="check_original">{curr.original}</p></div>
+                <div class="checks"><input type="checkbox" id="{curr.name}"></div><div><input type="number" class="list_value" step=".01" name="" id="" value="{curr.value}"><input type="text" name="" id="" class="list_unit" value="{curr.unit}"><input type="text" name="" id="" class="list_name" value="{curr.name}"><p class="check_original">{curr.original}</p></div>
             </div>
         {/each}
         <div class="skipped">
@@ -425,6 +415,10 @@
         justify-content: space-evenly;
         font-variant: small-caps;
         padding-bottom: 100px;
+    }
+
+    .list_value {
+        margin: 5px 5px 5px 10px;
     }
 
     .column {
@@ -620,6 +614,10 @@
         color: #6f6f6f;
         font-style: normal;
     }
+
+    /* .list_value {
+        margin: 5px 5px 5px 10px;
+    } */
 
     @media (min-width: 768px) {
         #copy_btn {
