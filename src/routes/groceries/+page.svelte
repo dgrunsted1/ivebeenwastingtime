@@ -475,7 +475,7 @@
 
     select {
         width: 210px;
-        margin: auto;
+        margin: 0 auto;
     }
 
     #recipes {
@@ -562,6 +562,7 @@
         display: flex;
         justify-content: space-around;
         align-items: center;
+        margin: 10px 0;
     }
 
     
