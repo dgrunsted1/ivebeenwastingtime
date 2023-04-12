@@ -112,35 +112,35 @@
         
         Object.keys(ingredients).forEach(function(i) {
             let temp = ingredients[i];
+            if (already_added(output, temp.name)) return;
             let found = false;
             Object.keys(ingredients).forEach(function(j) {
                 if (i != j && (ingredients[i].name.includes(ingredients[j].name) || ingredients[j].name.includes(ingredients[i].name))){
                     console.log("combining "+ingredients[i].name+" and "+ingredients[j].name);
+                    console.log("combining "+ingredients[i].original+" and "+ingredients[j].original);
                     found = true;
                     if (ingredients[i].unit == ingredients[j].unit){
                         temp.value += ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
-                        temp.original += " "+ingredients[j].originial;
+                        temp.original += " | "+ingredients[j].original;
                     }else {
                         let conv_index_b = `${ingredients[i].unit}/${ingredients[j].unit}`;
                         temp.value += conversions[conv_index_b] * ingredients[j].value;
                         temp.name = (ingredients[i].name.includes(ingredients[j].name)) ? ingredients[i].name : ingredients[j].name;
-                        temp.original += " "+ingredients[j].originial;
+                        temp.original += " | "+ingredients[j].original;
                     }
                 }
             });
-            if (not_already_added(output, temp.name)){
-                output.push(temp);
-            }
+            output.push(temp);
         });
         return output;
     }
 
-    const not_already_added = (list_in, name_in) => {
+    const already_added = (list_in, name_in) => {
         for (let i = 0; i < list_in.length; i++) {
-            if (list_in[i].name == name_in) return false;
+            if (list_in[i].name == name_in) return true;
         }
-        return true;
+        return false;
     }
 
     const is_ingredient = (ingredient_string) => {
@@ -395,7 +395,7 @@
         {#if grocery_list.length > 0}<div id="column_header"><div id="item_count">{grocery_list.length} items</div><div class="btn" on:click={copy_to_clipboard}>copy</div></div>{/if}
         {#each grocery_list as curr}
             <div class="list_items">
-                <div class="checks"><input type="checkbox" id="{curr.name}"></div><div><input type="number" class="list_value" step=".01" name="" id="" value="{curr.value}"><input type="text" name="" id="" class="list_unit" value="{curr.unit}"><input type="text" name="" id="" class="list_name" value="{curr.name}"><p class="check_original">{curr.original}</p></div>
+                <div class="checks"><input type="checkbox" id="{curr.name}"></div><div class="result_item"><input type="number" class="list_value" step=".01" name="" id="" value="{curr.value}"><input type="text" name="" id="" class="list_unit" value="{curr.unit}"><input type="text" name="" id="" class="list_name" value="{curr.name}"><p class="check_original">{curr.original}</p></div>
             </div>
         {/each}
         <div class="skipped">
@@ -417,8 +417,26 @@
         padding-bottom: 100px;
     }
 
-    .list_value {
-        margin: 5px 5px 5px 10px;
+    .recipe_servings {
+        margin: 5px 0;
+    }
+
+    .result_item {
+        margin: 5px 0 5px 15px;
+        
+    }
+
+    input[type=number].list_value {
+        margin: 0 5px;
+    }
+
+    input[type=text].list_unit, input[type=text].list_name {
+        margin: 0 5px;
+        font-size: 20px;
+    }
+
+    input[type=text].list_unit {
+        width: 12ch;
     }
 
     .column {
@@ -471,6 +489,11 @@
         font-size: large;
         width: 3em;
         margin: 0;
+        font-size: large;
+        width: 6ch;
+        margin: 0;
+        line-height: 20px;
+        padding: 0 4px;
     }
 
     #add_recipe , .btn{
@@ -541,14 +564,7 @@
         align-items: center;
     }
 
-    input[type=number] {
-        font-size: large;
-        width: 3em;
-        margin: 0;
-        line-height: 20px;
-        padding: 0 4px;
-        margin: 5px 0;
-    }
+    
 
     .list_items {
         display: flex;
@@ -606,8 +622,6 @@
         width: 2em;
         position: relative;
         top: 280px;
-        /* justify-content: center;
-        align-items: center; */
     }
 
     .check_original {
