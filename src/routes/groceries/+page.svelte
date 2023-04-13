@@ -576,13 +576,9 @@
 
     input[type=checkbox] {
         margin: 2px;
-        /* Add if not using autoprefixer */
         -webkit-appearance: none;
         appearance: none;
-        /* For iOS < 15 to remove gradient background */
         background-color: #fbe4cb;
-        /* Not removed via appearance */
-        /* margin: 0; */
         display: flex;
         align-items: center;
         justify-content: center;
@@ -597,14 +593,10 @@
         background-color: black;
         transform-origin: bottom left;
         clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-        /* clip-path: url('src/lib/style/check_mark.svg');; */
-        /* box-shadow: inset 1em 1em var(--form-control-color); */
-        /* background: url('src/lib/style/check_mark.svg'); */
     }
     
     input[type="checkbox"]:checked::before {
         transform: scale(1);
-        /* background: url('src/lib/style/check_mark.svg'); */
 
     }
 
@@ -616,23 +608,11 @@
         display: flex;
         align-items: flex-start;
     }
-    .recipe_group_title {
-        transform: rotate(-90deg);
-        letter-spacing: 30px;
-        font-size: 32px;
-        width: 2em;
-        position: relative;
-        top: 280px;
-    }
 
     .check_original {
         color: #6f6f6f;
         font-style: normal;
     }
-
-    /* .list_value {
-        margin: 5px 5px 5px 10px;
-    } */
 
     @media (min-width: 768px) {
         #copy_btn {
