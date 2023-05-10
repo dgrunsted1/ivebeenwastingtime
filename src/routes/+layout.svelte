@@ -9,6 +9,7 @@
 		<a href="/upload">Upload</a>
 		<a href="/gallery">Gallery</a>
 		<a href="/groceries">Groceries</a>
+		<a href="/prep">prep</a>
 	</header>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>
