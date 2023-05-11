@@ -44,6 +44,9 @@
                         <input type="text" class="name" value={item.name}>
                         <span class="original">
                             {#each item.original as curr_original}
+                                {#if item.original.indexOf(curr_original) > 0}
+                                    ,
+                                {/if}
                                 {curr_original}
                             {/each}
                         </span>
@@ -100,12 +103,12 @@
         cursor: pointer;
     }
 
-    /* .original {
+    .original {
         font-size: 9px;
-    } */
+    }
 
     .grocery_list .original {
-        position: relative;
+        /* position: relative; */
         top: 0;
         /* font-size: 14px; */
         background: #ffffff;
