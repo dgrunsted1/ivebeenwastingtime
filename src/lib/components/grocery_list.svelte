@@ -2,6 +2,7 @@
     import { each } from "svelte/internal";
 
     export let grocery_list;
+    export let skipped;
     
     function check_item(e) {
         e.srcElement.innerHTML = (e.srcElement.innerHTML == "0") ? "O" : "0";
@@ -24,6 +25,12 @@
             }
         });
         navigator.clipboard.writeText(copy_text);
+    }
+
+    function add_to_list(e) {
+        console.log(e.srcElement.nextElementSibling.innerHTML);
+        grocery_list.push({amount: 0, unit: "", name: e.srcElement.nextElementSibling.innerHTML, origianl: e.srcElement.nextElementSibling.innerHTML});
+        grocery_list = grocery_list;
     }
 </script>
 
@@ -54,6 +61,16 @@
                     </div>
         {/each}
     </div>
+    {#if skipped.length > 0}
+        <div id="skipped">
+            <div id="skip_head">Skipped:</div>
+            {#each skipped as skip}
+                <div class="skip_row"><div class="add_skip" on:click={add_to_list}>add to list</div><div class="skip_item">{skip.original}</div></div>
+            {/each}
+        </div>
+    {:else if grocery_list.length > 0}
+        <div id="skipped">No items skipped</div>
+    {/if}
 </div>
 
 
@@ -142,9 +159,39 @@
         border-color: #555 transparent transparent transparent;
     }
 
-    /* Show the tooltip text when you mouse over the tooltip container */
     .grocery_item:hover .original {
         visibility: visible;
         opacity: 1;
+    }
+
+    #skipped {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #skip_head {
+        width: 30%;
+        /* margin: auto; */
+    }
+
+    .skip_item {
+        font-size: 12px;
+    }
+
+    .skip_row {
+        display: flex;
+        align-items: center;
+    }
+
+    .add_skip {
+        border: 2px solid #555;
+        background: #555;
+        color: white;
+        cursor: pointer;
+        font-size: 8px;
+        /* line-height: 8px; */
+        margin: 5px;
+        border-radius: 5px;
+        padding: 3px;
     }
 </style>

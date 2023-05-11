@@ -221,7 +221,7 @@
             <div id="add_recipe" on:click={()=>{input_count++}}>Add Recipe</div>
         </div>
         <div id="right_column">
-            <GroceryList {grocery_list}/>
+            <GroceryList {grocery_list} {skipped}/>
         </div>
     </div>
 </div>
