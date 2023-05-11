@@ -1,5 +1,8 @@
 <script>
     import { each } from "svelte/internal";
+    import { createEventDispatcher } from 'svelte';
+
+    const dispatch = createEventDispatcher();
 
     export let grocery_list;
     export let skipped;
@@ -18,6 +21,7 @@
                 else copy_text += "\n";
                 let first_of_sent = true;
                 Array.from(element.getElementsByTagName('input')).forEach(curr => {
+                    if (curr.value == 0 || curr.value == "") return;
                     if (!first_of_sent) copy_text += " ";
                     else first_of_sent = false;
                     copy_text += curr.value;
@@ -28,9 +32,7 @@
     }
 
     function add_to_list(e) {
-        console.log(e.srcElement.nextElementSibling.innerHTML);
-        grocery_list.push({amount: 0, unit: "", name: e.srcElement.nextElementSibling.innerHTML, origianl: e.srcElement.nextElementSibling.innerHTML});
-        grocery_list = grocery_list;
+        dispatch("update_grocery_list", {items: {amount: 0, unit: "", name: e.srcElement.nextElementSibling.innerHTML, original: [e.srcElement.nextElementSibling.innerHTML]}});
     }
 </script>
 

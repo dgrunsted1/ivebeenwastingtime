@@ -207,6 +207,11 @@
         console.log("grocery_list", grocery_list);
         console.log("test merge", (JSON.stringify(grocery_list) === JSON.stringify(tests[0]['answer'])));
     }
+
+    function update_grocery_list(e){
+        grocery_list.push(e.detail.items);
+        grocery_list = grocery_list;
+    }
 </script>
 
 
@@ -221,7 +226,7 @@
             <div id="add_recipe" on:click={()=>{input_count++}}>Add Recipe</div>
         </div>
         <div id="right_column">
-            <GroceryList {grocery_list} {skipped}/>
+            <GroceryList {grocery_list} {skipped} on:update_grocery_list={update_grocery_list}/>
         </div>
     </div>
 </div>
