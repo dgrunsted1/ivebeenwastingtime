@@ -38,14 +38,15 @@
     <div class="grocery_list">
         {#each grocery_list as item}
                     <div class="grocery_item">
+                        
                         <div class="checkmark" on:click={check_item}>O</div>
                         <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
                         <input type="text" class="unit" value={item.unit}>
-                        <input type="text" class="name" value={item.name}>
+                        <input type="text" class="name" value={item.name}> 
                         <span class="original">
                             {#each item.original as curr_original}
                                 {#if item.original.indexOf(curr_original) > 0}
-                                    ,
+                                    <br>
                                 {/if}
                                 {curr_original}
                             {/each}
@@ -107,40 +108,43 @@
         font-size: 9px;
     }
 
-    .grocery_list .original {
-        /* position: relative; */
-        top: 0;
-        /* font-size: 14px; */
-        background: #ffffff;
-        /* color: #ffffff; */
-        /* padding: 5px 8px; */
-        /* border-radius: 5px; */
-        box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
-        opacity: 0;
-        pointer-events: none;
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-
-    .grocery_list .original::before {
+    .grocery_item {
         position: relative;
+    }
+
+    .grocery_item .original {
+        visibility: hidden;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        padding: 5px 5px;
+        border-radius: 6px;
+
+        /* Position the tooltip text */
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+
+        /* Fade in tooltip */
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .grocery_item .original::after {
         content: "";
-        /* height: 8px; */
-        /* width: 8px; */
-        background: #ffffff;
-        /* bottom: -3px; */
-        /* left: 50%; */
-        transform: translate(-50%) rotate(45deg);
-        transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
     }
 
-    .grocery_list .grocery_item:hover .original {
-        top: -45px;
-        opacity: 1;
+    /* Show the tooltip text when you mouse over the tooltip container */
+    .grocery_item:hover .original {
         visibility: visible;
-        pointer-events: auto;
-    }
-
-    .grocery_list .grocery_item:hover span, .grocery_list .grocery_item:hover .original {
-        text-shadow: 0px -1px 0px rgba(0, 0, 0, 0.1);
+        opacity: 1;
     }
 </style>
