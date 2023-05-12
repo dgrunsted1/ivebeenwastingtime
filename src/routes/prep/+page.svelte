@@ -6,6 +6,7 @@
 
     let grocery_list = [];
     let skipped = [];
+    let test_mode = true;
     // let modes = ["Freestyle", "Weekly Grocery Run"];
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     // let curr_mode = modes[2];
@@ -217,7 +218,9 @@
 
 <div id="main">
     <h1>Prep Page</h1>
-    <p on:click={test_merge}>test_merge</p>
+    {#if test_mode}
+        <p class="test_btn" on:click={test_merge}>test_merge</p>
+    {/if}
     <div id="content">
         <div id="recipes">
             {#each Array(input_count) as _, index (index)}
@@ -250,7 +253,6 @@
     /* border: 3px solid black; */
     margin: 5px;
     width: 50%;
-    /* align-items: center; */
 }
 #right_column {
     /* border: 3px solid green; */
@@ -263,6 +265,22 @@
     width: 40%;
     text-align: center;
     padding:10px;
-    /* border: 3px solid blue; */
+    cursor: pointer;
+    border: 2px solid #555;
+    background: hsla(35, 39%, 22%, 0.83);
+    color: white;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.test_btn {
+    width: fit-content;
+    cursor: pointer;
+    border: 2px solid black;
+    background: red;
+    color: black;
+    margin: 5px;
+    border-radius: 8px;
+    padding: 5px;
 }
 </style>

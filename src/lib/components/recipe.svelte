@@ -280,12 +280,16 @@ function make_singular(unit) {
     unit = unit.toLowerCase();
     return (unit.substring(unit.length-1) == "s") ? unit.substring(0, unit.length-1) : unit;
 }
+
+function get_multiplier(){
+
+}
 </script>
 <div id="main">
     {#if test_mode}
-        <p on:click|preventDefault={test_process_recipe}>test process_recipe</p>
+        <p class="test_btn" on:click|preventDefault={test_process_recipe}>test process_recipe</p>
         {#each Object.entries(tests) as [key, value]}
-            <p on:click|preventDefault={() => {test_process_recipe(event, key)}}>test process_recipe set {key}</p>
+            <p class="test_btn" on:click|preventDefault={() => {test_process_recipe(event, key)}}>test process_recipe set {key}</p>
         {/each}
     {/if}
 
@@ -355,6 +359,17 @@ p {
 }
 input[type="number"] {
     width: 30px;
+}
+
+.test_btn {
+    width: fit-content;
+    cursor: pointer;
+    border: 2px solid black;
+    background: red;
+    color: black;
+    margin: 5px;
+    border-radius: 8px;
+    padding: 5px;
 }
 
 </style>

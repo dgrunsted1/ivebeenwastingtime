@@ -90,10 +90,17 @@
         flex-direction: row;
         justify-content: space-evenly;
         margin: 10px;
+        align-items: center;
     }
 
     #copy {
         cursor: pointer;
+        border: 2px solid #555;
+        background:  hsla(35, 39%, 22%, 0.83);
+        color: white;
+        margin: 5px;
+        border-radius: 8px;
+        padding: 5px;
     }
 
     .grocery_item {
@@ -133,7 +140,7 @@
 
     .grocery_item .original {
         visibility: hidden;
-        background-color: #555;
+        background-color:  hsla(35, 39%, 22%, 0.83);
         color: #fff;
         text-align: center;
         padding: 5px 5px;
@@ -187,7 +194,7 @@
 
     .add_skip {
         border: 2px solid #555;
-        background: #555;
+        background:  hsla(35, 39%, 22%, 0.83);
         color: white;
         cursor: pointer;
         font-size: 8px;
