@@ -4,7 +4,7 @@ export let index;
 import { createEventDispatcher } from 'svelte';
 
 const dispatch = createEventDispatcher();
-const test_mode = false;
+const test_mode = true;
 const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
 
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
@@ -101,7 +101,7 @@ const tests = [
             "5 ounces (about 5 cups; 142g) greens, such as baby kale, spinach, or arugula, see note"
             ], 
         answer: [
-            {amount: false, unit: false, name: false, original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
+            {amount: 1, unit: "14 ounce block", name: "firm tofu", original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
             {amount: 5, unit: "tablespoon", name: "extra-virgin olive oil", original: ["5 tablespoons (75ml) extra-virgin olive oil, divided"]},
             {amount: 0.75, unit: "ounce", name: "za'atar", original: ["3/4 ounce (3 tablespoons; 22g) za'atar, divided"]},
             {amount: 1, unit: "large", name: "grapefruit", original: ["1 large grapefruit (357g; 12.5 ounces), cut into segments, juice reserved separately"]},
@@ -133,7 +133,7 @@ const tests = [
             "2 cups fresh basil leaves",
             "Extra-virgin olive oil, for drizzling",
             "Pinch of red pepper flakes (optional)",
-            "Sea salt and freshly ground black pepper",
+            "Sea salt and freshly ground black pepper"
             ], 
         answer: [
             {amount: false, unit: false, name: false, original: ["FOR THE LEMON PEEL BROTH:"]},
@@ -155,6 +155,102 @@ const tests = [
             {amount: false, unit: false, name: false, original: ["Extra-virgin olive oil, for drizzling"]},
             {amount: false, unit: false, name: false, original: ["Pinch of red pepper flakes (optional)"]},
             {amount: false, unit: false, name: false, original: ["Sea salt and freshly ground black pepper"]},
+            false
+        ]},
+        {test: [
+            "For the Beef and Marinade:",
+            "",
+            "3/4 pound beef flank steak, sliced across the grain 1/8 inch thick",
+            "1/2 teaspoon soy sauce",
+            "1/2 teaspoon Shaoxing wine",
+            "2 teaspoons vegetable or canola oil",
+            "1/2 teaspoon cornstarch",
+            "1/2 teaspoon kosher salt",
+            "1/4 teaspoon sugar",
+            "1/4 teaspoon ground white pepper",
+            "For the Sauce:",
+            "",
+            "2 tablespoons water",
+            "1 teaspoon sesame oil",
+            "2 teaspoons oyster sauce",
+            "1 teaspoon soy sauce",
+            "1 teaspoon cornstarch",
+            "For the Stir-Fry:",
+            "",
+            "1/2 pound Chinese broccoli (gai lan or baby gai lan), cut into 3 sections on the diagonal if regular gai lan or in half on the diagonal if baby gai lan",
+            "2 tablespoons vegetable or canola oil, divided",
+            "2 whole shallots, sliced",
+            "8 cloves of garlic, chopped very coarsely",
+            "Cooked white rice, for serving",
+            ""
+            ], 
+        answer: [
+            {amount: false, unit: false, name: false, original: ["For the Beef and Marinade:"]},
+            false,
+            {amount: 0.75, unit: "pound", name: "beef flank steak", original: ["3/4 pound beef flank steak, sliced across the grain 1/8 inch thick"]},
+            {amount: 0.5, unit: "teaspoon", name: "soy sauce", original: ["1/2 teaspoon soy sauce"]},
+            {amount: 0.5, unit: "teaspoon", name: "Shaoxing wine", original: ["1/2 teaspoon Shaoxing wine"]},
+            {amount: 2, unit: "teaspoon", name: "vegetable or canola oil", original: ["2 teaspoons vegetable or canola oil"]},
+            {amount: 0.5, unit: "teaspoon", name: "cornstarch", original: ["1/2 teaspoon cornstarch"]},
+            {amount: 0.5, unit: "teaspoon", name: "kosher salt", original: ["1/2 teaspoon kosher salt"]},
+            {amount: 0.25, unit: "teaspoon", name: "sugar", original: ["1/4 teaspoon sugar"]},
+            {amount: 0.25, unit: "teaspoon", name: "ground white pepper", original: ["1/4 teaspoon ground white pepper"]},
+            {amount: false, unit: false, name: false, original: ["For the Sauce:"]},
+            false,
+            {amount: 2, unit: "tablespoon", name: "water", original: ["2 tablespoons water"]},
+            {amount: 1, unit: "teaspoon", name: "sesame oil", original: ["1 teaspoon sesame oil"]},
+            {amount: 2, unit: "teaspoon", name: "oyster sauce", original: ["2 teaspoons oyster sauce"]},
+            {amount: 1, unit: "teaspoon", name: "soy sauce", original: ["1 teaspoon soy sauce"]},
+            {amount: 1, unit: "teaspoon", name: "cornstarch", original: ["1 teaspoon cornstarch"]},
+            {amount: false, unit: false, name: false, original: ["For the Stir-Fry:"]},
+            false,
+            {amount: 0.5, unit: "pound", name: "Chinese broccoli", original: ["1/2 pound Chinese broccoli (gai lan or baby gai lan), cut into 3 sections on the diagonal if regular gai lan or in half on the diagonal if baby gai lan"]},
+            {amount: 2, unit: "tablespoon", name: "vegetable or canola oil", original: ["2 tablespoons vegetable or canola oil, divided"]},
+            {amount: 2, unit: "whole", name: "shallots", original: ["2 whole shallots, sliced"]},
+            {amount: 8, unit: "clove", name: "of garlic", original: ["8 cloves of garlic, chopped very coarsely"]},
+            {amount: false, unit: false, name: false, original: ["Cooked white rice, for serving"]},
+            false,
+            false
+        ]},
+        {test: [
+            "4 medium cloves garlic, roughly chopped",
+            "1 (1-inch) knob ginger, peeled, roughly chopped",
+            "1 to 6 green Thai chiles (to taste), roughly chopped",
+            "2 tablespoons (30ml) juice from 1 lemon, divided",
+            "Kosher salt",
+            "2 tablespoons (30ml) vegetable oil or ghee",
+            "2 teaspoons (8g) black mustard seeds",
+            "1 teaspoon (4g) whole cumin seeds",
+            "1 large onion, finely diced (about 1 1/2 cups; 300g)",
+            "1/4 teaspoon (1g) baking soda",
+            "2 teaspoons (8g) ground coriander",
+            "1/2 teaspoon (2g) freshly ground black pepper",
+            "1/2 teaspoon (2g) ground turmeric",
+            "1 1/2 teaspoons (6g) store-bought or homemade garam masala, divided",
+            "1 (14-ounce) can whole peeled tomatoes",
+            "2 (14-ounce) cans chickpeas, drained and rinsed",
+            "1 cup cilantro leaves, roughly chopped (1 ounce; 25g)",
+            ""
+            ], 
+        answer: [
+            {amount: 4, unit: "medium", name: "cloves garlic", original: ["4 medium cloves garlic, roughly chopped"]},
+            {amount: 1, unit: "whole", name: "1-inch knob ginger", original: ["1 (1-inch) knob ginger, peeled, roughly chopped"]},
+            {amount: 1, unit: "whole", name: "to 6 green Thai chile", original: ["1 to 6 green Thai chiles (to taste), roughly chopped"]},
+            {amount: 2, unit: "tablespoon", name: "juice from 1 lemon", original: ["2 tablespoons (30ml) juice from 1 lemon, divided"]},
+            {amount: false, unit: false, name: false, original: ["Kosher salt"]},
+            {amount: 2, unit: "tablespoon", name: "vegetable oil or ghee", original: ["2 tablespoons (30ml) vegetable oil or ghee"]},
+            {amount: 2, unit: "teaspoon", name: "black mustard seeds", original: ["2 teaspoons (8g) black mustard seeds"]},
+            {amount: 1, unit: "teaspoon", name: "whole cumin seeds", original: ["1 teaspoon (4g) whole cumin seeds"]},
+            {amount: 1, unit: "large", name: "onion", original: ["1 large onion, finely diced (about 1 1/2 cups; 300g)"]},
+            {amount: 0.25, unit: "teaspoon", name: "baking soda", original: ["1/4 teaspoon (1g) baking soda"]},
+            {amount: 2, unit: "teaspoon", name: "ground coriander", original: ["2 teaspoons (8g) ground coriander"]},
+            {amount: 0.5, unit: "teaspoon", name: "freshly ground black pepper", original: ["1/2 teaspoon (2g) freshly ground black pepper"]},
+            {amount: 0.5, unit: "teaspoon", name: "ground turmeric", original: ["1/2 teaspoon (2g) ground turmeric"]},
+            {amount: 1.5, unit: "teaspoon", name: "store-bought or homemade garam masala", original: ["1 1/2 teaspoons (6g) store-bought or homemade garam masala, divided"]},
+            {amount: 1, unit: "14-ounce can", name: "whole peeled tomatoe", original: ["1 (14-ounce) can whole peeled tomatoes"]},
+            {amount: 2, unit: "14-ounce can", name: "chickpea", original: ["2 (14-ounce) cans chickpeas, drained and rinsed"]},
+            {amount: 1, unit: "cup", name: "cilantro leave", original: ["1 cup cilantro leaves, roughly chopped (1 ounce; 25g)"]},
+            false,
             false
         ]}
 ];
@@ -217,9 +313,20 @@ function process_recipe(in_lines) {
             original: [in_lines[0]]
         };
     }
-    if (ingr && measurements.includes(ingr.unit)) {
-        ingr.unit = ingr.unit;
-    }else if (ingr) {
+    curr = false;
+    curr = in_lines[0].match(
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+[ -]\w+)(|[; ,] \d+\g)\) ([A-z]+) ([A-z0-9 ()/’,-.;']+)/
+    );
+    if (curr){
+        // log_match(curr, 3); 
+        ingr = {
+            amount: convert_amount(curr[1]), 
+            unit: make_singular(curr[2] + " " + curr[4]), 
+            name: trim_name(curr[5].trim()),
+            original: [in_lines[0]]
+        };
+    }
+    if (ingr && !ingr.unit.includes("can") && !ingr.unit.includes("block") && !measurements.includes(ingr.unit)) {
         ingr.name = ingr.unit+" "+ingr.name;
         ingr.unit = "whole";
     }

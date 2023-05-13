@@ -53,7 +53,7 @@
                         {amount: 3, unit: "whole", name: "lime cut into wedge", original: ["3 limes, cut into wedges"]},
                         false
                 ],[
-                        {amount: false, unit: false, name: false, original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
+                    {amount: 1, unit: "14 ounce block", name: "firm tofu", original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
                         {amount: 5, unit: "tablespoon", name: "extra-virgin olive oil", original: ["5 tablespoons (75ml) extra-virgin olive oil, divided"]},
                         {amount: 0.75, unit: "ounce", name: "za'atar", original: ["3/4 ounce (3 tablespoons; 22g) za'atar, divided"]},
                         {amount: 1, unit: "large", name: "grapefruit", original: ["1 large grapefruit (357g; 12.5 ounces), cut into segments, juice reserved separately"]},
@@ -93,7 +93,7 @@
                 {amount: 0.5, unit: "cup", name: "mascarpone or softened cream cheese", original: ["½ cup/115 grams mascarpone or softened cream cheese (see Tip)"]},
                 {amount: 0.5, unit: "cup", name: "unsalted butter", original: ["½ cup/115 grams unsalted butter (1 stick), at room temperature, plus more for greasing the pan"]},
                 {amount: 1.5, unit: "cup", name: "all-purpose flour", original: ["1½ cups/190 grams all-purpose flour"]},
-                {amount: 1.6666666666666665, unit: "tablespoon", name: "loose Earl Grey tea", original: Array},
+                {amount: 1.6666666666666665, unit: "tablespoon", name: "loose Earl Grey tea", original: ["2 teaspoons loose Earl Grey tea", "1 tablespoon loose Earl Grey tea"]},
                 {amount: 1, unit: "teaspoon", name: "baking powder", original: ["1 teaspoon baking powder"]},
                 {amount: 1, unit: "cup", name: "granulated sugar", original: ["1 cup/200 grams granulated sugar"]},
                 {amount: 2, unit: "teaspoon", name: "freshly grated orange zest", original: ["2 teaspoons freshly grated orange zest (from 1 large orange)"]},
@@ -103,7 +103,7 @@
                 {amount: 2, unit: "medium", name: "onions"},
                 {amount: 0.5, unit: "cup", name: "chopped fresh cilantro leaves and tender stems"},
                 {amount: 3, unit: "pound", name: "boneless pork shoulder"},
-                {amount: 1.1666666666666667, unit: "tablespoon", name: "kosher salt", original: Array},
+                {amount: 1.1666666666666667, unit: "tablespoon", name: "kosher salt", original: ["½ teaspoon kosher salt", "1 tablespoon (8g) kosher salt, plus more to taste;…e half of the volume or an equal amount by weight"]},
                 {amount: 1, unit: "medium", name: "orange"},
                 {amount: 6, unit: "clove", name: "garlic"},
                 {amount: 2, unit: "whole", name: "bay leaves"},
@@ -114,6 +114,7 @@
                 {amount: 24, unit: "whole", name: "corn tortillas"},
                 {amount: 1, unit: "cup", name: "crumbled queso fresco"},
                 {amount: 3, unit: "whole", name: "lime cut into wedges"},
+                {amount: 1, unit: "14 ounce block", name: "firm tofu", original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
                 {amount: 5, unit: "tablespoon", name: "extra-virgin olive oil", original: ["5 tablespoons (75ml) extra-virgin olive oil, divided"]},
                 {amount: 0.75, unit: "ounce", name: "za'atar", original: ["3/4 ounce (3 tablespoons; 22g) za'atar, divided"]},
                 {amount: 1, unit: "large", name: "grapefruit", original: ["1 large grapefruit (357g; 12.5 ounces), cut into segments, juice reserved separately"]},
@@ -144,11 +145,13 @@
 
     function merge() {
         grocery_list = [];
+        skipped = [];
         recipe_items.forEach(recipe => {
             recipe.forEach(item => {
                 if (!item) return;
                 if ((!item.amount || !item.unit || !item.name) && item.original) {
                     skipped.push(item);
+                    skipped = skipped;
                     return;
                 }
                 let match = false;
