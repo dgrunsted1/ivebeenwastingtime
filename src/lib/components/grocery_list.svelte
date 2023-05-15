@@ -6,10 +6,6 @@
 
     export let grocery_list;
     export let skipped;
-    
-    function check_item(e) {
-        e.srcElement.innerHTML = (e.srcElement.innerHTML == "0") ? "O" : "0";
-    }
 
     const copy_to_clipboard = () => {
         let copy_text = "";
@@ -48,7 +44,7 @@
         {#each grocery_list as item}
                     <div class="grocery_item">
                         
-                        <div class="checkmark" on:click={check_item}>O</div>
+                        <div class="checks"><input type="checkbox" id="{item.name}"></div>
                         <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
                         <input type="text" class="unit" value={item.unit}>
                         <input type="text" class="name" value={item.name}> 
@@ -94,7 +90,7 @@
     }
 
     #copy {
-        cursor: pointer;
+        cursor: copy;
         border: 2px solid #555;
         background:  hsla(35, 39%, 22%, 0.83);
         color: white;
@@ -123,11 +119,6 @@
         width: 75%;
         margin: auto;
 
-    }
-    .checkmark {
-        width: 5px;
-        margin: auto;
-        cursor: pointer;
     }
 
     .original {
@@ -197,10 +188,59 @@
         background:  hsla(35, 39%, 22%, 0.83);
         color: white;
         cursor: pointer;
-        font-size: 8px;
+        font-size: 10px;
         /* line-height: 8px; */
-        margin: 5px;
+        margin: 4px 5px;
         border-radius: 5px;
-        padding: 3px;
+        padding: 0 5px;
+    }
+
+     .checks{
+        background-color: #fbe4cb;
+        border: 2px solid hsla(35, 39%, 22%, 0.83);
+        border-radius: 30px;
+        box-shadow: hsla(35, 39%, 22%, 0.83) 4px 4px 0 0;
+        color: hsla(35, 39%, 22%, 0.83);
+        cursor: initial;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 0 10px;
+        line-height: 30px;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        padding: 2px;
+        border-radius: 50%;
+        margin: 2px 0;
+    }
+
+    input[type=checkbox] {
+        margin: 2px;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: #fbe4cb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"]::before {
+        content: "";
+        width: .5em;
+        height: .5em;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        background-color: black;
+        transform-origin: bottom left;
+        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+    }
+
+    input[type="checkbox"]:checked::before {
+        transform: scale(1);
+
     }
 </style>

@@ -1,10 +1,11 @@
 header {
-    height: 2em; 
-    border-bottom: 1px solid black;
+    height: 4em; 
+    /* border-bottom: 1px solid black; */
     background-color: hsla(35, 39%, 22%, 0.83);
     font-variant: small-caps;
     display: flex;
-    justify-content: space-around;
+    flex-direction: column;
+    /* justify-content: space-around; */
     align-items: center;
 }
 a {
@@ -13,8 +14,20 @@ a {
     font-weight: 900;
 }
 
+#web_title {
+    color: #fbe4cb;
+    margin:8px;
+}
+
+#menu {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
 body {
     font-family: "Lucida Sans Typewriter", "Lucida Console", monaco, "Bitstream Vera Sans Mono", monospace;
     background-color: #fcf8f4;
     margin: 0;
+    font-variant: small-caps;
 }

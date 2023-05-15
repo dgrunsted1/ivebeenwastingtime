@@ -5,11 +5,13 @@
 		<link rel="stylesheet" href="/src/lib/style/header.css">
 	</head>
     <header>
-		<a href="/">Home</a>
-		<a href="/upload">Upload</a>
-		<a href="/gallery">Gallery</a>
-		<a href="/groceries">Groceries</a>
-		<a href="/prep">prep</a>
+		<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
+		<div id="menu">
+			<a href="/upload">Upload</a>
+			<a href="/gallery">Gallery</a>
+			<a href="/groceries">Groceries</a>
+			<a href="/prep">prep</a>
+		</div>
 	</header>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>

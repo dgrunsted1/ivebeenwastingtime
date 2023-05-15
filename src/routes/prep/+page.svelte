@@ -6,11 +6,11 @@
 
     let grocery_list = [];
     let skipped = [];
-    let test_mode = true;
+    let test_mode = false;
     // let modes = ["Freestyle", "Weekly Grocery Run"];
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     // let curr_mode = modes[2];
-    $: input_count = 2;
+    $: input_count = (test_mode) ? 1 : 2;
     let recipe_items = [];
 
 
@@ -213,21 +213,30 @@
     }
 
     function update_grocery_list(e){
+        console.log(e.detail.items.original);
         grocery_list.push(e.detail.items);
+        skipped = skipped.filter((curr) => {
+            console.log(curr.original);
+        console.log(e.detail.items.original);
+
+            return curr.original[0] != e.detail.items.original[0];
+        });
+        skipped = skipped;
+        console.log(skipped);
         grocery_list = grocery_list;
     }
 </script>
 
 
 <div id="main">
-    <h1>Prep Page</h1>
+    <h1>PREP</h1>
     {#if test_mode}
         <p class="test_btn" on:click={test_merge}>test_merge</p>
     {/if}
     <div id="content">
         <div id="recipes">
             {#each Array(input_count) as _, index (index)}
-                <Recipe name="Recipe {index}" on:recipe_edited={update_list} {index}/>
+                <Recipe name="Recipe {index}" on:recipe_edited={update_list} {index} {test_mode}/>
             {/each}
             <div id="add_recipe" on:click={()=>{input_count++}}>Add Recipe</div>
         </div>
@@ -285,5 +294,10 @@
     margin: 5px;
     border-radius: 8px;
     padding: 5px;
+}
+
+h1 {
+    font-variant: normal;
+    margin: 30px 150px;
 }
 </style>

@@ -4,7 +4,7 @@ export let index;
 import { createEventDispatcher } from 'svelte';
 
 const dispatch = createEventDispatcher();
-const test_mode = true;
+export let test_mode;
 const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
 
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
@@ -404,16 +404,16 @@ function get_multiplier(){
     <div id="servings">
         <div class="seperated">
             <label for="recipe_servings">recipe servings</label>
-            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value=1 on:input|preventDefault={forward_input} min=1>
+            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value=1 on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
         </div>
         <div class="seperated">
             <label for="desired_servings">desired servings</label>
-            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value=1 on:input|preventDefault={forward_input} min=1>
+            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value=1 on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
         </div>
     </div>
     <div id="title">
         <label for="recipe" id="label">{name}:</label>
-        <textarea id="recipe" cols="30" rows="10" on:input|preventDefault={forward_input}></textarea>
+        <textarea id="recipe" cols="30" rows="10" on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input}></textarea>
     </div>
 </div>
 
