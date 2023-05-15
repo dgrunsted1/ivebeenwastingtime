@@ -12,12 +12,12 @@
         let first = true;
         let copy_list = document.getElementsByClassName("grocery_item");
         Array.from(copy_list).forEach(function (element) {
-            if (element.getElementsByTagName("div")[0].innerHTML == "O"){
+            if (!element.getElementsByTagName('input')[0].checked){
                 if (first) first = false;
                 else copy_text += "\n";
                 let first_of_sent = true;
                 Array.from(element.getElementsByTagName('input')).forEach(curr => {
-                    if (curr.value == 0 || curr.value == "") return;
+                    if (curr.type == "checkbox") return;
                     if (!first_of_sent) copy_text += " ";
                     else first_of_sent = false;
                     copy_text += curr.value;
@@ -44,7 +44,7 @@
         {#each grocery_list as item}
                     <div class="grocery_item">
                         
-                        <div class="checks"><input type="checkbox" id="{item.name}"></div>
+                        <div class="checks"><input type="checkbox" class="checkbox" id="{item.name}"></div>
                         <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
                         <input type="text" class="unit" value={item.unit}>
                         <input type="text" class="name" value={item.name}> 
@@ -244,3 +244,4 @@
 
     }
 </style>
+

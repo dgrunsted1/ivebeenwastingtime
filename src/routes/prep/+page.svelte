@@ -137,8 +137,10 @@
                 {amount: 2, unit: "cup", name: "fresh basil leaves", original: ["2 cups fresh basil leaves"]}
         ]}
     ];
+
     
     function update_list(e) {
+
         recipe_items[e.detail.index] = e.detail.items;
         merge();
     }
