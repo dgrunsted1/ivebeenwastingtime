@@ -4,7 +4,7 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="/src/lib/style/header.css">
 	</head>
-    <header>
+    <!-- <header>
 		<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
 		<div id="menu">
 			<a href="/upload">Upload</a>
@@ -12,7 +12,7 @@
 			<a href="/groceries">Groceries</a>
 			<a href="/prep">prep</a>
 		</div>
-	</header>
+	</header> -->
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>
 	</body>

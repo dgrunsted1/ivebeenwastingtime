@@ -1,19 +1,21 @@
 <script>
-
-
+export let data;
 </script>
 
 <div id="main">
-    <div id="hero">
-        <!-- <img src={image} width="1663.5" height="1146.5" object-fit="cover" alt=""> -->
+    <div id="hero" style="background-image: url('{data.url}')">
+        <div id="web_title">
+            ivebeenwastingtime
+        </div>
+        <div class="secondary">
+            <div id="left_side">
+            </div>
+            <div id="right_side">
+            </div> 
+        </div>
+        
     </div>
     <div id="content">
-        <div id="left_side">
-content here
-        </div>
-        <div id="right_side">
-            side b
-        </div>
     </div>
     
 </div>
@@ -31,22 +33,33 @@ content here
     }
 
     #left_side {
-        border: 2px solid black;
+        width: 50%;
     }
 
     #right_side {
-        border: 2px solid black;
+        width: 50%;
     }
 
     #hero {
         display: flex;
+        flex-direction: column;
+        position: relative;
         width: 100%;
-        height: 97vh;
+        height: 100vh;
         margin: auto;
-        background-image: url("src/lib/imgs/0067.jpg");
         background-size:     cover;
         background-repeat:   no-repeat;
         background-position: center center;
+        z-index: 1;
+    }
+
+    #web_title {
+        /* display: flex; */
+        margin: auto;
+        /* width:20%; */
+        color: black;
+        font-size: 45px;
+        font-weight: 900;
     }
     
 
