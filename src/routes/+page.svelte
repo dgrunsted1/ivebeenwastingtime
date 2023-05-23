@@ -16,6 +16,14 @@ export let data;
         
     </div>
     <div id="content">
+        <div class="row">
+            <a href="/gallery">gallery</a>
+            <p>checkout my Gallery of photos</p>
+        </div>
+        <div class="row">
+            <p>Easily create grocery lists from any recipes. </p>
+            <a href="/prep">prep</a>
+        </div>
     </div>
     
 </div>
@@ -61,6 +69,23 @@ export let data;
         font-size: 45px;
         font-weight: 900;
     }
+
+    .row {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        margin: 100px;
+    }
+     .row p {
+        font-size: 2em;
+     }
+
+     .row a {
+        font-size: 2em;
+         
+     }
+
     
 
 </style>
