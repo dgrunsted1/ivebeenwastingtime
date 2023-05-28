@@ -1,21 +1,15 @@
 
 
 <script>
+import PocketBase from 'pocketbase';
+
+const pb = new PocketBase('http://db.ivebeenwastingtime.com');
 export let data;
-import AWS from 'aws-sdk';
-global = window;
-const s3 = new AWS.S3({
-  accessKeyId: process.env.LINODE_S3_ACCESS_KEY,
-  secretAccessKey: process.env.LINODE_S3_SECRET_KEY,
-  endpoint: 'https://<your-linode-region>.linodeobjects.com',
-});
-console.log("data", data);
+console.log({data});
 
 
 
-
-
-let albums = ['Los Cabos', 'Santa Barbara', 'Italy'];
+let albums = data.albums;
 let curr_album = "";
 let new_album = "";
 
@@ -37,30 +31,26 @@ const update_album = (selected_album) => {
     document.getElementById("dropdown").checked = false;
 }
 
-const update_image_upload = () => {
+const update_image_upload = async () => {
     const fileList = event.target.files;
-    console.log(fileList);
-    // upload to s3 temporary fole
-    //show img element on page using src
+
+    for (let file of fileList) {
+        if (file.size > 5242880){
+            console.log(`${file.name} is too big`);
+        }else {
+            document.getElementById("submit").value = `uploading ${file.name}`;
+            let result = await uploadImage(file);
+        }
+    }
+    alert("done uploading!");
 }
 
 async function uploadImage(file) {
-  const params = {
-    Bucket: '<your-linode-bucket-name>',
-    Key: file.name,
-    Body: file,
-    ContentType: file.type,
-  };
-
-  await s3.putObject(params).promise();
-
-  const url = s3.getSignedUrl('getObject', {
-    Bucket: '<your-linode-bucket-name>',
-    Key: file.name,
-    Expires: 3600, // URL expires in 1 hour
-  });
-
-  return url;
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append("album", curr_album);
+    const record = await pb.collection('photos').create(formData);
+    return record;
 }
 
 </script>
@@ -80,7 +70,7 @@ async function uploadImage(file) {
         </div>
         <div class="row" id="new_album_input"><input type="text" name="album" id="album" on:change={update_album} bind:value={new_album}></div>
         <div class="row" id="photo"><input type="file" name="photo" id="photo" on:change={update_image_upload} multiple><p>Drag your files here or click to browse</p></div>
-        <div class="row" id="submit"><input type="submit" value="upload" multiple></div>    
+        <div class="row" id="submit"><input id="submit" type="submit" value="upload" multiple></div>    
     </form>
 </div>
 

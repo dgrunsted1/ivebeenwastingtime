@@ -6,7 +6,7 @@
 <div id="main">
     {#each data.photos as url}
         <div class="photo" >
-            <img src={url}>
+            <img src={url} loading="lazy">
         </div>
     {/each}
 </div>
@@ -19,9 +19,10 @@
         justify-content: space-around;
         align-items: center;
         align-content: flex-start;
+        margin-top: 2em;
     }
     .photo {
-        width: 20%;
+        width: 500px;
         /* width: 15%; */
         /* height: 15%; */
         /* background-size:     cover;
@@ -29,6 +30,7 @@
         background-position: center center; */
     }
      img {
+        /* height: 30%; */
         width: 100%;
      }
 </style>

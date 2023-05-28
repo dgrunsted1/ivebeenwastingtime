@@ -21,7 +21,7 @@ export let data;
             <p>checkout my Gallery of photos</p>
         </div>
         <div class="row">
-            <p>Easily create grocery lists from any recipes. </p>
+            <p>Easily create grocery lists from recipes you find on the internet.</p>
             <a href="/prep">prep</a>
         </div>
     </div>
@@ -53,7 +53,7 @@ export let data;
         flex-direction: column;
         position: relative;
         width: 100%;
-        height: 100vh;
+        height: 100svh;
         margin: auto;
         background-size:     cover;
         background-repeat:   no-repeat;
@@ -62,12 +62,11 @@ export let data;
     }
 
     #web_title {
-        /* display: flex; */
         margin: auto;
-        /* width:20%; */
-        color: black;
+        color: white;
         font-size: 45px;
         font-weight: 900;
+        cursor: default;
     }
 
     .row {
