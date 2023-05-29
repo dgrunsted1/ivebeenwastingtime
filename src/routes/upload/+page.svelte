@@ -33,16 +33,27 @@ const update_album = (selected_album) => {
 
 const update_image_upload = async () => {
     const fileList = event.target.files;
-
+    let too_big = [];
+    let success_cnt = 0;
     for (let file of fileList) {
         if (file.size > 5242880){
             console.log(`${file.name} is too big`);
+            too_big.push(file.name);
         }else {
-            document.getElementById("submit").value = `uploading ${file.name}`;
+            document.getElementById("status").innerHTML += `<p>uploading ${file.name}</p>`;
             let result = await uploadImage(file);
+            if (result.id) success_cnt++;
         }
     }
-    alert("done uploading!");
+    document.getElementById("status").innerHTML = `<p>uploaded ${success_cnt}/${fileList.length} successfully</p>`;
+    let first = true;
+    for (let curr of too_big){
+        if (first){
+            document.getElementById("status").innerHTML += `<p>These files were too big:</p>`;
+            first = false;
+        }
+        document.getElementById("status").innerHTML += `<p>${curr}</p>`;
+    }
 }
 
 async function uploadImage(file) {
@@ -72,6 +83,8 @@ async function uploadImage(file) {
         <div class="row" id="photo"><input type="file" name="photo" id="photo" on:change={update_image_upload} multiple><p>Drag your files here or click to browse</p></div>
         <div class="row" id="submit"><input id="submit" type="submit" value="upload" multiple></div>    
     </form>
+    <div id="status">
+    </div>
 </div>
 
 
@@ -311,7 +324,11 @@ async function uploadImage(file) {
         max-width: 90%;
     }
 
-
+    .status p{
+        margin: auto;
+        width: 80%;
+        text-align: center;
+    }
 
     
 
