@@ -5,11 +5,11 @@ import PocketBase from 'pocketbase';
 export async function load() {
     const pb = new PocketBase('http://db.ivebeenwastingtime.com');
 
-    let photos = await pb.collection('photos').getList(1, 50, {
+    let photos = await pb.collection('photos').getFullList({
         fields: 'album,id,file'
     }); 
     let output = [];
-    for (let photo of photos.items){
+    for (let photo of photos){
         output.push(`http://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
     }
     console.log(photos);

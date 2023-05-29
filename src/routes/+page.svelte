@@ -3,7 +3,7 @@ export let data;
 </script>
 
 <div id="main">
-    <div id="hero" style="background-image: url('{data.url}')">
+    <div id="hero" style="background-image: url('{data.hero_url}')">
         <div id="web_title">
             ivebeenwastingtime
         </div>
