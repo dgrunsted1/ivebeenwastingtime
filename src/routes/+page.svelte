@@ -85,6 +85,11 @@ export let data;
          
      }
 
+oo     @media (max-width: 600px) {
+        #web_title {
+            font-size: 2em;
+        }
+    }
     
 
 </style>
