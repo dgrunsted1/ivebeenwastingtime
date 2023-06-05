@@ -6,7 +6,7 @@
 
     let grocery_list = [];
     let skipped = [];
-    let test_mode = true;
+    let test_mode = false;
     // let modes = ["Freestyle", "Weekly Grocery Run"];
     let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     // let curr_mode = modes[2];
@@ -166,7 +166,10 @@
                     });
                 }
                 if (match && !(["small", "medium", "large"].includes(match.unit) ^ ["small", "medium", "large"].includes(item.unit))
-                                && !(match.unit == "clove" ^ item.unit == "clove")) {
+                                && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
+                    console.log("merging");
+                    console.log(match.amount+" "+match.unit+" "+match.name);
+                    console.log(item.amount+" "+item.unit+" "+item.name);
                     let tmp = { amount: 0, unit: "", name: "", original: []};
                     tmp.original = tmp.original.concat(match.original, item.original);
                     if (match.unit != item.unit) {
@@ -215,16 +218,11 @@
     }
 
     function update_grocery_list(e){
-        console.log(e.detail.items.original);
         grocery_list.push(e.detail.items);
         skipped = skipped.filter((curr) => {
-            console.log(curr.original);
-        console.log(e.detail.items.original);
-
             return curr.original[0] != e.detail.items.original[0];
         });
         skipped = skipped;
-        console.log(skipped);
         grocery_list = grocery_list;
     }
 </script>

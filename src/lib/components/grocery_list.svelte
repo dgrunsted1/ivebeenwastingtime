@@ -30,6 +30,10 @@
     function add_to_list(e) {
         dispatch("update_grocery_list", {items: {amount: 0, unit: "", name: e.srcElement.nextElementSibling.innerHTML, original: [e.srcElement.nextElementSibling.innerHTML]}});
     }
+    
+    function check_item(){
+        event.target.firstChild.checked = true;
+    }
 </script>
 
 <div id="list">
@@ -44,7 +48,7 @@
         {#each grocery_list as item}
                     <div class="grocery_item">
                         
-                        <div class="checks"><input type="checkbox" class="checkbox" id="{item.name}"></div>
+                        <div class="checks" on:click={check_item}><input type="checkbox" class="checkbox" id="{item.name}"></div>
                         <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
                         <input type="text" class="unit" value={item.unit}>
                         <input type="text" class="name" value={item.name}> 
@@ -215,6 +219,7 @@
         padding: 2px;
         border-radius: 50%;
         margin: 2px 0;
+        cursor: pointer;
     }
 
     input[type=checkbox] {

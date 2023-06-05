@@ -6,6 +6,7 @@ import { createEventDispatcher } from 'svelte';
 const dispatch = createEventDispatcher();
 export let test_mode;
 const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
+let multiplier = 1;
 
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
                     "⅖": .4, "⅗": .6, "⅘": .8, "⅙": .166667, "⅚": .833333, "⅛": .125, "⅜": .375, "⅝": .625, "⅞": .875};
@@ -258,7 +259,8 @@ const tests = [
 
 
 function forward_input(e) {
-    let items = process_recipe(e.data.split("\n"));
+    multiplier = get_multiplier(e);
+    let items = process_recipe(e.srcElement.value.split("\n"));
 	dispatch('recipe_edited', {
         items: items, 
         index: index
@@ -276,7 +278,7 @@ function process_recipe(in_lines) {
     let ingr = false;
     
     let curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)[, | ]([A-z0-9 ()/’,-.ñ;']+)/ 
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)[, | ]([A-z0-9 ()/’,-.ñ;è']+)/ 
     );
     if (curr){
         // log_match(curr, 1);
@@ -336,16 +338,16 @@ function process_recipe(in_lines) {
 
 function convert_amount(in_amount) {
     if (in_amount.match(/^[\u00BC-\u00BE\u2150-\u215E]/)){
-        return conv_frac[in_amount];
+        return conv_frac[in_amount] * multiplier;
     } else if (in_amount.match(/\d[\u00BC-\u00BE\u2150-\u215E]/)) {
-        return parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)];
+        return (parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)]) * multiplier;
     } else if (in_amount.match(/^\d\/\d/)) {
-        return eval(in_amount);
+        return eval(in_amount) * multiplier;
     } else if (in_amount.match(/\d \d\/\d/)) {
         let tmp = in_amount.split(" ");
-        return parseInt(tmp[0]) + eval(tmp[1]);
+        return parseInt(tmp[0]) + eval(tmp[1]) * multiplier;
     } else {
-        return parseFloat(in_amount);
+        return parseFloat(in_amount) * multiplier;
     }
 }
 
@@ -388,15 +390,18 @@ function make_singular(unit) {
     return (unit.substring(unit.length-1) == "s") ? unit.substring(0, unit.length-1) : unit;
 }
 
-function get_multiplier(){
-
+function get_multiplier(e){
+    let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
+    let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
+    console.log(desired_servings / servings_in_recipe);
+    return desired_servings / servings_in_recipe;
 }
 </script>
 <div id="main">
     {#if test_mode}
         <p class="test_btn" on:click|preventDefault={test_process_recipe}>test process_recipe</p>
         {#each Object.entries(tests) as [key, value]}
-            <p class="test_btn" on:click|preventDefault={() => {test_process_recipe(event, key)}}>test process_recipe set {key}</p>
+          <p class="test_btn" on:click|preventDefault={() => {test_process_recipe(event, key)}}>test process_recipe set {key}</p>
         {/each}
     {/if}
 
