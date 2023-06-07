@@ -3,7 +3,6 @@
 <script>
 import { currentUser, pb } from '/src/lib/pocketbase';
 export let data;
-console.log({data});
 
 
 
@@ -35,7 +34,6 @@ const update_image_upload = async () => {
     let success_cnt = 0;
     for (let file of fileList) {
         if (file.size > 5242880){
-            console.log(`${file.name} is too big`);
             too_big.push(file.name);
         }else {
             document.getElementById("status").innerHTML += `<p>uploading ${file.name}</p>`;

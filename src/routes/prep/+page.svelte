@@ -210,7 +210,6 @@
     }
 
     function test_merge() {
-        console.log(tests[0].test);
         recipe_items = tests[0].test;
         merge();
         console.log("grocery_list", grocery_list);

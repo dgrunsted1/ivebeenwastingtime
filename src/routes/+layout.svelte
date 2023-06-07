@@ -1,13 +1,8 @@
 	<script>
 		import { page } from '$app/stores';  
-		console.log("layout 1");
 		import { currentUser, pb } from '/src/lib/pocketbase.js';
-		console.log("layout 2");
-		if (currentUser) console.log(1, {currentUser});
-		console.log({pb});
 
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
-		console.log("layout 3");
 
 	</script>
 	

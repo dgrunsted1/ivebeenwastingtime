@@ -393,7 +393,6 @@ function make_singular(unit) {
 function get_multiplier(e){
     let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
     let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
-    console.log(desired_servings / servings_in_recipe);
     return desired_servings / servings_in_recipe;
 }
 </script>
