@@ -1,9 +1,8 @@
 
-import PocketBase from 'pocketbase';
+import { currentUser, pb } from '/src/lib/pocketbase';
 
 
 export async function load() {
-  const pb = new PocketBase('http://db.ivebeenwastingtime.com');
   const records = await pb.collection('photos').getList(1, 50, {
     fields: 'album'
   });

@@ -1,9 +1,7 @@
 
 
 <script>
-import PocketBase from 'pocketbase';
-
-const pb = new PocketBase('http://db.ivebeenwastingtime.com');
+import { currentUser, pb } from '/src/lib/pocketbase';
 export let data;
 console.log({data});
 

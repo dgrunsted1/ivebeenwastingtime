@@ -1,9 +1,8 @@
-import PocketBase from 'pocketbase';
+import { currentUser, pb } from '/src/lib/pocketbase';
 
 
 /** @type {import('./$types').PageLoad} */
 export async function load() {
-    const pb = new PocketBase('http://db.ivebeenwastingtime.com');
 
     let photos = await pb.collection('photos').getFullList({
         fields: 'album,id,file'

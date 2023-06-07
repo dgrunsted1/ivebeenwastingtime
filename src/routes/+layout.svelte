@@ -1,6 +1,14 @@
 	<script>
 		import { page } from '$app/stores';  
+		console.log("layout 1");
+		import { currentUser, pb } from '/src/lib/pocketbase.js';
+		console.log("layout 2");
+		if (currentUser) console.log(1, {currentUser});
+		console.log({pb});
+
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
+		console.log("layout 3");
+
 	</script>
 	
 	<head>
@@ -9,17 +17,18 @@
 		<meta name="viewport" content="width=device-width" />
 		<link rel="stylesheet" href="/src/lib/style/header.css">
 	</head>
-	{#if !is_homepage}
+	
 		<header>
-			<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
-			<!-- <div id="menu">
-				<a href="/upload">Upload</a>
-				<a href="/gallery">Gallery</a>
-				<a href="/groceries">Groceries</a>
-				<a href="/prep">prep</a>
-			</div> -->
+			{#if !is_homepage}
+				<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
+			{/if}
+			{#if currentUser}
+				<div id="menu">
+					<a href="/lib/components/login.svelte">login</a>
+				</div>
+			{/if}
 		</header>
-	{/if}
+	
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents"><slot></slot></div>
 	</body>
