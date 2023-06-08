@@ -36,11 +36,7 @@ header a {
     margin:8px;
 }
 
-#menu {
-    width: 100%;
-    display: flex;
-    justify-content: space-around;
-}
+
 
 body {
     /* font-family: "Lucida Sans Typewriter", "Lucida Console", monaco, "Bitstream Vera Sans Mono", monospace; */
