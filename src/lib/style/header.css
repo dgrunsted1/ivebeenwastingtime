@@ -23,7 +23,7 @@ header {
 }
 
 header a {
-    color: rgb(95,50,125);
+    color: #5f327d;
     /* color: white; */
     text-decoration: none;
     font-weight: 900;
@@ -34,6 +34,12 @@ header a {
 #web_title {
     color: #fbe4cb;
     margin:8px;
+}
+
+#menu {
+    position: absolute;
+    right: 0;
+    margin: .5em;
 }
 
 

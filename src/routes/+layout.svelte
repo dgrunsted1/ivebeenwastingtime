@@ -1,6 +1,6 @@
 	<script>
 		import { page } from '$app/stores';  
-		import { currentUser, pb } from '/src/lib/pocketbase.js';
+		import { currentUser, pb, signOut } from '/src/lib/pocketbase.js';
 
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
 
@@ -17,11 +17,13 @@
 		{#if !is_homepage}
 			<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
 		{/if}
-		{#if currentUser}
-			<div id="menu">
-				<a href="login">login</a>
-			</div>
+		<div id="menu">
+		{#if !$currentUser}
+			<a href="login">login</a>
+		{:else}
+			<div on:click={signOut}>logout</div>
 		{/if}
+	</div>
 	</header>
 	
 	<body data-sveltekit-preload-data="hover">

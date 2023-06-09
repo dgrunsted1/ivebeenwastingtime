@@ -5,21 +5,37 @@
     let password;
     let name;
     let email;
-  
+
     async function login() {
       const user = await pb.collection('users').authWithPassword(username, password);
-      console.log({user});
+    //   console.log({user});
+    //   currentUser.set(user);
+      console.log({currentUser});
+      history.back();
     }
   
     async function signUp() {
-    const data = {
-        "username": username,
-        "password": password,
-        "passwordConfirm": password,
-        "name":name,
-        "email": email,
-        "verified": false
-    };  
+        //todo show additional elkement shen signing up
+        if (!name && !email){
+            let elements = document.getElementsByClassName('signup');
+            console.log(elements);
+            for (let curr in elements){
+                console.log(curr);
+                elements[curr].style.display = 'block';
+            }
+            // elements.forEach((curr) => {
+            //     curr.style.display = 'flex';
+            // });
+            return;
+        }
+        const data = {
+            "username": username,
+            "password": password,
+            "passwordConfirm": password,
+            "name":name,
+            "email": email,
+            "verified": false
+        };  
       try {
         const createdUser = await pb.collection('users').create(data);
         await login();
@@ -32,6 +48,7 @@
         data.passwordConfirm = data.password;
         try {
             const createdUser = await pb.collection('users').create(data);
+            await login();
         } catch (err) {
             console.error("sign up", err);
         }
@@ -39,14 +56,15 @@
     }
   
     function signOut() {
+        console.log("sign out");
       pb.authStore.clear();
     }
   console.log({currentUser});
   </script>
   
-  {#if currentUser.username}
+  {#if $currentUser}
     <p>
-      Signed in as {currentUser.username} 
+      Signed in as {$currentUser.username} 
       <button on:click={signOut}>Sign Out</button>
     </p>
   {:else}
@@ -64,12 +82,14 @@
       />
 
       <input 
+        class="signup"
         placeholder="email" 
         type="text" 
         bind:value={email} 
       />
 
       <input 
+        class="signup"
         placeholder="name" 
         type="text" 
         bind:value={name} 
@@ -82,8 +102,35 @@
 
 
   <style>
-    form {
-        margin-top: 25px;
+    form{
+        margin: auto;
+        margin-top: 25vh;
         display: flex;
+        flex-direction: column;
+        max-width: 400px;
+    }
+
+    p {
+        margin: auto;
+        margin-top: 25vh;
+        display: flex;
+        flex-direction: column;
+        /* max-width: 400px; */
+        
+    }
+
+    .signup {
+        display: none;
+    }
+
+    input, button {
+        margin: 10px;
+        /* line-height: 2em; */
+        font-size: 1.5em;
+    }
+
+    button {
+        width: fit-content;
+        margin: 7px auto;
     }
 </style>
