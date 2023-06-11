@@ -32,7 +32,8 @@
     }
     
     function check_item(){
-        event.target.firstChild.checked = true;
+        if (event.target.firstChild.checked) event.target.firstChild.checked = false;
+        else event.target.firstChild.checked = true;
     }
 </script>
 
@@ -48,7 +49,7 @@
         {#each grocery_list as item}
                     <div class="grocery_item">
                         
-                        <div class="checks" on:click={check_item}><input type="checkbox" class="checkbox" id="{item.name}"></div>
+                        <div class="checks" on:click|self={check_item}><input type="checkbox" class="checkbox" id="{item.name}"></div>
                         <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
                         <input type="text" class="unit" value={item.unit}>
                         <input type="text" class="name" value={item.name}> 

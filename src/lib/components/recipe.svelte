@@ -269,6 +269,11 @@ function forward_input(e) {
 
 function process_recipe(in_lines) {
     if (in_lines[0] == null) return false;
+    
+    in_lines[0] = in_lines[0].replace(
+        /^(\*)([A-z0-9 ()/’,-.ñ;è'\t]+)/,
+        "$2"
+    ).trim();
 
     in_lines[0] = in_lines[0].replace(
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d)([A-z])/,
@@ -391,8 +396,8 @@ function make_singular(unit) {
 }
 
 function get_multiplier(e){
-    let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
-    let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
+    let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
+    let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
     return desired_servings / servings_in_recipe;
 }
 </script>
