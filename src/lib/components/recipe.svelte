@@ -281,10 +281,12 @@ function process_recipe(in_lines) {
     );
     
     let ingr = false;
-    
+
     let curr = in_lines[0].match(
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)[, | ]([A-z0-9 ()/’,-.ñ;è']+)/ 
     );
+    //  6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved
+    //  1 medium onion, thinly sliced (about 6 ounces; 170g)
     if (curr){
         // log_match(curr, 1);
         ingr = {
@@ -298,6 +300,8 @@ function process_recipe(in_lines) {
     curr = in_lines[0].match(
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+)\/(\d+) ([A-z]+) ([A-z0-9 ()/’,-.;']+)/
     );
+    //  1 cup/200 grams granulated sugar
+    //  ¼ cup/30 grams confectioners’ sugar
     if (curr){
         // log_match(curr, 2);      
         ingr = {
@@ -311,6 +315,9 @@ function process_recipe(in_lines) {
     curr = in_lines[0].match(
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+) (\(\w+\)) ([A-z0-9 ()/’,-.;']+)/
     );
+    //  amount unit (something in parenthasis) name
+    //  1 tablespoon (15ml) vegetable oil
+    //  1 1/4 cup (60ml) vegetable oil
     if (curr){
         // log_match(curr, 3);      
         ingr = {
@@ -322,10 +329,12 @@ function process_recipe(in_lines) {
     }
     curr = false;
     curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+[ -]\w+)(|[; ,] \d+\g)\) ([A-z]+) ([A-z0-9 ()/’,-.;']+)/
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+[ -]\w+)(|[; ,] \d+\w+)\) ([A-z]+) ([A-z0-9 ()/’,-.;']+)/
     );
+    //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
+    //  1 (1-inch) knob ginger, peeled, roughly chopped
     if (curr){
-        // log_match(curr, 3); 
+        // log_match(curr, 4); 
         ingr = {
             amount: convert_amount(curr[1]), 
             unit: make_singular(curr[2] + " " + curr[4]), 
@@ -378,7 +387,14 @@ function test_process_recipe(event, test_to_run = -1){
         let i = 0;
         tests.forEach(curr => {
             let answer = process_recipe(curr['test']);
-            // console.log("answer", answer);
+            let ans_len = answer.length;
+            let test_ans_len = curr['answer'].length;
+            if (ans_len != test_ans_len) console.log("test "+i+" lengths do not match", (ans_len - test_ans_len));
+            for (let j = 0; j < ans_len; j++){
+                if (answer[j].amount !== curr['answer'][j].amount) console.log("test "+i+" amounts do not match", `answer[j].amount -> ${answer[j].amount} | curr['answer']${j}.amount -> ${curr['answer'][j].amount}`);
+                if (answer[j].unjt !== curr['answer'][j].unjt) console.log("test "+i+" unjts do not match", `answer[j].unjt -> ${answer[j].unjt} | curr['answer'][${j}].unjt -> ${curr['answer'][j].unjt}`);
+                if (answer[j].name !== curr['answer'][j].name) console.log("test "+i+" names do not match", `answer[j].name -> ${answer[j].name} | curr['answer']${j}.name -> ${curr['answer'][j].name}`);
+            }
             console.log("test "+i, (JSON.stringify(answer) === JSON.stringify(curr['answer'])));
             i++;
         });
@@ -396,6 +412,7 @@ function make_singular(unit) {
 }
 
 function get_multiplier(e){
+    console.log(e.target.parentElement.previousElementSibling.previousElementSibling.children[0]);
     let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
     let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
     return desired_servings / servings_in_recipe;
@@ -420,6 +437,10 @@ function get_multiplier(e){
             <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value=1 on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
         </div>
     </div>
+    <div class="link">
+        <label class="link_label">Link to recipe</label>
+        <input type="text" class="link_input"/>
+    </div>
     <div id="title">
         <label for="recipe" id="label">{name}:</label>
         <textarea id="recipe" cols="30" rows="10" on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input}></textarea>
@@ -441,10 +462,19 @@ p {
     border: solid black 2px;
 }
 
-#servings {
+#servings, .link {
     display: flex;
     margin: auto;
     padding: 5px 0;
+}
+
+.link {
+    width: 70%;
+}
+
+.link_input {
+    width: 100%;
+    font-size: 1em;
 }
 
 #title {
