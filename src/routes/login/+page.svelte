@@ -8,14 +8,11 @@
 
     async function login() {
       const user = await pb.collection('users').authWithPassword(username, password);
-    //   console.log({user});
-    //   currentUser.set(user);
       console.log({currentUser});
       history.back();
     }
   
     async function signUp() {
-        //todo show additional elkement shen signing up
         if (!name && !email){
             let elements = document.getElementsByClassName('signup');
             console.log(elements);
@@ -23,9 +20,6 @@
                 console.log(curr);
                 elements[curr].style.display = 'block';
             }
-            // elements.forEach((curr) => {
-            //     curr.style.display = 'flex';
-            // });
             return;
         }
         const data = {

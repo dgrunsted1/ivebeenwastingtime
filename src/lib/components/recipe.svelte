@@ -2,6 +2,8 @@
 export let name;
 export let index;
 import { createEventDispatcher } from 'svelte';
+import { invalidateAll, goto } from '$app/navigation';
+import { applyAction, deserialize } from '$app/forms';
 
 const dispatch = createEventDispatcher();
 export let test_mode;
@@ -417,6 +419,25 @@ function get_multiplier(e){
     let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
     return desired_servings / servings_in_recipe;
 }
+
+async function fetch_recipe(e){
+    const data = new FormData(this);
+
+    const response = await fetch(this.action, {
+        method: 'POST',
+        body: data
+    });
+
+    /** @type {import('@sveltejs/kit').ActionResult} */
+    const result = deserialize(await response.text());
+
+    if (result.type === 'success') {
+        // re-run all `load` functions, following the successful update
+        await invalidateAll();
+    }
+
+    applyAction(result);
+}
 </script>
 <div id="main">
     {#if test_mode}
@@ -438,8 +459,10 @@ function get_multiplier(e){
         </div>
     </div>
     <div class="link">
-        <label class="link_label">Link to recipe</label>
-        <input type="text" class="link_input"/>
+        <form method='POST' on:input|preventDefault={fetch_recipe}>
+            <label class="link_label">Link to recipe</label>
+            <input name="url" type="text" class="link_input"/>
+        </form>
     </div>
     <div id="title">
         <label for="recipe" id="label">{name}:</label>
