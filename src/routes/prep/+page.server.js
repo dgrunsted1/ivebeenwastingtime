@@ -1,59 +1,66 @@
 import puppeteer from 'puppeteer';
 
+const selectors = {
+    title: '.heading__title',
+    author: '.mntl-attribution__item-name',
+    description: '.heading__subtitle',
+    time: '.total-time >>> span.meta-text__data',
+    servings: '.recipe-serving >>> span.meta-text__data',
+    ingredients: '.structured-ingredients__list',
+    directions: 'ol'
+};
+
+async function get_element(page, selector){
+    let elementSelector = await page.waitForSelector(
+        selector
+    );
+    let result = await elementSelector?.evaluate(el => el.textContent);
+    return result;
+}
+
+function trim(input){
+    let result = [];
+    input.forEach(curr => {
+        if (curr && !curr.includes('=') && !curr.includes('<img') && !curr.includes('/>') && !curr.includes('Serious Eats')){
+            result.push(curr);
+        }
+    });
+    return result;
+}
+
+function format_servings(input){
+    if (input.includes('servings')) return parseInt(input.replace("servings", "").trim());
+    else return input;
+}
 
 /** @type {import('./$types').Actions} */
 export const actions = {
     default: async ({ request }) => {
+        const start = Date.now();
         let data = await request.formData();
         let url = await data.get('url');
         const browser = await puppeteer.launch({headless: "new"});
         const page = await browser.newPage();
 
-        await page.goto('https://www.seriouseats.com/chicken-scarpariello-sweet-and-sour-chicken-italian-recipe');
+        await page.goto(url);
 
-        // Set screen size
         await page.setViewport({width: 1080, height: 1024});
 
-        const titleSelector = await page.waitForSelector(
-            '.heading__title'
-        );
-        const title = await titleSelector?.evaluate(el => el.textContent);
+        let results = {};
 
-        const authorSelector = await page.waitForSelector(
-            '.mntl-attribution__item-name'
-        );
-        const author = await authorSelector?.evaluate(el => el.textContent);
+        for (const k in selectors){
+            results[k] = await get_element(page, selectors[k]);
+        };
+        
+        results.directions = trim(results.directions.split('\n'));
 
-        const descSelector = await page.waitForSelector(
-            '.heading__subtitle'
-        );
-        const description = await descSelector?.evaluate(el => el.textContent);
+        results.ingredients = trim(results.ingredients.split('\n'));
 
-        const timeSelector = await page.waitForSelector(
-            '.total-time >>> span.meta-text__data'
-        );
-        const time = await timeSelector?.evaluate(el => el.textContent);
-
-        const servSelector = await page.waitForSelector(
-            '.recipe-serving >>> span.meta-text__data'
-        );
-        const servings = await servSelector?.evaluate(el => el.textContent);
-
-        const ingrSelector = await page.waitForSelector(
-            '.structured-ingredients__list'
-        );
-        const ingredients = await ingrSelector?.evaluate(el => el.textContent);
-
-        const directionSelector = await page.waitForSelector(
-            'ol >>> p'
-        );
-        const directions = await directionSelector?.evaluate(el => el.textContent);
-
-        // Print the full title
-        console.log({directions});
-
+        results.servings = format_servings(results.servings);
+        
         await browser.close();
-        console.log(url);
-        return { url };
+        const end = Date.now();
+        results.execution_time = `${(end-start)/1000}s`;
+        return results;
     }
 };

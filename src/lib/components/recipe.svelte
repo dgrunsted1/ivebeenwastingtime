@@ -7,6 +7,7 @@ import { applyAction, deserialize } from '$app/forms';
 
 const dispatch = createEventDispatcher();
 export let test_mode;
+let recipe;
 const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
 let multiplier = 1;
 
@@ -430,13 +431,16 @@ async function fetch_recipe(e){
 
     /** @type {import('@sveltejs/kit').ActionResult} */
     const result = deserialize(await response.text());
-
     if (result.type === 'success') {
+        result.data.ingredients = process_recipe(result.data.ingredients);
+        recipe = result.data;
+        console.log(result.data);
         // re-run all `load` functions, following the successful update
         await invalidateAll();
     }
-
-    applyAction(result);
+    
+    
+    // applyAction(result);
 }
 </script>
 <div id="main">
@@ -447,11 +451,10 @@ async function fetch_recipe(e){
         {/each}
     {/if}
 
-
     <div id="servings">
         <div class="seperated">
             <label for="recipe_servings">recipe servings</label>
-            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value=1 on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
+            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
         </div>
         <div class="seperated">
             <label for="desired_servings">desired servings</label>
@@ -464,10 +467,30 @@ async function fetch_recipe(e){
             <input name="url" type="text" class="link_input"/>
         </form>
     </div>
+    {#if recipe}
+        <div id="recipe">
+            <label>Title</label><input class="title" type="text" bind:value={recipe.title}>
+            <label>Description</label><input class="desc" type="text" bind:value={recipe.description}>
+            <label>Author</label><input class="auth" type="text" bind:value={recipe.author}>
+            <label>Time</label><input class="time" type="text" bind:value={recipe.time}>
+            <label>Ingredients</label><div id="ingredient_list">
+                {#each recipe.ingredients as ingr}
+                    {#if ingr}
+                        <div class="ingr_row">
+                            <input type="text" class="ingr_amount" value={ingr.amount ? ingr.amount : ""}>
+                            <input type="text" class="ingr_unit" value={ingr.unit ? ingr.unit : ""}>
+                            <input type="text" class="ingr_name" value={ingr.name ? ingr.name : ingr.original}>
+                        </div>
+                    {/if}
+                {/each}
+            </div>
+        </div>
+    {:else}
     <div id="title">
         <label for="recipe" id="label">{name}:</label>
-        <textarea id="recipe" cols="30" rows="10" on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input}></textarea>
+        <textarea id="ingr_list_input" cols="30" rows="10" on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input}></textarea>
     </div>
+    {/if}
 </div>
 
 
@@ -485,7 +508,7 @@ p {
     border: solid black 2px;
 }
 
-#servings, .link {
+#servings, .link, #recipe {
     display: flex;
     margin: auto;
     padding: 5px 0;
@@ -493,6 +516,10 @@ p {
 
 .link {
     width: 70%;
+}
+
+form {
+    width: 100%;
 }
 
 .link_input {
@@ -521,7 +548,7 @@ p {
     
 }
 
-#recipe {
+#ingr_list_input {
     /* margin: auto;
     position: relative; */
     width:60%;
@@ -539,6 +566,41 @@ input[type="number"] {
     margin: 5px;
     border-radius: 8px;
     padding: 5px;
+}
+
+#ingredient_list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.ingr_row {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+}
+
+#recipe {
+    width: 70%;
+    flex-direction: column;
+}
+
+.ingr_amount {
+    width: 2.25em;
+    text-align: center;
+    font-size: 14px;
+}
+
+.ingr_unit {
+    width: 6em;
+    text-align: center;
+    font-size: 14px;
+}
+
+.ingr_name {
+    width: 70%;
+    font-size: 14px;
 }
 
 </style>
