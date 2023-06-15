@@ -469,11 +469,26 @@ async function fetch_recipe(e){
     </div>
     {#if recipe}
         <div id="recipe">
-            <label>Title</label><input class="title" type="text" bind:value={recipe.title}>
-            <label>Description</label><input class="desc" type="text" bind:value={recipe.description}>
-            <label>Author</label><input class="auth" type="text" bind:value={recipe.author}>
-            <label>Time</label><input class="time" type="text" bind:value={recipe.time}>
-            <label>Ingredients</label><div id="ingredient_list">
+            <div class="title_container">
+                <label>Title</label>
+                <input class="title" type="text" bind:value={recipe.title}>
+            </div>
+            <div class="decription_container">
+                <label>Description</label>
+                <input class="desc" type="text" bind:value={recipe.description}>
+            </div>
+            <div class="misc">
+                <div class="author_container">
+                    <label>Author</label>
+                    <input class="auth" type="text" bind:value={recipe.author}>
+                </div>
+                <div class="time_container">
+                    <label>Time</label>
+                    <input class="time" type="text" bind:value={recipe.time}>
+                </div>
+            </div>
+            <label>Ingredients</label>
+            <div id="ingredient_list">
                 {#each recipe.ingredients as ingr}
                     {#if ingr}
                         <div class="ingr_row">
@@ -484,6 +499,15 @@ async function fetch_recipe(e){
                     {/if}
                 {/each}
             </div>
+        </div>
+        <label>Directions</label>
+        <div class="directions_list">
+            {#each recipe.directions as curr, i}
+                <div class="step">
+                    <label>Step {i+1}:</label>
+                    <textarea class="directions" value={curr}/>
+                </div>
+            {/each}
         </div>
     {:else}
     <div id="title">
@@ -589,7 +613,7 @@ input[type="number"] {
 .ingr_amount {
     width: 2.25em;
     text-align: center;
-    font-size: 14px;
+    font-size: .7em;
 }
 
 .ingr_unit {
@@ -602,5 +626,22 @@ input[type="number"] {
     width: 70%;
     font-size: 14px;
 }
+
+
+.title, .desc {
+    width: 80%;
+    font-size: 1em;
+}
+
+.title_container, .decription_container, .misc {
+    display: flex;
+    justify-content: space-around;
+}
+
+/* .desc {
+    width: 80%;
+    font-size: .8em;
+} */
+
 
 </style>
