@@ -6,7 +6,7 @@ const selectors = {
     description: '.heading__subtitle',
     time: '.total-time >>> span.meta-text__data',
     servings: '.recipe-serving >>> span.meta-text__data',
-    ingredients: '.structured-ingredients__list',
+    ingredients: '.section-content >>> ul',
     directions: 'ol'
 };
 

@@ -432,9 +432,14 @@ async function fetch_recipe(e){
     /** @type {import('@sveltejs/kit').ActionResult} */
     const result = deserialize(await response.text());
     if (result.type === 'success') {
+        //todo fix multiplier
+        // multiplier = get_multiplier(e);
         result.data.ingredients = process_recipe(result.data.ingredients);
         recipe = result.data;
-        console.log(result.data);
+        dispatch('recipe_edited', {
+            items: result.data.ingredients, 
+            index: index
+        });
         // re-run all `load` functions, following the successful update
         await invalidateAll();
     }
@@ -458,36 +463,36 @@ async function fetch_recipe(e){
         </div>
         <div class="seperated">
             <label for="desired_servings">desired servings</label>
-            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value=1 on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
+            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
         </div>
     </div>
     <div class="link">
         <form method='POST' on:input|preventDefault={fetch_recipe}>
-            <label class="link_label">Link to recipe</label>
+            <label for="url" class="link_label">Link to recipe</label>
             <input name="url" type="text" class="link_input"/>
         </form>
     </div>
     {#if recipe}
         <div id="recipe">
             <div class="title_container">
-                <label>Title</label>
+                <label for="title">Title</label>
                 <input class="title" type="text" bind:value={recipe.title}>
             </div>
             <div class="decription_container">
-                <label>Description</label>
+                <label for="desc">Description</label>
                 <input class="desc" type="text" bind:value={recipe.description}>
             </div>
             <div class="misc">
                 <div class="author_container">
-                    <label>Author</label>
+                    <label for="auth">Author</label>
                     <input class="auth" type="text" bind:value={recipe.author}>
                 </div>
                 <div class="time_container">
-                    <label>Time</label>
+                    <label for="time">Time</label>
                     <input class="time" type="text" bind:value={recipe.time}>
                 </div>
             </div>
-            <label>Ingredients</label>
+            <div>Ingredients</div>
             <div id="ingredient_list">
                 {#each recipe.ingredients as ingr}
                     {#if ingr}
@@ -499,15 +504,15 @@ async function fetch_recipe(e){
                     {/if}
                 {/each}
             </div>
-        </div>
-        <label>Directions</label>
-        <div class="directions_list">
-            {#each recipe.directions as curr, i}
-                <div class="step">
-                    <label>Step {i+1}:</label>
-                    <textarea class="directions" value={curr}/>
-                </div>
-            {/each}
+            <div>Directions</div>
+            <div class="directions_list">
+                {#each recipe.directions as curr, i}
+                    <div class="step">
+                        <label for="directions">Step {i+1}</label>
+                        <textarea class="directions" value={curr}/>
+                    </div>
+                {/each}
+            </div>
         </div>
     {:else}
     <div id="title">
@@ -596,6 +601,7 @@ input[type="number"] {
     display: flex;
     flex-direction: column;
     width: 100%;
+    margin: 5px;
 }
 
 .ingr_row {
@@ -619,12 +625,12 @@ input[type="number"] {
 .ingr_unit {
     width: 6em;
     text-align: center;
-    font-size: 14px;
+    font-size: .7em;
 }
 
 .ingr_name {
     width: 70%;
-    font-size: 14px;
+    font-size: .7em;
 }
 
 
@@ -638,10 +644,27 @@ input[type="number"] {
     justify-content: space-around;
 }
 
-/* .desc {
-    width: 80%;
-    font-size: .8em;
-} */
+.step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* width: 80%;
+    margin: auto; */
+}
 
+[for="directions"] {
+    display: flex;
+    /* flex-grow: 1; */
+    text-align: right;
+}
+
+.directions {
+    display: flex;
+    flex-grow: 1;
+    margin: 5px;
+    max-width: 80%;
+    height: fit-content;
+    font-size: .7em;
+}
 
 </style>
