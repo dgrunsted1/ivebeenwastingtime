@@ -6,7 +6,7 @@ const selectors = {
     description: '.heading__subtitle',
     time: '.total-time >>> span.meta-text__data',
     servings: '.recipe-serving >>> span.meta-text__data',
-    ingredients: '.section-content >>> ul',
+    ingredients: '.section-content',
     directions: 'ol'
 };
 
@@ -39,6 +39,9 @@ export const actions = {
         const start = Date.now();
         let data = await request.formData();
         let url = await data.get('url');
+        if (!url.includes("www.seriouseats.com")){
+            return {err: "website not supported"};
+        }
         const browser = await puppeteer.launch({headless: "new"});
         const page = await browser.newPage();
 
@@ -51,9 +54,7 @@ export const actions = {
         for (const k in selectors){
             results[k] = await get_element(page, selectors[k]);
         };
-        
         results.directions = trim(results.directions.split('\n'));
-
         results.ingredients = trim(results.ingredients.split('\n'));
 
         results.servings = format_servings(results.servings);

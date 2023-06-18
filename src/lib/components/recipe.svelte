@@ -4,6 +4,7 @@ export let index;
 import { createEventDispatcher } from 'svelte';
 import { invalidateAll, goto } from '$app/navigation';
 import { applyAction, deserialize } from '$app/forms';
+import { currentUser, pb } from '/src/lib/pocketbase';
 
 const dispatch = createEventDispatcher();
 export let test_mode;
@@ -279,7 +280,7 @@ function process_recipe(in_lines) {
     ).trim();
 
     in_lines[0] = in_lines[0].replace(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d)([A-z])/,
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z])/,
         "$1 $2"
     );
     
@@ -431,7 +432,10 @@ async function fetch_recipe(e){
 
     /** @type {import('@sveltejs/kit').ActionResult} */
     const result = deserialize(await response.text());
-    if (result.type === 'success') {
+    if (result.data.err) {
+        alert(result.data.err);
+        e.srcElement.value = "";
+    } else if (result.type === 'success') {
         //todo fix multiplier
         // multiplier = get_multiplier(e);
         result.data.ingredients = process_recipe(result.data.ingredients);
@@ -446,6 +450,19 @@ async function fetch_recipe(e){
     
     
     // applyAction(result);
+}
+
+async function save_recipe(e) {
+    let formData = new FormData();
+    formData.append("author", recipe.author);
+    formData.append("description", recipe.description);
+    formData.append("directions", JSON.stringify(recipe.directions));
+    formData.append("ingredients", JSON.stringify(recipe.ingredients));
+    formData.append("servings", recipe.servings);
+    formData.append("time", recipe.time);
+    formData.append("title", recipe.title);
+    const record = await pb.collection('recipes').create(formData);
+    // return record;
 }
 </script>
 <div id="main">
@@ -512,6 +529,9 @@ async function fetch_recipe(e){
                         <textarea class="directions" value={curr}/>
                     </div>
                 {/each}
+            </div>
+            <div class="save_btn" on:click={save_recipe}>
+                save recipe
             </div>
         </div>
     {:else}
@@ -667,4 +687,16 @@ input[type="number"] {
     font-size: .7em;
 }
 
+.save_btn {
+    margin: 10px auto;
+    width: 40%;
+    text-align: center;
+    padding:10px;
+    cursor: pointer;
+    border: 2px solid #555;
+    background: hsla(35, 39%, 22%, 0.83);
+    color: white;
+    border-radius: 8px;
+    padding: 5px;
+}
 </style>
