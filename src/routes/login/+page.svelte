@@ -8,7 +8,6 @@
 
     async function login() {
       const user = await pb.collection('users').authWithPassword(username, password);
-      console.log({currentUser});
       history.back();
     }
   

@@ -461,6 +461,9 @@ async function save_recipe(e) {
     formData.append("servings", recipe.servings);
     formData.append("time", recipe.time);
     formData.append("title", recipe.title);
+    formData.append("notes", e.srcElement.parentElement.getElementsByClassName("notes")[0].value);
+    formData.append("url", e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
+    formData.append("user", $currentUser.id);
     const record = await pb.collection('recipes').create(formData);
     // return record;
 }
@@ -529,6 +532,10 @@ async function save_recipe(e) {
                         <textarea class="directions" value={curr}/>
                     </div>
                 {/each}
+            </div>
+            <div>Notes</div>
+            <div class="notes_container">
+                <textarea class="notes"></textarea>
             </div>
             <div class="save_btn" on:click={save_recipe}>
                 save recipe
@@ -664,7 +671,7 @@ input[type="number"] {
     justify-content: space-around;
 }
 
-.step {
+.step, .notes_container {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -678,13 +685,17 @@ input[type="number"] {
     text-align: right;
 }
 
-.directions {
+.directions, .notes {
     display: flex;
     flex-grow: 1;
     margin: 5px;
     max-width: 80%;
     height: fit-content;
     font-size: .7em;
+}
+
+.notes {
+    width: 80%;
 }
 
 .save_btn {
