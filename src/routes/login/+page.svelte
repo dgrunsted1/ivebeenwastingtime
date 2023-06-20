@@ -14,9 +14,7 @@
     async function signUp() {
         if (!name && !email){
             let elements = document.getElementsByClassName('signup');
-            console.log(elements);
             for (let curr in elements){
-                console.log(curr);
                 elements[curr].style.display = 'block';
             }
             return;
@@ -49,10 +47,8 @@
     }
   
     function signOut() {
-        console.log("sign out");
       pb.authStore.clear();
     }
-  console.log({currentUser});
   </script>
   
   {#if $currentUser}

@@ -167,9 +167,9 @@
                 }
                 if (match && !(["small", "medium", "large"].includes(match.unit) ^ ["small", "medium", "large"].includes(item.unit))
                                 && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
-                    console.log("merging");
-                    console.log(match.amount+" "+match.unit+" "+match.name);
-                    console.log(item.amount+" "+item.unit+" "+item.name);
+                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
+                    // console.log(match.amount+" "+match.unit+" "+match.name);
+                    // console.log(item.amount+" "+item.unit+" "+item.name);
                     let tmp = { amount: 0, unit: "", name: "", original: []};
                     tmp.original = tmp.original.concat(match.original, item.original);
                     if (match.unit != item.unit) {
@@ -229,6 +229,7 @@
 
 <div id="main">
     <h1>PREP</h1>
+    <div><a href="/menu">Create Menu</a></div>
     {#if test_mode}
         <p class="test_btn" on:click={test_merge}>test_merge</p>
     {/if}
