@@ -4,7 +4,7 @@
     import { each } from 'svelte/internal';
 
     let user_recipes;
-    let menu_recipes = {};
+    let menu_recipes = [];
 
     onMount(async () => {
         const result_list = await pb.collection('recipes').getList(1, 50, {
@@ -15,21 +15,42 @@
     });
 
     function check_item(e){
-        let index = e.srcElement.parentNode.getElementsByTagName("p")[0].id;
-        if (e.target.firstChild.checked) {
-            e.target.firstChild.checked = false;
-            let temp = {};
-            for (let i = 0; i < menu_recipes.length; i++) {
-                if (menu_recipes[i].id != user_recipes[index].id) {
-                    temp.push(menu_recipes[i]);
+        let index = 0;
+        let check_box;
+        if (e.srcElement.parentNode.getElementsByTagName("p")[0]){
+            index = e.srcElement.parentNode.getElementsByTagName("p")[0].id;
+            check_box = e.target.firstChild;
+            if (check_box.checked) {
+                check_box.checked = false;
+                let temp = [];
+                for (let i = 0; i < menu_recipes.length; i++) {
+                    if (menu_recipes[i].id != user_recipes.items[index].id) {
+                        temp.push(menu_recipes[i]);
+                    }
                 }
+                menu_recipes = temp;
+            } else {
+                check_box.checked = true;
+                menu_recipes.push(user_recipes.items[index]);
+                menu_recipes = menu_recipes;
             }
-            menu_recipes = temp;
-        } else {
-            e.target.firstChild.checked = true;
-            menu_recipes.push(user_recipes[index]);
-            menu_recipes = menu_recipes;
+        }else {
+            index = e.srcElement.parentNode.parentNode.getElementsByTagName("p")[0].id;
+            check_box = e.srcElement;
+            if (check_box.checked) {
+                menu_recipes.push(user_recipes.items[index]);
+                menu_recipes = menu_recipes;
+            } else {
+                let temp = [];
+                for (let i = 0; i < menu_recipes.length; i++) {
+                    if (menu_recipes[i].id != user_recipes.items[index].id) {
+                        temp.push(menu_recipes[i]);
+                    }
+                }
+                menu_recipes = temp;
+            }
         }
+       
     }
     function add_to_menu(e) {
         console.log(e);
@@ -45,7 +66,7 @@
                 {#each user_recipes.items as curr, i}
                     <div class="recipe">
                         <div class="checks" on:click|self={check_item}>
-                            <input type="checkbox" class="checkbox" id="{curr.id}">
+                            <input type="checkbox" on:click|self={check_item} class="checkbox" id="{curr.id}">
                         </div>
                         <p id={i}>{curr.title}</p>
                         <div class="add_to_menu" on:click={add_to_menu}>
@@ -60,7 +81,13 @@
             {#if menu_recipes.length}
                 <div id="menu">
                     {#each menu_recipes as recipe}
-                        
+                        <div class="menu_recipe">
+                            <p>{recipe.title}</p>
+                            <p>{recipe.description}</p>
+                            <!-- <p>{recipe.author}</p> -->
+                            <p>{recipe.time}</p>
+                            <!-- <p>{recipe.title}</p> -->
+                        </div>
                     {/each}
                 </div>
             {:else}
