@@ -2,6 +2,9 @@
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { each } from 'svelte/internal';
+    import EditRecipe from "/src/lib/components/edit_recipe.svelte";
+    import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
+
 
     let user_recipes;
     let menu_recipes = [];
@@ -15,8 +18,18 @@
             filter: `user="${$currentUser.id}"`
         });
         user_recipes = result_list;
-        // console.log(user_recipes);
+        // console.log("before decode", user_recipes);
+        
+        // user_recipes.items.forEach(curr => decode_recipe(curr));
+        // console.log("after decode", user_recipes);
     });
+
+    function decode_recipe(in_recipe){
+        console.log(in_recipe.ingredients);
+        in_recipe.ingredients = JSON.parse(in_recipe.ingredients);
+        in_recipe.directions = JSON.parse(in_recipe.directions);
+        return in_recipe;
+    }
 
     function check_item(e){
         let index = 0;
@@ -88,6 +101,7 @@
             edit_recipe = user_recipes.items[index];
             edit_recipe.recipe_id = index;
             edit_recipe = edit_recipe;
+            console.log({edit_recipe});
         }else {
             
             edit_recipe = null;
@@ -161,55 +175,9 @@
                     {/each}
                 </div>
             {:else if view_recipe && mode == "view"}
-                <div class="recipe_header">
-                    <div class="title">{view_recipe.title}</div>
-                </div>
+                <DisplayRecipe recipe={view_recipe}/>
             {:else if edit_recipe && mode == "edit"}
-                <div id="recipe">
-                    <div class="title_container">
-                        <label for="title">Title</label>
-                        <input class="title" type="text" bind:value={edit_recipe.title}>
-                    </div>
-                    <div class="decription_container">
-                        <label for="desc">Description</label>
-                        <input class="desc" type="text" bind:value={edit_recipe.description}>
-                    </div>
-                    <div class="misc">
-                        <div class="author_container">
-                            <label for="auth">Author</label>
-                            <input class="auth" type="text" bind:value={edit_recipe.author}>
-                        </div>
-                        <div class="time_container">
-                            <label for="time">Time</label>
-                            <input class="time" type="text" bind:value={edit_recipe.time}>
-                        </div>
-                    </div>
-                    <div>Ingredients</div>
-                    <div id="ingredient_list">
-                        {#each edit_recipe.ingredients as ingr}
-                            {#if ingr}
-                                <div class="ingr_row">
-                                    <input type="text" class="ingr_amount" value={ingr.amount ? ingr.amount : ""}>
-                                    <input type="text" class="ingr_unit" value={ingr.unit ? ingr.unit : ""}>
-                                    <input type="text" class="ingr_name" value={ingr.name ? ingr.name : ingr.original}>
-                                </div>
-                            {/if}
-                        {/each}
-                    </div>
-                    <div>Directions</div>
-                    <div class="directions_list">
-                        {#each edit_recipe.directions as curr, i}
-                            <div class="step">
-                                <label for="directions">Step {i+1}</label>
-                                <textarea class="directions" value={curr}/>
-                            </div>
-                        {/each}
-                    </div>
-                    <div>Notes</div>
-                    <div class="notes_container">
-                        <textarea class="notes">{edit_recipe.notes}</textarea>
-                    </div>
-                </div>
+                <EditRecipe recipe={edit_recipe} />
             {:else}
                 <h2>select recipes to add to your menu</h2>
             {/if}
