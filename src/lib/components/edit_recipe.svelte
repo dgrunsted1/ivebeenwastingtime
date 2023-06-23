@@ -5,27 +5,34 @@
     export let recipe;
 
     async function save_recipe(e) {
-        let formData = new FormData();
-        formData.append("author", recipe.author);
-        formData.append("description", recipe.description);
-        formData.append("directions", JSON.stringify(recipe.directions));
-        formData.append("ingredients", JSON.stringify(recipe.ingredients));
-        formData.append("servings", recipe.servings);
-        formData.append("time", recipe.time);
-        formData.append("title", recipe.title);
-        formData.append("notes", e.srcElement.parentElement.getElementsByClassName("notes")[0].value);
-        formData.append("url", e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
-        formData.append("user", currentUser.id);
-        const record = await pb.collection('recipes').create(formData);
-        // return record;
+        if (recipe.id){
+            const data = {
+                "title": recipe.title,
+                "description": recipe.description,
+                "author": recipe.author,
+                "time": recipe.time,
+                "ingredients": JSON.stringify(recipe.ingredients),
+                "directions": JSON.stringify(recipe.directions),
+                "notes": recipe.notes,
+                "servings": recipe.servings
+            };
+            const record = await pb.collection('recipes').update(recipe.id, data);
+        }else {
+            const data = {
+                "title": recipe.title,
+                "description": recipe.description,
+                "url": e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value,
+                "author": recipe.author,
+                "time": recipe.time,
+                "ingredients": JSON.stringify(recipe.ingredients),
+                "directions": JSON.stringify(recipe.directions),
+                "notes": e.srcElement.parentElement.getElementsByClassName("notes")[0].value,
+                "user": currentUser.id,
+                "servings": recipe.servings
+            }
+            const record = await pb.collection('recipes').create(data);
+        }
     }
-    // function parse(recipe_in){
-    //     //todo finish parse the json strings
-    //     console.log(typeof recipe_in);
-
-    //     if (typeof recipe_in !== 'string') return recipe_in;
-    //     return JSON.parse(recipe_in);
-    // }
 </script>
 
 <div id="recipe">
@@ -49,12 +56,16 @@
     </div>
     <div>Ingredients</div>
     <div id="ingredient_list">
-        {#each recipe.ingredients as ingr}
+        {#each recipe.ingredients as ingr, i}
             {#if ingr}
                 <div class="ingr_row">
-                    <input type="text" class="ingr_amount" value={ingr.amount ? ingr.amount : ""}>
-                    <input type="text" class="ingr_unit" value={ingr.unit ? ingr.unit : ""}>
-                    <input type="text" class="ingr_name" value={ingr.name ? ingr.name : ingr.original}>
+                    <input type="text" class="ingr_amount" bind:value={recipe.ingredients[i].amount}>
+                    <input type="text" class="ingr_unit" bind:value={recipe.ingredients[i].unit}>
+                    {#if ingr.name}
+                        <input type="text" class="ingr_name" bind:value={recipe.ingredients[i].name}>
+                    {:else}
+                        <input type="text" class="ingr_name" bind:value={recipe.ingredients[i].original[0]}>
+                    {/if}
                 </div>
             {/if}
         {/each}
@@ -64,13 +75,13 @@
         {#each recipe.directions as curr, i}
             <div class="step">
                 <label for="directions">Step {i+1}</label>
-                <textarea class="directions" value={curr}/>
+                <textarea class="directions" bind:value={curr}/>
             </div>
         {/each}
     </div>
     <div>Notes</div>
     <div class="notes_container">
-        <textarea class="notes"></textarea>
+        <textarea class="notes" bind:value={recipe.notes}></textarea>
     </div>
     <div class="save_btn" on:click={save_recipe}>
         save recipe

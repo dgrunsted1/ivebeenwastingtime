@@ -18,10 +18,6 @@
             filter: `user="${$currentUser.id}"`
         });
         user_recipes = result_list;
-        // console.log("before decode", user_recipes);
-        
-        // user_recipes.items.forEach(curr => decode_recipe(curr));
-        // console.log("after decode", user_recipes);
     });
 
     function decode_recipe(in_recipe){
@@ -101,9 +97,7 @@
             edit_recipe = user_recipes.items[index];
             edit_recipe.recipe_id = index;
             edit_recipe = edit_recipe;
-            console.log({edit_recipe});
         }else {
-            
             edit_recipe = null;
             mode = "menu";
             update_btn_style(prev_id, index, mode);
