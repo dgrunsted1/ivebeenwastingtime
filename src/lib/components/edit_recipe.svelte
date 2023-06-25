@@ -5,31 +5,21 @@
     export let recipe;
 
     async function save_recipe(e) {
+        const data = {
+            "title": recipe.title,
+            "description": recipe.description,
+            "author": recipe.author,
+            "time": recipe.time,
+            "ingredients": JSON.stringify(recipe.ingredients),
+            "directions": JSON.stringify(recipe.directions),
+            "notes": recipe.notes,
+            "servings": recipe.servings
+        };
         if (recipe.id){
-            const data = {
-                "title": recipe.title,
-                "description": recipe.description,
-                "author": recipe.author,
-                "time": recipe.time,
-                "ingredients": JSON.stringify(recipe.ingredients),
-                "directions": JSON.stringify(recipe.directions),
-                "notes": recipe.notes,
-                "servings": recipe.servings
-            };
             const record = await pb.collection('recipes').update(recipe.id, data);
         }else {
-            const data = {
-                "title": recipe.title,
-                "description": recipe.description,
-                "url": e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value,
-                "author": recipe.author,
-                "time": recipe.time,
-                "ingredients": JSON.stringify(recipe.ingredients),
-                "directions": JSON.stringify(recipe.directions),
-                "notes": e.srcElement.parentElement.getElementsByClassName("notes")[0].value,
-                "user": currentUser.id,
-                "servings": recipe.servings
-            }
+            data.user = $currentUser.id;
+            data.url = e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value;
             const record = await pb.collection('recipes').create(data);
         }
     }
@@ -75,7 +65,7 @@
         {#each recipe.directions as curr, i}
             <div class="step">
                 <label for="directions">Step {i+1}</label>
-                <textarea class="directions" bind:value={curr}/>
+                <textarea class="directions" bind:value={recipe.directions[i]}/>
             </div>
         {/each}
     </div>

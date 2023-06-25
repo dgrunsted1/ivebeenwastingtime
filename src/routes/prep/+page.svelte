@@ -1,7 +1,7 @@
 <script>
     import { construct_svelte_component, get_store_value } from "svelte/internal";
     import { createEventDispatcher } from 'svelte';
-    import Recipe from "/src/lib/components/recipe.svelte";
+    import InputRecipe from "/src/lib/components/input_recipe.svelte";
     import GroceryList from "/src/lib/components/grocery_list.svelte";
 
     let grocery_list = [];
@@ -167,9 +167,9 @@
                 }
                 if (match && !(["small", "medium", "large"].includes(match.unit) ^ ["small", "medium", "large"].includes(item.unit))
                                 && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
+                    
                     console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
-                    // console.log(match.amount+" "+match.unit+" "+match.name);
-                    // console.log(item.amount+" "+item.unit+" "+item.name);
+                    
                     let tmp = { amount: 0, unit: "", name: "", original: []};
                     tmp.original = tmp.original.concat(match.original, item.original);
                     if (match.unit != item.unit) {
@@ -236,7 +236,7 @@
     <div id="content">
         <div id="recipes">
             {#each Array(input_count) as _, index (index)}
-                <Recipe name="Recipe {index}" on:recipe_edited={update_list} {index} {test_mode}/>
+                <InputRecipe name="Recipe {index}" on:recipe_edited={update_list} {index} {test_mode}/>
             {/each}
             <div id="add_recipe" on:click={()=>{input_count++}}>Add Recipe</div>
         </div>

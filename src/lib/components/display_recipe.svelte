@@ -46,10 +46,12 @@ export let recipe;
             </div>
         {/each}
     </div>
-    <div>Notes</div>
-    <div class="notes_container">
-        <div class="notes">{recipe.notes}</div>
-    </div>
+    {#if recipe.notes}
+        <div>Notes</div>
+        <div class="notes_container">
+            <div class="notes">{recipe.notes}</div>
+        </div>
+    {/if}
 </div>
 
 
