@@ -85,11 +85,6 @@ export let data;
          
      }
 
-    #menu {
-        position: absolute;
-        z-index: 10;
-    }
-
     @media (max-width: 600px) {
         #web_title {
             font-size: 2em;

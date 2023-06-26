@@ -5,6 +5,7 @@
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
     import RecipeList from "/src/lib/components/recipe_list.svelte";
+    import Menu from "/src/lib/components/menu.svelte";
 
 
     let user_recipes;
@@ -71,17 +72,7 @@
         {/if}
         <div id="right_column">
             {#if menu_recipes && mode == "menu"}
-                <div id="menu">
-                    {#each menu_recipes as recipe}
-                        <div class="menu_recipe">
-                            <p>{recipe.title}</p>
-                            <p>{recipe.description}</p>
-                            <!-- <p>{recipe.author}</p> -->
-                            <p>{recipe.time}</p>
-                            <!-- <p>{recipe.title}</p> -->
-                        </div>
-                    {/each}
-                </div>
+                <Menu menu={menu_recipes}/>
             {:else if view_recipe && mode == "view"}
                 <DisplayRecipe recipe={view_recipe}/>
             {:else if edit_recipe && mode == "edit"}
@@ -113,7 +104,5 @@
         width: 50%;
     }
 
-    p {
-        margin: 3px;
-    }
+    
 </style>

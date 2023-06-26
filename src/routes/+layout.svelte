@@ -17,7 +17,7 @@
 		{#if !is_homepage}
 			<div id="web_title"><a href="/">WWW.IVEBEENWASTINGTIME.COM</a></div>
 		{/if}
-		<div id="menu">
+		<div id="nav_menu">
 		{#if !$currentUser}
 			<a href="login">login</a>
 		{:else}
