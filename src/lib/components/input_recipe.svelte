@@ -453,21 +453,6 @@ async function fetch_recipe(e){
     // applyAction(result);
 }
 
-// async function save_recipe(e) {
-//     let formData = new FormData();
-//     formData.append("author", recipe.author);
-//     formData.append("description", recipe.description);
-//     formData.append("directions", JSON.stringify(recipe.directions));
-//     formData.append("ingredients", JSON.stringify(recipe.ingredients));
-//     formData.append("servings", recipe.servings);
-//     formData.append("time", recipe.time);
-//     formData.append("title", recipe.title);
-//     formData.append("notes", e.srcElement.parentElement.getElementsByClassName("notes")[0].value);
-//     formData.append("url", e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
-//     formData.append("user", $currentUser.id);
-//     const record = await pb.collection('recipes').create(formData);
-//     // return record;
-// }
 </script>
 <div id="main">
     {#if test_mode}
@@ -518,7 +503,7 @@ async function fetch_recipe(e){
         border: solid black 2px;
     }
 
-    #servings, .link, #recipe {
+    #servings, .link {
         display: flex;
         margin: auto;
         padding: 5px 0;
