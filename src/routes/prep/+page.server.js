@@ -37,53 +37,26 @@ async function get_element(page, selector){
         let output = [];
         for (let i = 0; i < length; i++){
             let sel = selector.item.replace("ITEM_INDEX", i);
-            console.log({sel})
-            output.push(await page.evaluate((sel) => {
-                return Array.from(document.querySelectorAll(sel)).map(x => x.textContent);
-            }, sel));
+            let temp = await page.evaluate((sel) => {
+                return document.querySelector(sel)?.textContent;
+            }, sel);
+            if (temp) output.push(temp);
         }
-        console.log({output});
         return output;
     }else {
-        console.log("selector", selector.group);
         const text = await page.evaluate((selector) => {
-            return Array.from(document.querySelectorAll(selector)).map(x => x.textContent);
+            return document.querySelector(selector).textContent;
         }, selector);
-        console.log({text});
         return text;
     }
 }
 
-function trim(input){
-    if (!input.includes("\n")){
-        let matches = input.match(/([\w ]+\w)(\d+)(\w[\w ]+)/);
-        console.log({matches});
-        input = input.replace(/([\w ]+\w)(\d+)(\w[\w ]+)/, "$1\n$2 $3");
-        console.log("regex replace", input);
-    }
-    input = input.split("\n");
 
-    let result = [];
-    input.forEach(curr => {
-        if (curr && !curr.includes('=') && !curr.includes('<img') && !curr.includes('/>') && !curr.includes('Serious Eats')){
-            result.push(curr);
-        }
-    });
-    return result;
-}
 
 function format_servings(input){
     if (input.includes('servings')) return parseInt(input.replace("servings", "").trim());
     else return input;
 }
-
-// async function get_length(page, selector){
-//     // console.log({selector});
-//     let list_length = await page.evaluate((sel) => {
-//         return document.getElementsByClassName(sel).length;
-//       }, sele);
-//       return list_length;
-// }
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -125,8 +98,8 @@ export const actions = {
         };
         console.log("results", results);
         // console.log("ingredients", results.ingredients);
-        results.directions = trim(results.directions);
-        results.ingredients = trim(results.ingredients);
+        // results.directions = trim(results.directions);
+        // results.ingredients = trim(results.ingredients);
 
         results.servings = format_servings(results.servings);
         console.log("results", results);
