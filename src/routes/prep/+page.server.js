@@ -13,21 +13,45 @@ const selectors = {
         },
         nyt: {
             title: 'h1',
-            author: '.pantry--ui',
-            description: '.pantry--body >>> p',
-            time: '.pantry--ui',
-            servings: '.pantry--ui.ingredients_fontOverride__WoKY5',
-            ingredients: '.ingredients_ingredients__qAcSs >>>> ul',
-            directions: '.recipebody_prep-block__cpC8w'
+            author: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_header-block__LWcDS.recipeintro_hasImage__5ekpP > header > div > h2:nth-child(1) > a',
+            description: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_topnote-block__hFFPr > div > div > div > p',
+            time: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_stats-block__YgbqJ > dl > dd:nth-child(2)',
+            servings: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > div.ingredients_recipeYield__Ljm9O > span.pantry--ui.ingredients_fontOverride__WoKY5',
+            // ingredients: '.ingredients_ingredients__qAcSs >>>> ul',
+            ingredients: {  
+                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > li',
+                            item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > li:nth-child(ITEM_INDEX)'
+                        },
+            directions: {
+                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_prep-block__cpC8w > div > ol > li',
+                            item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_prep-block__cpC8w > div > ol > li:nth-child(ITEM_INDEX) > p'
+                        }
         }
     };
 
 async function get_element(page, selector){
-    let elementSelector = await page.waitForSelector(
-        selector
-    );
-    let result = await elementSelector?.evaluate(el => el.textContent);
-    return result;
+    if (typeof selector !== 'string'){
+        let length = await page.evaluate((selector) => {
+                    return Array.from(document.querySelectorAll(selector)).length;
+                }, selector.group);
+        let output = [];
+        for (let i = 0; i < length; i++){
+            let sel = selector.item.replace("ITEM_INDEX", i);
+            console.log({sel})
+            output.push(await page.evaluate((sel) => {
+                return Array.from(document.querySelectorAll(sel)).map(x => x.textContent);
+            }, sel));
+        }
+        console.log({output});
+        return output;
+    }else {
+        console.log("selector", selector.group);
+        const text = await page.evaluate((selector) => {
+            return Array.from(document.querySelectorAll(selector)).map(x => x.textContent);
+        }, selector);
+        console.log({text});
+        return text;
+    }
 }
 
 function trim(input){
@@ -53,14 +77,13 @@ function format_servings(input){
     else return input;
 }
 
-async function get_length(page, selector){
-    // console.log({selector});
-    let list_length = await page.evaluate((sel) => {
-        // console.log({sel});
-        return document.getElementsByClassName(sel).length;
-      }, selector);
-      return list_length;
-}
+// async function get_length(page, selector){
+//     // console.log({selector});
+//     let list_length = await page.evaluate((sel) => {
+//         return document.getElementsByClassName(sel).length;
+//       }, sele);
+//       return list_length;
+// }
 
 /** @type {import('./$types').Actions} */
 export const actions = {
@@ -100,7 +123,7 @@ export const actions = {
                 const result = await pb.collection('errors').create(data);
             }
         };
-        // console.log("results", results);
+        console.log("results", results);
         // console.log("ingredients", results.ingredients);
         results.directions = trim(results.directions);
         results.ingredients = trim(results.ingredients);
