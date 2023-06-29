@@ -168,7 +168,6 @@
                 if (match && !(["small", "medium", "large"].includes(match.unit) ^ ["small", "medium", "large"].includes(item.unit))
                                 && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
                     
-                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
                     
                     let tmp = { amount: 0, unit: "", name: "", original: []};
                     tmp.original = tmp.original.concat(match.original, item.original);
@@ -187,6 +186,8 @@
                     }
                     grocery_list.splice(grocery_list.indexOf(match), 1);
                     grocery_list.push(tmp);
+                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
+                    console.log("merged item", tmp);
                 }else {
                     grocery_list.push(item);
                 }
