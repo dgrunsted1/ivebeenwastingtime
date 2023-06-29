@@ -9,8 +9,17 @@ const selectors = {
             time: '#meta-text_1-0 > span.meta-text__data',
             servings: '#meta-text_6-0 > span.meta-text__data',
             ingredients: [{
+                            group: '#structured-ingredients_1-0 > *',
+                            list: '#structured-ingredients_1-0 > ul:nth-child(LIST_INDEX) > li',
+                            item: '#structured-ingredients_1-0 > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
+                        },
+                        {
                             group: '#ingredient-list_1-0 > li',
                             item: '#ingredient-list_1-0 > li:nth-child(ITEM_INDEX)'
+                        },
+                        {
+                            group: '#structured-ingredients_1-0 > ul > li',
+                            item: '#structured-ingredients_1-0 > ul > li:nth-child(ITEM_INDEX)'
                         }],
             directions: {
                             group: '#mntl-sc-block_3-0 > li',
@@ -24,7 +33,7 @@ const selectors = {
             time: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_stats-block__YgbqJ > dl > dd:nth-child(2)',
             servings: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > div.ingredients_recipeYield__Ljm9O > span.pantry--ui.ingredients_fontOverride__WoKY5',
             ingredients: [{  
-                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > ul',
+                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > *',
                             list: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > ul:nth-child(LIST_INDEX) > li',
                             item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
                         },
@@ -68,14 +77,14 @@ async function get_ingredients(page, selectors){
                         return document.querySelector(sel)?.textContent;
                     }, sel_item);
                     console.log({temp});
-                    if (temp) output.push(temp);
+                    if (temp) output.push(temp.trim());
                 }
             }else{
                 let sel_item = selectors[k].item.replace("ITEM_INDEX", i);
                 let temp = await page.evaluate((sel) => {
                     return document.querySelector(sel)?.textContent;
                 }, sel_item);
-                if (temp) output.push(temp);
+                if (temp) output.push(temp.trim());
             }
         }
         if (output.length) return output;
