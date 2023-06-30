@@ -138,8 +138,6 @@
 
     
     function update_list(e) {
-        console.log(e.detail.items);
-        console.log(e.detail.index);
         recipes[e.detail.index] = e.detail.items;
     }
 

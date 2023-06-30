@@ -10,9 +10,7 @@
     let skipped = [];
 
     afterUpdate(async () => {
-        console.log("recipes", recipes);
         merge();
-        
     });
 
     const copy_to_clipboard = () => {
