@@ -1,11 +1,19 @@
 <script>
     import { each } from "svelte/internal";
     import { createEventDispatcher } from 'svelte';
+    import { afterUpdate } from 'svelte';
+
 
     const dispatch = createEventDispatcher();
+    export let recipes;
+    let grocery_list = [];
+    let skipped = [];
 
-    export let grocery_list;
-    export let skipped;
+    afterUpdate(async () => {
+        console.log("recipes", recipes);
+        merge();
+        
+    });
 
     const copy_to_clipboard = () => {
         let copy_text = "";
@@ -28,12 +36,82 @@
     }
 
     function add_to_list(e) {
-        dispatch("update_grocery_list", {items: {amount: 0, unit: "", name: e.srcElement.nextElementSibling.innerHTML, original: [e.srcElement.nextElementSibling.innerHTML]}});
+        grocery_list.push(e.detail.items);
+        skipped = skipped.filter((curr) => {
+            return curr.original[0] != e.detail.items.original[0];
+        });
+        skipped = skipped;
+        grocery_list = grocery_list;
     }
     
     function check_item(){
         if (event.target.firstChild.checked) event.target.firstChild.checked = false;
         else event.target.firstChild.checked = true;
+    }
+
+    function merge() {
+        grocery_list = [];
+        skipped = [];
+        recipes.forEach(recipe => {
+            recipe.forEach(item => {
+                if (!item) return;
+                if ((!item.amount || !item.unit || !item.name) && item.original) {
+                    skipped.push(item);
+                    skipped = skipped;
+                    return;
+                }
+                let match = false;
+                if (grocery_list) {
+                    grocery_list.forEach(element => {
+                        if (element.name === item.name || element.name.includes(item.name) || item.name.includes(element.name)){
+                            match = element;
+                            return;
+                        }
+                    });
+                }
+                if (match && !(["small", "medium", "large"].includes(match.unit) ^ ["small", "medium", "large"].includes(item.unit))
+                                && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
+                    
+                    
+                    let tmp = { amount: 0, unit: "", name: "", original: []};
+                    tmp.original = tmp.original.concat(match.original, item.original);
+                    if (match.unit != item.unit) {
+                        let conv = combine(match, item);
+                        tmp.amount = conv.amount;
+                        tmp.unit = conv.unit;
+                    } else {
+                        tmp.amount = match.amount + item.amount;
+                        tmp.unit = match.unit;
+                    }
+                    if (match.name != item.name){
+                        tmp.name = match.name+" and/or "+item.name;
+                    }else {
+                        tmp.name = match.name;
+                    }
+                    grocery_list.splice(grocery_list.indexOf(match), 1);
+                    grocery_list.push(tmp);
+                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
+                    console.log("merged item", tmp);
+                }else {
+                    grocery_list.push(item);
+                }
+            });
+        });
+    }
+
+    const combine = (i, j) => {
+        let conv_index_a = `${j.unit}/${i.unit}`;
+        let conv_index_b = `${i.unit}/${j.unit}`;
+        let amount = null;
+        let unit = null;
+        if (conversions[conv_index_a] < conversions[conv_index_b]){
+            unit = j.unit;
+            amount = conversions[conv_index_a] * i.amount + j.amount;
+        }else {
+            unit = i.unit;
+            amount = conversions[conv_index_b] * j.amount + i.amount;
+        }
+        return {unit: unit, amount: amount};
     }
 </script>
 
