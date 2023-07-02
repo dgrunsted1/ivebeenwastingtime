@@ -272,6 +272,14 @@ function forward_input(e) {
     });
 }
 
+function update_recipe(e){
+    recipe = e.detail.recipe;
+    dispatch('recipe_edited', {
+        items: recipe.ingredients, 
+        index: index
+    });
+}
+
 function process_recipe(in_lines) {
     if (in_lines[0] == null) return false;
     
@@ -479,7 +487,7 @@ async function fetch_recipe(e){
         </form>
     </div>
     {#if recipe}
-        <EditRecipe {recipe}/>
+        <EditRecipe {recipe} on:update_recipe={update_recipe}/>
     {:else}
         <div id="title">
             <label for="recipe" id="label">{name}:</label>

@@ -133,8 +133,12 @@ function format_servings(input){
 export const actions = {
     default: async ({ request }) => {
         const start = Date.now();
+        const browser = await puppeteer.launch({headless: "new"});
+        const page = await browser.newPage();
+        const init_time = Date.now();
         let data = await request.formData();
         let url = await data.get('url');
+        const await_data = Date.now();
         // let url = "https://www.seriouseats.com/obe-ata-nigerian-red-pepper-sauce";
         let site_selectors;
         if (url.includes("www.seriouseats.com")){
@@ -144,12 +148,13 @@ export const actions = {
         }else{
             return {err: "website not supported"};
         }
-        const browser = await puppeteer.launch({headless: "new"});
-        const page = await browser.newPage();
+        const selector_time = Date.now();
 
         await page.goto(url);
+        const go_to_time = Date.now();
 
         await page.setViewport({width: 1080, height: 1024});
+        const set_view_time = Date.now();
 
         let results = {};
 
@@ -181,6 +186,13 @@ export const actions = {
         await browser.close();
         const end = Date.now();
         results.execution_time = `${(end-start)/1000}s`;
+        results.logic_time = `${(end-set_view_time)/1000}s`;
+        results.init_time = `${(init_time-start)/1000}s`;
+        results.await_data_time = `${(await_data-init_time)/1000}s`;
+        results.selector_time = `${(selector_time-await_data)/1000}s`;
+        results.got_to_time = `${(go_to_time-selector_time)/1000}s`;
+        results.set_view_time = `${(set_view_time-go_to_time)/1000}s`;
+        results.compare_time = `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`;
         console.log("results", results);
         return results;
     }

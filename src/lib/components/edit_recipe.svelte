@@ -1,10 +1,19 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase';
-
+    import { createEventDispatcher } from 'svelte';
+ 
 
     export let recipe;
+    let removed = [];
+    let dispatch = createEventDispatcher();
 
     async function save_recipe(e) {
+        let temp = [];
+        for (let i = 0; i < recipe.ingredients.length; i++){
+            if (!recipe.ingredients[i].removed) temp.push(recipe.ingredients[i]);
+        }
+        recipe.ingredients = temp;
+        reset_checks();
         const data = {
             "title": recipe.title,
             "description": recipe.description,
@@ -21,6 +30,37 @@
             data.user = $currentUser.id;
             data.url = e.srcElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value;
             const record = await pb.collection('recipes').create(data);
+            recipe = record;
+        }
+        dispatch("update_recipe", {recipe: recipe});
+    }
+
+    function reset_checks(){
+        Array.from(document.querySelectorAll(".removed input[type='checkbox']")).forEach(curr => {
+            curr.checked = false;
+        });
+    }
+
+    function check_item(e){
+        let original;
+        let is_removed = false;
+        if (e.srcElement.type != "checkbox"){
+            original = e.target.firstChild.id;
+            if (e.target.firstChild.checked){
+                e.target.firstChild.checked = false;
+            }else{
+                e.target.firstChild.checked = true;
+                is_removed = true;
+            }
+        }else{
+            original = e.srcElement.id;
+            is_removed = e.srcElement.checked;
+        }
+        let temp = [];
+        for (let i = 0; i < recipe.ingredients.length; i++){
+            if (recipe.ingredients[i].original == original){
+                recipe.ingredients[i].removed = is_removed;
+            }
         }
     }
 </script>
@@ -48,7 +88,7 @@
     <div id="ingredient_list">
         {#each recipe.ingredients as ingr, i}
             {#if ingr}
-                <div class="ingr_row">
+                <div class="ingr_row" class:removed={ingr.removed}>
                     <input type="text" class="ingr_amount" bind:value={recipe.ingredients[i].amount}>
                     <input type="text" class="ingr_unit" bind:value={recipe.ingredients[i].unit}>
                     {#if ingr.name}
@@ -56,6 +96,7 @@
                     {:else}
                         <input type="text" class="ingr_name" bind:value={recipe.ingredients[i].original[0]}>
                     {/if}
+                    <div class="checks" on:click={check_item}><input on:click={check_item} type="checkbox" class="checkbox" id="{recipe.ingredients[i].original}"></div>
                 </div>
             {/if}
         {/each}
@@ -172,5 +213,59 @@
         color: white;
         border-radius: 8px;
         padding: 5px;
+    }
+
+    .checks{
+        background-color: #fbe4cb;
+        border: 2px solid hsla(35, 39%, 22%, 0.83);
+        border-radius: 30px;
+        box-shadow: hsla(35, 39%, 22%, 0.83) 4px 4px 0 0;
+        color: hsla(35, 39%, 22%, 0.83);
+        cursor: initial;
+        display: inline-block;
+        font-weight: 600;
+        font-size: 18px;
+        padding: 0 10px;
+        line-height: 30px;
+        text-align: center;
+        text-decoration: none;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        padding: 2px;
+        border-radius: 50%;
+        margin: 2px 0;
+        cursor: pointer;
+    }
+
+    input[type=checkbox] {
+        margin: 0px;
+        -webkit-appearance: none;
+        appearance: none;
+        background-color: #fbe4cb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    input[type="checkbox"]::before {
+        content: "";
+        width: .8em;
+        height: .8em;
+        transform: scale(0);
+        transition: 120ms transform ease-in-out;
+        background-color: black;
+        transform-origin: bottom left;
+        clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+    }
+
+    input[type="checkbox"]:checked::before {
+        transform: scale(1);
+
+    }
+
+    .removed {
+        text-decoration: line-through;
     }
 </style>

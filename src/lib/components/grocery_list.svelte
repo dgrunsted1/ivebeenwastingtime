@@ -300,7 +300,7 @@
     }
 
     input[type=checkbox] {
-        margin: 2px;
+        margin: 0px;
         -webkit-appearance: none;
         appearance: none;
         background-color: #fbe4cb;
@@ -312,8 +312,8 @@
 
     input[type="checkbox"]::before {
         content: "";
-        width: .5em;
-        height: .5em;
+        width: .8em;
+        height: .8em;
         transform: scale(0);
         transition: 120ms transform ease-in-out;
         background-color: black;
