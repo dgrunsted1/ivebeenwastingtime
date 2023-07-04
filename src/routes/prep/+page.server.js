@@ -5,7 +5,8 @@ const selectors = {
         serious_eats: {
             title: 'h1',
             author: '#mntl-bylines__item_4-0 > div > a',
-            description: '#mntl-sc-block_1-0-1',
+            description: '#heading_1-0 > p',
+            image: '#primary-image_1-0 > div > div > img',
             time: '#meta-text_1-0 > span.meta-text__data',
             servings: '#meta-text_6-0 > span.meta-text__data',
             ingredients: [{
@@ -30,6 +31,7 @@ const selectors = {
             title: 'h1',
             author: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_header-block__LWcDS.recipeintro_hasImage__5ekpP > header > div > h2:nth-child(1) > a',
             description: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_topnote-block__hFFPr > div > div > div > p',
+            image: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_image-block__8T89f.recipeintro_prints-image-hidden__3wv8_ > figure > div > img',
             time: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_stats-block__YgbqJ > dl > dd:nth-child(2)',
             servings: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > div.ingredients_recipeYield__Ljm9O > span.pantry--ui.ingredients_fontOverride__WoKY5',
             ingredients: [{  
@@ -112,6 +114,14 @@ async function get_directions(page, selector){
     return output;
 }
 
+async function get_img(page, selector){
+    let temp = await page.evaluate((sel) => {
+        return document.querySelector(sel)?.src;
+    }, selector);
+    console.log("img", temp);
+    return temp;
+}
+
 async function get_element(page, selector){
     // console.log("get element");
 
@@ -164,6 +174,8 @@ export const actions = {
                     results[k] = await get_ingredients(page, site_selectors[k]);
                 }else if(k == "directions"){
                     results[k] = await get_directions(page, site_selectors[k]);
+                }else if(k == "image"){
+                    results[k] = await get_img(page, site_selectors[k]);
                 }else {
                     results[k] = await get_element(page, site_selectors[k]);
                 }

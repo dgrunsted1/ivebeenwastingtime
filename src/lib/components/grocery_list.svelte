@@ -3,7 +3,7 @@
     import { createEventDispatcher } from 'svelte';
     import { afterUpdate } from 'svelte';
 
-
+    const conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     const dispatch = createEventDispatcher();
     export let recipes;
     let grocery_list = [];
@@ -88,8 +88,8 @@
                     }
                     grocery_list.splice(grocery_list.indexOf(match), 1);
                     grocery_list.push(tmp);
-                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
-                    console.log("merged item", tmp);
+                    // console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
+                    // console.log("merged item", tmp);
                 }else {
                     grocery_list.push(item);
                 }

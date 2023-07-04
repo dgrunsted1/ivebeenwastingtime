@@ -425,7 +425,6 @@ function make_singular(unit) {
 }
 
 function get_multiplier(e){
-    console.log(e.target.parentElement.previousElementSibling.previousElementSibling.children[0]);
     let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
     let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
     return desired_servings / servings_in_recipe;
@@ -445,8 +444,6 @@ async function fetch_recipe(e){
         alert(result.data.err);
         e.srcElement.value = "";
     } else if (result.type === 'success') {
-        //todo fix multiplier
-        // multiplier = get_multiplier(e);
         result.data.ingredients = process_recipe(result.data.ingredients);
         recipe = result.data;
         dispatch('recipe_edited', {
@@ -487,7 +484,7 @@ async function fetch_recipe(e){
         </form>
     </div>
     {#if recipe}
-        <EditRecipe {recipe} on:update_recipe={update_recipe}/>
+        <EditRecipe {recipe} {index} on:update_recipe={update_recipe}/>
     {:else}
         <div id="title">
             <label for="recipe" id="label">{name}:</label>

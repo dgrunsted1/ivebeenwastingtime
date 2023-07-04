@@ -6,7 +6,6 @@
 
     let test_mode = false;
     // let modes = ["Freestyle", "Weekly Grocery Run"];
-    let conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
     // let curr_mode = modes[2];
     $: input_count = (test_mode) ? 1 : 2;
     let recipes = [];

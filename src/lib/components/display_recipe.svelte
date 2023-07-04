@@ -7,51 +7,59 @@ export let recipe;
 </script>
 
 <div id="recipe">
-    <div class="title_container">
-        <label for="title">Title</label>
-        <div class="title" >{recipe.title}</div>
-    </div>
-    <div class="decription_container">
-        <label for="desc">Description</label>
-        <div class="desc" >{recipe.description}</div>
-    </div>
-    <div class="misc">
-        <div class="author_container">
-            <label for="auth">Author</label>
-            <div class="auth">{recipe.author}</div>
+    <div class="img_info_container">
+        <div class="img_container">
+            <img src={recipe.image} alt={recipe.title}/>
         </div>
-        <div class="time_container">
-            <label for="time">Time</label>
-            <div class="time">{recipe.time}</div>
-        </div>
-    </div>
-    <div>Ingredients</div>
-    <div id="ingredient_list">
-        {#each recipe.ingredients as ingr}
-            {#if ingr}
-                <div class="ingr_row">
-                    <div class="ingr_amount">{ingr.amount ? ingr.amount : ""}</div>
-                    <div class="ingr_unit">{ingr.unit ? ingr.unit : ""}</div>
-                    <div class="ingr_name">{ingr.name ? ingr.name : ingr.original}</div>
-                </div>
-            {/if}
-        {/each}
-    </div>
-    <div>Directions</div>
-    <div class="directions_list">
-        {#each recipe.directions as curr, i}
-            <div class="step">
-                <label for="directions">Step {i+1}</label>
-                <p class="directions">{curr}</p>
+        <div class="info_container">
+            <div class="title_container">
+                <div class="title" >{recipe.title}</div>
             </div>
-        {/each}
-    </div>
-    {#if recipe.notes}
-        <div>Notes</div>
-        <div class="notes_container">
-            <div class="notes">{recipe.notes}</div>
+            <div class="decription_container">
+                <div class="desc" >{recipe.description}</div>
+            </div>
+            <div class="misc">
+                <div class="author_container">
+                    <label for="auth">Author</label>
+                    <div class="auth">{recipe.author}</div>
+                </div>
+                <div class="time_container">
+                    <label for="time">Time</label>
+                    <div class="time">{recipe.time}</div>
+                </div>
+            </div>
         </div>
-    {/if}
+    </div>
+    <div class="ingr_directions_container">
+        <div>Ingredients</div>
+        <div id="ingredient_list">
+            {#each recipe.ingredients as ingr}
+                {#if ingr}
+                    <div class="ingr_row">
+                        <div class="ingr_amount">{ingr.amount ? ingr.amount : ""}</div>
+                        <div class="ingr_unit">{ingr.unit ? ingr.unit : ""}</div>
+                        <div class="ingr_name">{ingr.name ? ingr.name : ingr.original}</div>
+                    </div>
+                {/if}
+            {/each}
+        </div>
+    
+        <div>Directions</div>
+        <div class="directions_list">
+            {#each recipe.directions as curr, i}
+                <div class="step">
+                    <label for="directions">Step {i+1}</label>
+                    <p class="directions">{curr}</p>
+                </div>
+            {/each}
+        </div>
+        {#if recipe.notes}
+            <div>Notes</div>
+            <div class="notes_container">
+                <div class="notes">{recipe.notes}</div>
+            </div>
+        {/if}
+    </div>
 </div>
 
 
@@ -76,53 +84,60 @@ export let recipe;
         display: flex;
         flex-direction: row;
         width: 100%;
-        justify-content: center;
+        margin-left: 10px;
     }
 
     #recipe {
-        width: 70%;
         flex-direction: column;
     }
 
     .ingr_amount {
         width: 2.25em;
         text-align: center;
-        font-size: .7em;
+        font-size: 1em;
+        margin: 0 5px;
     }
 
     .ingr_unit {
         width: 6em;
         text-align: center;
-        font-size: .7em;
+        font-size: 1em;
+        margin: 0 5px;
     }
 
     .ingr_name {
         width: 70%;
-        font-size: .7em;
+        font-size: 1em;
     }
 
 
-    .title, .desc {
+    .title{
         width: 80%;
         font-size: 1em;
     }
 
-    .title_container, .decription_container, .misc {
+    .desc {
+        font-size: 1em;
+    }
+
+    .title_container, .decription_container {
         display: flex;
         justify-content: space-around;
+    }
+
+    .misc {
+        display: flex;
+        justify-content: space-evenly;
     }
 
     .step, .notes_container {
         display: flex;
         align-items: center;
         justify-content: center;
-        /* width: 80%;
-        margin: auto; */
     }
 
     [for="directions"] {
         display: flex;
-        /* flex-grow: 1; */
         text-align: right;
     }
 
@@ -132,10 +147,47 @@ export let recipe;
         margin: 5px;
         max-width: 80%;
         height: fit-content;
-        font-size: .7em;
+        font-size: 1em;
     }
 
     .notes {
         width: 80%;
+    }
+
+    .info_container {
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        /* align-items: flex-start; */
+        margin: 5px;
+    }
+
+    .img_info_container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .img_container {
+        width: 50%;
+        /* position: relative; */
+        /* left: -3em; */
+    }
+
+    img {
+        width: 100%;
+    }
+
+    .ingr_directions_container {
+        display: flex;
+        flex-direction: column;
+        width: 80%;
+        margin: auto;
+    }
+
+    .decription_container {
+        display: flex;
+        flex-direction: column;
+        /* align-items: center; */
     }
 </style>
