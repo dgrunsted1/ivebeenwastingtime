@@ -188,11 +188,7 @@ export const actions = {
                 const result = await pb.collection('errors').create(data);
             }
         };
-        // console.log("results", results);
-        // console.log("ingredients", results.ingredients);
-        // results.directions = trim(results.directions);
-        // results.ingredients = trim(results.ingredients);
-
+        results.description = results.description.split(".")[0];
         results.servings = format_servings(results.servings);
         // console.log("results", results);
         await browser.close();

@@ -166,16 +166,18 @@ export let recipe;
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
     }
 
     .img_container {
-        width: 50%;
+        /* width: 50%; */
         /* position: relative; */
         /* left: -3em; */
     }
 
     img {
         width: 100%;
+        max-width: 20em;
     }
 
     .ingr_directions_container {

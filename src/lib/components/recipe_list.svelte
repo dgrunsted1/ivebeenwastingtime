@@ -86,7 +86,10 @@
                 <div class="checks" on:click|self={check_item}>
                     <input type="checkbox" on:click|self={check_item} class="checkbox" id="{curr.id}">
                 </div>
-                <p id={i}>{curr.title}</p>
+                <div class="list_item">
+                    <img class="image" src={curr.image} alt={curr.title}/>
+                    <p id={i}>{curr.title}</p>
+                </div>
                 <div class="recipe_btns">
                     <div class="recipe_btn" on:click={view}>view</div>
                     <div class="recipe_btn" on:click={edit}>edit</div>
@@ -174,5 +177,22 @@
     .recipe_btns {
         display: flex;
         margin: 3px;
+    }
+
+    .image {
+        width: 20%;
+        margin: 5px;
+    }
+
+    .list_item {
+        display: flex;
+        justify-content: left;
+        margin: 0 15px;
+        align-items: middle;
+        width: 100%;
+    }
+
+    p {
+        display: flex;
     }
 </style>

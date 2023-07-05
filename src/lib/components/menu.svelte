@@ -6,17 +6,22 @@
 <div id="menu">
     {#each menu as recipe}
         <div class="menu_recipe">
-            <p class="title">{recipe.title}</p>
             <div class="details">
                 <div class="info">
-                    <p class="time">{recipe.time}</p>
-                    <div class="servings">
-                        servings:<input type="text" class="servings" id={recipe.id} value={recipe.servings}>
+                    <div class="img_serv_container">
+                        <div class="image">
+                            <img src={recipe.image} alt={recipe.title}/>
+                        </div>
+                        <div class="servings_time_container">
+                            <p class="title">{recipe.title}</p>
+                            <p class="time">{recipe.time}</p>
+                            <div class="servings">
+                                servings:<input type="text" class="servings" id={recipe.id} value={recipe.servings}>
+                            </div>
+                            <p class="description">{recipe.description}</p>
+                        </div>
                     </div>
-                <!-- <p>{recipe.title}</p> -->
                 </div>
-                <p class="description">{recipe.description}</p>
-                <!-- <p>{recipe.author}</p> -->
             </div>
         </div>
     {/each}
@@ -25,7 +30,7 @@
 
 <style>
     p {
-        margin: 3px 10px;
+        /* margin: 3px 10px; */
     }
     
     #menu {
@@ -38,7 +43,7 @@
     }
 
     .details {
-        margin: 5px 10px;
+        /* margin: 5px 10px; */
     }
 
     .title {
@@ -48,18 +53,36 @@
     .info {
         display: flex;
         flex-direction: row;
-        justify-content: space-around;
+        justify-content: flex-start;
     }
 
     input[type="text"] {
         width: 2em;
     }
 
-    .description {
-        /* margin: 0; */
+    .image {
+        width: 15%;
+        /* height: auto; */
+        /* max-height: 200px; */
     }
 
-    .time {
-        /* margin: 0; */
+    img {
+        width: 100%;
+    }
+
+    .img_serv_container {
+        display: flex;
+        width: 100%;
+        align-items: center;
+    }
+
+    .servings_time_container {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        margin: 0 10px;
+    }
+    p {
+        margin: 0;
     }
 </style>

@@ -21,7 +21,7 @@
 
 
     async function save_recipe(e) {
-        console.log(e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
+        // console.log(e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
         e.srcElement.disabled = true;
         e.srcElement.innerHTML = "uploading";
         let temp = [];
@@ -45,7 +45,9 @@
             const record = await pb.collection('recipes').update(recipe.id, data);
         }else {
             data.user = $currentUser.id;
-            data.url = e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value;
+            if (e.srcElement.parentElement.parentElement.previousElementSibling){
+                data.url = e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value;
+            }
             const record = await pb.collection('recipes').create(data);
             recipe = record;
         }
@@ -83,6 +85,7 @@
     }
 
     function enable_save(){
+        if (!index) index = 0;
         document.getElementsByClassName("save_btn")[index].disabled = false;
         document.getElementsByClassName("save_btn")[index].innerHTML = "save recipe";
     }
@@ -322,16 +325,20 @@
     .img_info_container {
         display: flex;
         flex-direction: row;
+        justify-content: center;
+        align-items: center;
     }
 
     .img_container {
-        width: 50%;
+        /* width: 50%; */
+        /* margin: auto; */
         /* position: relative; */
         /* left: -3em; */
     }
 
     img {
         width: 100%;
+        max-width: 20em;
     }
 
     .ingr_directions_container {
