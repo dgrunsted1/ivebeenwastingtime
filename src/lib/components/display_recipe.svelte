@@ -15,7 +15,7 @@ export let recipe;
             <div class="title_container">
                 <div class="title" >{recipe.title}</div>
             </div>
-            <div class="decription_container">
+            <div class="description_container">
                 <div class="desc" >{recipe.description}</div>
             </div>
             <div class="misc">
@@ -27,6 +27,11 @@ export let recipe;
                     <label for="time">Time</label>
                     <div class="time">{recipe.time}</div>
                 </div>
+                <div class="servings">
+                    servings
+                    <div>{recipe.servings}</div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -113,14 +118,14 @@ export let recipe;
 
     .title{
         width: 80%;
-        font-size: 1em;
+        font-size: 1.75em;
     }
 
     .desc {
         font-size: 1em;
     }
 
-    .title_container, .decription_container {
+    .title_container, .description_container {
         display: flex;
         justify-content: space-around;
     }
@@ -158,7 +163,6 @@ export let recipe;
         width: 50%;
         display: flex;
         flex-direction: column;
-        /* align-items: flex-start; */
         margin: 5px;
     }
 
@@ -167,12 +171,6 @@ export let recipe;
         flex-direction: row;
         align-items: center;
         justify-content: center;
-    }
-
-    .img_container {
-        /* width: 50%; */
-        /* position: relative; */
-        /* left: -3em; */
     }
 
     img {
@@ -187,9 +185,7 @@ export let recipe;
         margin: auto;
     }
 
-    .decription_container {
-        display: flex;
-        flex-direction: column;
-        /* align-items: center; */
+    .author_container, .time_container, .servings {
+        text-align: center;
     }
 </style>

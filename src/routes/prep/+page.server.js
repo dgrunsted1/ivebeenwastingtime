@@ -125,17 +125,16 @@ async function get_img(page, selector){
 async function get_element(page, selector){
     // console.log("get element");
 
-    let elementSelector = await page.waitForSelector(
-        selector
-    );
-    let result = await elementSelector?.evaluate(el => el.textContent);
-    return result;
+    let temp = await page.evaluate((sel) => {
+        return document.querySelector(sel)?.textContent;
+    }, selector);
+    return temp;
 }
 
 
 
 function format_servings(input){
-    if (input.includes('servings')) return parseInt(input.replace("servings", "").trim());
+    if (input && input.includes('servings')) return parseInt(input.replace("servings", "").trim());
     else return input;
 }
 
@@ -188,7 +187,7 @@ export const actions = {
                 const result = await pb.collection('errors').create(data);
             }
         };
-        results.description = results.description.split(".")[0];
+        results.description = (results.description) ? results.description.split(".")[0] : results.description;
         results.servings = format_servings(results.servings);
         // console.log("results", results);
         await browser.close();

@@ -114,6 +114,9 @@
                     <label for="time">Time</label>
                     <input class="time" type="text" bind:value={recipe.time} on:input|preventDefault={enable_save}>
                 </div>
+                <div class="servings">
+                    servings:<input type="text" class="servings" id={recipe.id} bind:value={recipe.servings}>
+                </div>
             </div>
         </div>
     </div>
