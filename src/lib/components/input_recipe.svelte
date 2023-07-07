@@ -16,250 +16,6 @@ let multiplier = 1;
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
                     "⅖": .4, "⅗": .6, "⅘": .8, "⅙": .166667, "⅚": .833333, "⅛": .125, "⅜": .375, "⅝": .625, "⅞": .875};
 
-const tests = [
-    {test: [
-            "Yield: 8 to 10 servings",
-            "For the Frosting",
-            "",
-            "¾cup/180 milliliters heavy cream",
-            "2teaspoons loose Earl Grey tea",
-            "¼cup/30 grams confectioners’ sugar",
-            "½cup/115 grams mascarpone or softened cream cheese (see Tip)",
-            "For the Cake",
-            "",
-            "½cup/115 grams unsalted butter (1 stick), at room temperature, plus more for greasing the pan",
-            "1½cups/190 grams all-purpose flour",
-            "1tablespoon loose Earl Grey tea",
-            "1teaspoon baking powder",
-            "½teaspoon kosher salt",
-            "1cup/200 grams granulated sugar",
-            "2teaspoons freshly grated orange zest (from 1 large orange)",
-            "2large eggs, at room temperature",
-            "½cup/120 milliliters whole milk, at room temperature",
-            "¼cup/45 grams chopped dark chocolate"
-            ], 
-        answer: [
-            {amount: false, unit: false, name: false, original: ["Yield: 8 to 10 servings"]},
-            {amount: false, unit: false, name: false, original: ["For the Frosting"]},
-            false,
-            {amount: 0.75, unit: "cup", name: "heavy cream", original: ["¾ cup/180 milliliters heavy cream"]},
-            {amount: 2, unit: "teaspoon", name: "loose Earl Grey tea", original: ["2 teaspoons loose Earl Grey tea"]},
-            {amount: 0.25, unit: "cup", name: "confectioners’ sugar", original: ["¼ cup/30 grams confectioners’ sugar"]},
-            {amount: 0.5, unit: "cup", name: "mascarpone or softened cream cheese", original: ["½ cup/115 grams mascarpone or softened cream cheese (see Tip)"]},
-            {amount: false, unit: false, name: false, original: ["For the Cake"]},
-            false,
-            {amount: 0.5, unit: "cup", name: "unsalted butter", original: ["½ cup/115 grams unsalted butter (1 stick), at room temperature, plus more for greasing the pan"]},
-            {amount: 1.5, unit: "cup", name: "all-purpose flour", original: ["1½ cups/190 grams all-purpose flour"]},
-            {amount: 1, unit: "tablespoon", name: "loose Earl Grey tea", original: ["1 tablespoon loose Earl Grey tea"]},
-            {amount: 1, unit: "teaspoon", name: "baking powder", original: ["1 teaspoon baking powder"]},
-            {amount: 0.5, unit: "teaspoon", name: "kosher salt", original: ["½ teaspoon kosher salt"]},
-            {amount: 1, unit: "cup", name: "granulated sugar", original: ["1 cup/200 grams granulated sugar"]},
-            {amount: 2, unit: "teaspoon", name: "freshly grated orange zest", original: ["2 teaspoons freshly grated orange zest (from 1 large orange)"]},
-            {amount: 2, unit: "large", name: "egg", original: ["2 large eggs, at room temperature"]},
-            {amount: 0.5, unit: "cup", name: "whole milk", original: ["½ cup/120 milliliters whole milk, at room temperature"]},
-            {amount: 0.25, unit: "cup", name: "chopped dark chocolate", original: ["¼ cup/45 grams chopped dark chocolate"]},
-            false
-    ]},
-    {test: [
-            "2 medium onions, divided",
-            "1/2 cup (8g) chopped fresh cilantro leaves and tender stems",
-            "3 pounds boneless pork shoulder, cut into 2-inch cubes",
-            "1 tablespoon (8g) kosher salt, plus more to taste; for table salt, use half of the volume or an equal amount by weight",
-            "1 medium orange",
-            "6 cloves garlic, halved, divided",
-            "2 bay leaves",
-            "1 cinnamon stick, broken into three or four pieces",
-            "1 1/4 cup (60ml) vegetable oil",
-            "6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved",
-            "2 jalapeño peppers, stem removed and halved lengthwise",
-            "24 corn tortillas",
-            "1 cup (150g) crumbled queso fresco",
-            "3 limes, cut into wedges"
-            ], 
-        answer: [
-            {amount: 2, unit: "medium", name: "onion", original: ["2 medium onions, divided"]},
-            {amount: 0.5, unit: "cup", name: "chopped fresh cilantro leaves and tender stems", original: ["1/2 cup (8g) chopped fresh cilantro leaves and tender stems"]},
-            {amount: 3, unit: "pound", name: "boneless pork shoulder", original: ["3 pounds boneless pork shoulder, cut into 2-inch cubes"]},
-            {amount: 1, unit: "tablespoon", name: "kosher salt", original: ["1 tablespoon (8g) kosher salt, plus more to taste; for table salt, use half of the volume or an equal amount by weight"]},
-            {amount: 1, unit: "medium", name: "orange", original: ["1 medium orange"]},
-            {amount: 6, unit: "clove", name: "garlic", original: ["6 cloves garlic, halved, divided"]},
-            {amount: 2, unit: "whole", name: "bay leave", original: ["2 bay leaves"]},
-            {amount: 1, unit: "whole", name: "cinnamon stick", original: ["1 cinnamon stick, broken into three or four pieces"]},
-            {amount: 1.25, unit: "cup", name: "vegetable oil", original: ["1 1/4 cup (60ml) vegetable oil"]},
-            {amount: 6, unit: "medium", name: "tomatillo", original: ["6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved"]},
-            {amount: 2, unit: "whole", name: "jalapeño pepper", original: ["2 jalapeño peppers, stem removed and halved lengthwise"]},
-            {amount: 24, unit: "whole", name: "corn tortilla", original: ["24 corn tortillas"]},
-            {amount: 1, unit: "cup", name: "crumbled queso fresco", original: ["1 cup (150g) crumbled queso fresco"]},
-            {amount: 3, unit: "whole", name: "lime cut into wedge", original: ["3 limes, cut into wedges"]},
-            false
-    ]},
-    {test: [
-            "1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares",
-            "5 tablespoons (75ml) extra-virgin olive oil, divided",
-            "3/4 ounce (3 tablespoons; 22g) za'atar, divided",
-            "1 large grapefruit (357g; 12.5 ounces), cut into segments, juice reserved separately",
-            "2 tablespoons (30ml) tahini",
-            "1 tablespoon (15ml) white or yellow miso paste",
-            "1 tablespoon (15ml) juice from 1 lemon",
-            "1 teaspoon (5ml) honey or agave nectar",
-            "Kosher salt and freshly ground black pepper",
-            "1 large avocado, cut into 1/2-inch chunks (about 1/2 cup)",
-            "5 ounces (about 5 cups; 142g) greens, such as baby kale, spinach, or arugula, see note"
-            ], 
-        answer: [
-            {amount: 1, unit: "14 ounce block", name: "firm tofu", original: ["1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares"]},
-            {amount: 5, unit: "tablespoon", name: "extra-virgin olive oil", original: ["5 tablespoons (75ml) extra-virgin olive oil, divided"]},
-            {amount: 0.75, unit: "ounce", name: "za'atar", original: ["3/4 ounce (3 tablespoons; 22g) za'atar, divided"]},
-            {amount: 1, unit: "large", name: "grapefruit", original: ["1 large grapefruit (357g; 12.5 ounces), cut into segments, juice reserved separately"]},
-            {amount: 2, unit: "tablespoon", name: "tahini", original: ["2 tablespoons (30ml) tahini"]},
-            {amount: 1, unit: "tablespoon", name: "white or yellow miso paste", original: ["1 tablespoon (15ml) white or yellow miso paste"]},
-            {amount: 1, unit: "tablespoon", name: "juice from 1 lemon", original: ["1 tablespoon (15ml) juice from 1 lemon"]},
-            {amount: 1, unit: "teaspoon", name: "honey or agave nectar", original: ["1 teaspoon (5ml) honey or agave nectar"]},
-            {amount: false, unit: false, name: false, original: ["Kosher salt and freshly ground black pepper"]},
-            {amount: 1, unit: "large", name: "avocado", original: ["1 large avocado, cut into 1/2-inch chunks (about 1/2 cup)"]},
-            {amount: 5, unit: "ounce", name: "green", original: ["5 ounces (about 5 cups; 142g) greens, such as baby kale, spinach, or arugula, see note"]},
-            false
-    ]},
-    {test: [
-            "FOR THE LEMON PEEL BROTH:",
-            "",
-            "4 celery stalks, including leaves",
-            "2 garlic bulbs, sliced in half horizontally",
-            "Peels from 4 lemons",
-            "2 teaspoons sea salt",
-            "1 teaspoon black peppercorns",
-            "10 cups water",
-            "FOR THE TORTELLINI SOUP:",
-            "",
-            "9 ounces store-bought tortellini",
-            "4 cups Lemon Peel Broth",
-            "2 cups fresh spinach",
-            "1 cup frozen peas, thawed",
-            "1 tablespoon fresh lemon juice",
-            "2 cups fresh basil leaves",
-            "Extra-virgin olive oil, for drizzling",
-            "Pinch of red pepper flakes (optional)",
-            "Sea salt and freshly ground black pepper"
-            ], 
-        answer: [
-            {amount: false, unit: false, name: false, original: ["FOR THE LEMON PEEL BROTH:"]},
-            false,
-            {amount: 4, unit: "whole", name: "celery stalks", original: ["4 celery stalks, including leaves"]},
-            {amount: 2, unit: "whole", name: "garlic bulb", original: ["2 garlic bulbs, sliced in half horizontally"]},
-            {amount: false, unit: false, name: false, original: ["Peels from 4 lemons"]},
-            {amount: 2, unit: "teaspoon", name: "sea salt", original: ["2 teaspoons sea salt"]},
-            {amount: 1, unit: "teaspoon", name: "black peppercorn", original: ["1 teaspoon black peppercorns"]},
-            {amount: 10, unit: "cup", name: "water", original: ["10 cups water"]},
-            {amount: false, unit: false, name: false, original: ["FOR THE TORTELLINI SOUP:"]},
-            false,
-            {amount: 9, unit: "ounce", name: "store-bought tortellini", original: ["9 ounces store-bought tortellini"]},
-            {amount: 4, unit: "cup", name: "Lemon Peel Broth", original: ["4 cups Lemon Peel Broth"]},
-            {amount: 2, unit: "cup", name: "fresh spinach", original: ["2 cups fresh spinach"]},
-            {amount: 1, unit: "cup", name: "frozen pea", original: ["1 cup frozen peas, thawed"]},
-            {amount: 1, unit: "tablespoon", name: "fresh lemon juice", original: ["1 tablespoon fresh lemon juice"]},
-            {amount: 2, unit: "cup", name: "fresh basil leaves", original: ["2 cups fresh basil leaves"]},
-            {amount: false, unit: false, name: false, original: ["Extra-virgin olive oil, for drizzling"]},
-            {amount: false, unit: false, name: false, original: ["Pinch of red pepper flakes (optional)"]},
-            {amount: false, unit: false, name: false, original: ["Sea salt and freshly ground black pepper"]},
-            false
-        ]},
-        {test: [
-            "For the Beef and Marinade:",
-            "",
-            "3/4 pound beef flank steak, sliced across the grain 1/8 inch thick",
-            "1/2 teaspoon soy sauce",
-            "1/2 teaspoon Shaoxing wine",
-            "2 teaspoons vegetable or canola oil",
-            "1/2 teaspoon cornstarch",
-            "1/2 teaspoon kosher salt",
-            "1/4 teaspoon sugar",
-            "1/4 teaspoon ground white pepper",
-            "For the Sauce:",
-            "",
-            "2 tablespoons water",
-            "1 teaspoon sesame oil",
-            "2 teaspoons oyster sauce",
-            "1 teaspoon soy sauce",
-            "1 teaspoon cornstarch",
-            "For the Stir-Fry:",
-            "",
-            "1/2 pound Chinese broccoli (gai lan or baby gai lan), cut into 3 sections on the diagonal if regular gai lan or in half on the diagonal if baby gai lan",
-            "2 tablespoons vegetable or canola oil, divided",
-            "2 whole shallots, sliced",
-            "8 cloves of garlic, chopped very coarsely",
-            "Cooked white rice, for serving",
-            ""
-            ], 
-        answer: [
-            {amount: false, unit: false, name: false, original: ["For the Beef and Marinade:"]},
-            false,
-            {amount: 0.75, unit: "pound", name: "beef flank steak", original: ["3/4 pound beef flank steak, sliced across the grain 1/8 inch thick"]},
-            {amount: 0.5, unit: "teaspoon", name: "soy sauce", original: ["1/2 teaspoon soy sauce"]},
-            {amount: 0.5, unit: "teaspoon", name: "Shaoxing wine", original: ["1/2 teaspoon Shaoxing wine"]},
-            {amount: 2, unit: "teaspoon", name: "vegetable or canola oil", original: ["2 teaspoons vegetable or canola oil"]},
-            {amount: 0.5, unit: "teaspoon", name: "cornstarch", original: ["1/2 teaspoon cornstarch"]},
-            {amount: 0.5, unit: "teaspoon", name: "kosher salt", original: ["1/2 teaspoon kosher salt"]},
-            {amount: 0.25, unit: "teaspoon", name: "sugar", original: ["1/4 teaspoon sugar"]},
-            {amount: 0.25, unit: "teaspoon", name: "ground white pepper", original: ["1/4 teaspoon ground white pepper"]},
-            {amount: false, unit: false, name: false, original: ["For the Sauce:"]},
-            false,
-            {amount: 2, unit: "tablespoon", name: "water", original: ["2 tablespoons water"]},
-            {amount: 1, unit: "teaspoon", name: "sesame oil", original: ["1 teaspoon sesame oil"]},
-            {amount: 2, unit: "teaspoon", name: "oyster sauce", original: ["2 teaspoons oyster sauce"]},
-            {amount: 1, unit: "teaspoon", name: "soy sauce", original: ["1 teaspoon soy sauce"]},
-            {amount: 1, unit: "teaspoon", name: "cornstarch", original: ["1 teaspoon cornstarch"]},
-            {amount: false, unit: false, name: false, original: ["For the Stir-Fry:"]},
-            false,
-            {amount: 0.5, unit: "pound", name: "Chinese broccoli", original: ["1/2 pound Chinese broccoli (gai lan or baby gai lan), cut into 3 sections on the diagonal if regular gai lan or in half on the diagonal if baby gai lan"]},
-            {amount: 2, unit: "tablespoon", name: "vegetable or canola oil", original: ["2 tablespoons vegetable or canola oil, divided"]},
-            {amount: 2, unit: "whole", name: "shallots", original: ["2 whole shallots, sliced"]},
-            {amount: 8, unit: "clove", name: "of garlic", original: ["8 cloves of garlic, chopped very coarsely"]},
-            {amount: false, unit: false, name: false, original: ["Cooked white rice, for serving"]},
-            false,
-            false
-        ]},
-        {test: [
-            "4 medium cloves garlic, roughly chopped",
-            "1 (1-inch) knob ginger, peeled, roughly chopped",
-            "1 to 6 green Thai chiles (to taste), roughly chopped",
-            "2 tablespoons (30ml) juice from 1 lemon, divided",
-            "Kosher salt",
-            "2 tablespoons (30ml) vegetable oil or ghee",
-            "2 teaspoons (8g) black mustard seeds",
-            "1 teaspoon (4g) whole cumin seeds",
-            "1 large onion, finely diced (about 1 1/2 cups; 300g)",
-            "1/4 teaspoon (1g) baking soda",
-            "2 teaspoons (8g) ground coriander",
-            "1/2 teaspoon (2g) freshly ground black pepper",
-            "1/2 teaspoon (2g) ground turmeric",
-            "1 1/2 teaspoons (6g) store-bought or homemade garam masala, divided",
-            "1 (14-ounce) can whole peeled tomatoes",
-            "2 (14-ounce) cans chickpeas, drained and rinsed",
-            "1 cup cilantro leaves, roughly chopped (1 ounce; 25g)",
-            ""
-            ], 
-        answer: [
-            {amount: 4, unit: "medium", name: "cloves garlic", original: ["4 medium cloves garlic, roughly chopped"]},
-            {amount: 1, unit: "whole", name: "1-inch knob ginger", original: ["1 (1-inch) knob ginger, peeled, roughly chopped"]},
-            {amount: 1, unit: "whole", name: "to 6 green Thai chile", original: ["1 to 6 green Thai chiles (to taste), roughly chopped"]},
-            {amount: 2, unit: "tablespoon", name: "juice from 1 lemon", original: ["2 tablespoons (30ml) juice from 1 lemon, divided"]},
-            {amount: false, unit: false, name: false, original: ["Kosher salt"]},
-            {amount: 2, unit: "tablespoon", name: "vegetable oil or ghee", original: ["2 tablespoons (30ml) vegetable oil or ghee"]},
-            {amount: 2, unit: "teaspoon", name: "black mustard seeds", original: ["2 teaspoons (8g) black mustard seeds"]},
-            {amount: 1, unit: "teaspoon", name: "whole cumin seeds", original: ["1 teaspoon (4g) whole cumin seeds"]},
-            {amount: 1, unit: "large", name: "onion", original: ["1 large onion, finely diced (about 1 1/2 cups; 300g)"]},
-            {amount: 0.25, unit: "teaspoon", name: "baking soda", original: ["1/4 teaspoon (1g) baking soda"]},
-            {amount: 2, unit: "teaspoon", name: "ground coriander", original: ["2 teaspoons (8g) ground coriander"]},
-            {amount: 0.5, unit: "teaspoon", name: "freshly ground black pepper", original: ["1/2 teaspoon (2g) freshly ground black pepper"]},
-            {amount: 0.5, unit: "teaspoon", name: "ground turmeric", original: ["1/2 teaspoon (2g) ground turmeric"]},
-            {amount: 1.5, unit: "teaspoon", name: "store-bought or homemade garam masala", original: ["1 1/2 teaspoons (6g) store-bought or homemade garam masala, divided"]},
-            {amount: 1, unit: "14-ounce can", name: "whole peeled tomatoe", original: ["1 (14-ounce) can whole peeled tomatoes"]},
-            {amount: 2, unit: "14-ounce can", name: "chickpea", original: ["2 (14-ounce) cans chickpeas, drained and rinsed"]},
-            {amount: 1, unit: "cup", name: "cilantro leave", original: ["1 cup cilantro leaves, roughly chopped (1 ounce; 25g)"]},
-            false,
-            false
-        ]}
-];
 
 
 
@@ -268,6 +24,7 @@ function forward_input(e) {
     let items = process_recipe(e.srcElement.value.split("\n"));
 	dispatch('recipe_edited', {
         items: items, 
+        multiplier: multiplier,
         index: index
     });
 }
@@ -276,6 +33,17 @@ function update_recipe(e){
     recipe = e.detail.recipe;
     dispatch('recipe_edited', {
         items: recipe.ingredients, 
+        multiplier: multiplier,
+        index: index
+    });
+}
+
+function update_multiplier(e){
+    let desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
+    let servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
+    multiplier = desired_servings / servings_in_recipe;
+    dispatch("update_multiplier", {
+        multiplier: multiplier,
         index: index
     });
 }
@@ -364,19 +132,20 @@ function process_recipe(in_lines) {
 }
 
 function convert_amount(in_amount) {
-    if (in_amount.match(/^[\u00BC-\u00BE\u2150-\u215E]/)){
-        return conv_frac[in_amount] * multiplier;
-    } else if (in_amount.match(/\d[\u00BC-\u00BE\u2150-\u215E]/)) {
-        return (parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)]) * multiplier;
-    } else if (in_amount.match(/^\d\/\d/)) {
-        return eval(in_amount) * multiplier;
-    } else if (in_amount.match(/\d \d\/\d/)) {
-        let tmp = in_amount.split(" ");
-        return parseInt(tmp[0]) + eval(tmp[1]) * multiplier;
-    } else {
-        return parseFloat(in_amount) * multiplier;
+        if (in_amount != "string") return in_amount;
+        if (in_amount.match(/^[\u00BC-\u00BE\u2150-\u215E]/)){
+            return conv_frac[in_amount];
+        } else if (in_amount.match(/\d[\u00BC-\u00BE\u2150-\u215E]/)) {
+            return parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)];
+        } else if (in_amount.match(/^\d\/\d/)) {
+            return eval(in_amount);
+        } else if (in_amount.match(/\d \d\/\d/)) {
+            let tmp = in_amount.split(" ");
+            return parseInt(tmp[0]) + eval(tmp[1]);
+        } else {
+            return parseFloat(in_amount);
+        }
     }
-}
 
 function trim_name(in_name) {
     let out = in_name.replace(/\(([^\)]+)\)/, "");
@@ -392,31 +161,6 @@ function log_match(match_arr, loop_num){
     match_arr.forEach(element => {
         console.log(cnt++, element);
     });
-}
-
-function test_process_recipe(event, test_to_run = -1){
-    if (test_to_run == -1){
-        
-        let i = 0;
-        tests.forEach(curr => {
-            let answer = process_recipe(curr['test']);
-            let ans_len = answer.length;
-            let test_ans_len = curr['answer'].length;
-            if (ans_len != test_ans_len) console.log("test "+i+" lengths do not match", (ans_len - test_ans_len));
-            for (let j = 0; j < ans_len; j++){
-                if (answer[j].amount !== curr['answer'][j].amount) console.log("test "+i+" amounts do not match", `answer[j].amount -> ${answer[j].amount} | curr['answer']${j}.amount -> ${curr['answer'][j].amount}`);
-                if (answer[j].unjt !== curr['answer'][j].unjt) console.log("test "+i+" unjts do not match", `answer[j].unjt -> ${answer[j].unjt} | curr['answer'][${j}].unjt -> ${curr['answer'][j].unjt}`);
-                if (answer[j].name !== curr['answer'][j].name) console.log("test "+i+" names do not match", `answer[j].name -> ${answer[j].name} | curr['answer']${j}.name -> ${curr['answer'][j].name}`);
-            }
-            console.log("test "+i, (JSON.stringify(answer) === JSON.stringify(curr['answer'])));
-            i++;
-        });
-    } else {
-        let answer = process_recipe(tests[test_to_run]['test']);
-        // console.log("answer", answer);
-        console.log("test "+test_to_run, (JSON.stringify(answer) === JSON.stringify(tests[test_to_run]['answer'])));
-    }
-    
 }
 
 function make_singular(unit) {
@@ -448,6 +192,7 @@ async function fetch_recipe(e){
         recipe = result.data;
         dispatch('recipe_edited', {
             items: result.data.ingredients, 
+            multiplier: multiplier,
             index: index
         });
         // re-run all `load` functions, following the successful update
@@ -470,11 +215,11 @@ async function fetch_recipe(e){
     <div id="servings">
         <div class="seperated">
             <label for="recipe_servings">recipe servings</label>
-            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
+            <input type="number" name="recipe_servings" id="recipe_servings" class="recipe_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1>
         </div>
         <div class="seperated">
             <label for="desired_servings">desired servings</label>
-            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={forward_input} on:delete|preventDefault={forward_input} min=1>
+            <input type="number" name="desired_servings" id="desired_servings" class="desired_servings" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1>
         </div>
     </div>
     <div class="link">

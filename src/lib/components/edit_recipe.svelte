@@ -128,7 +128,7 @@
                     <div class="ingr_row" class:removed={ingr.removed}>
                         <input type="text" class="ingr_amount" bind:value={recipe.ingredients[i].amount} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_unit" bind:value={recipe.ingredients[i].unit} on:input|preventDefault={enable_save}>
-                        {#if ingr.name}
+                        {#if recipe.ingredients[i].name}
                             <input type="text" class="ingr_name" bind:value={recipe.ingredients[i].name} on:input|preventDefault={enable_save}>
                         {:else}
                             <input type="text" class="ingr_name" bind:value={recipe.ingredients[i].original[0]} on:input|preventDefault={enable_save}>

@@ -51,7 +51,7 @@
         grocery_list = [];
         skipped = [];
         recipes.forEach(recipe => {
-            recipe.forEach(item => {
+            recipe.ingredients.forEach(item => {
                 if (!item) return;
                 if ((!item.amount || !item.unit || !item.name) && item.original) {
                     skipped.push(item);
@@ -74,11 +74,11 @@
                     let tmp = { amount: 0, unit: "", name: "", original: []};
                     tmp.original = tmp.original.concat(match.original, item.original);
                     if (match.unit != item.unit) {
-                        let conv = combine(match, item);
+                        let conv = combine(match, round_amount(item.amount, recipe.multiplier));
                         tmp.amount = conv.amount;
                         tmp.unit = conv.unit;
                     } else {
-                        tmp.amount = match.amount + item.amount;
+                        tmp.amount = match.amount + round_amount(item.amount, recipe.multiplier);
                         tmp.unit = match.unit;
                     }
                     if (match.name != item.name){
@@ -88,10 +88,15 @@
                     }
                     grocery_list.splice(grocery_list.indexOf(match), 1);
                     grocery_list.push(tmp);
-                    // console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
-                    // console.log("merged item", tmp);
+                    console.log("merging", `${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`);
+                    console.log("merged item", tmp);
                 }else {
-                    grocery_list.push(item);
+                    grocery_list.push({
+                        amount: round_amount(item.amount, recipe.multiplier),
+                        unit: item.unit,
+                        name: item.name,
+                        original: item.original
+                    });
                 }
             });
         });
@@ -111,6 +116,17 @@
         }
         return {unit: unit, amount: amount};
     }
+
+    function round_amount(in_amount, mult){
+        let result = 0;
+        if (typeof in_amount != "string"){
+            result = in_amount * mult;
+        } else {
+            result = parseFloat(in_amount) * mult;
+        }
+
+        return Math.round((result + Number.EPSILON) * 100) / 100
+    }
 </script>
 
 <div id="list">
@@ -126,7 +142,7 @@
                     <div class="grocery_item">
                         
                         <div class="checks" on:click|self={check_item}><input type="checkbox" class="checkbox" id="{item.name}"></div>
-                        <input type="text" class="amount" value={Math.round((item.amount + Number.EPSILON) * 100) / 100}>
+                        <input type="text" class="amount" value={item.amount}>
                         <input type="text" class="unit" value={item.unit}>
                         <input type="text" class="name" value={item.name}> 
                         <span class="original">
