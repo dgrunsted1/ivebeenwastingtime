@@ -138,7 +138,7 @@
     }
 </script>
 
-<div id="list" class="flex flex-col">
+<div id="list" class="flex flex-col w-full">
     <div id="header" class="flex justify-evenly items-center m-2.5">
         {#if grocery_list.length > 0}
             <div id="count">{grocery_list.length} Items</div><div id="copy" class="btn btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</div>

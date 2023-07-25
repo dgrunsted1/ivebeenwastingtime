@@ -92,7 +92,7 @@
 }
 </script>
 
-<div id="recipe" class="flex flex-col">
+<div id="recipe" class="flex flex-col max-h-[calc(100vh-90px)] overflow-y-auto">
     <div class="img_info_container flex flex-row w-100 content-center justify-around">
         <div class="img_container mr-3 flex width-1/2 content-center">
             <img src={recipe.image} alt={recipe.title} class="self-center"/>
@@ -141,7 +141,7 @@
                         <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.ingredients[i].amount} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.ingredients[i].unit} on:input|preventDefault={enable_save}>
                         {#if recipe.ingredients[i].name}
-                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80" bind:value={recipe.ingredients[i].name} on:input|preventDefault={enable_save}>
+                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.ingredients[i].name} on:input|preventDefault={enable_save}>
                         {:else}
                             <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80" bind:value={recipe.ingredients[i].original[0]} on:input|preventDefault={enable_save}>
                         {/if}

@@ -23,7 +23,7 @@
 
 
 <div id="main">
-    <div class="btn btn-primary mx-6"><a href="/menu">Create Menu</a></div>
+    <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
     <div id="content" class="flex flex-row m-3">
         <div id="recipes" class="flex flex-col basis-1/2">
             {#each Array(input_count) as _, index (index)}
@@ -34,7 +34,7 @@
             {/each}
             <div id="add_recipe" class="btn btn-secondary mx-6" on:click={()=>{input_count++}}>Add Recipe</div>
         </div>
-        <div id="right_column" class="flex basis-1/2">
+        <div id="right_column" class="flex w-1/2 mx-2">
             <GroceryList {recipes}/>
         </div>
     </div>

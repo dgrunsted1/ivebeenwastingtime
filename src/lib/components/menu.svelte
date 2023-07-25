@@ -34,9 +34,9 @@
     <div class="tabs tabs-boxed w-fit mx-auto">
         <a id="recipe_list" class="tab tab-active" on:click={switch_tab}>Recipes</a> 
         <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a> 
-      </div>
+    </div>
     
-        {#if tab == "recipe_list"}
+    {#if tab == "recipe_list"}
         <div class="max-h-[calc(100vh-130px)] overflow-y-auto">
             {#each menu as recipe}
                 <div class="img_serv_container card sm:card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl">
