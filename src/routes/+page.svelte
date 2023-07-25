@@ -2,94 +2,21 @@
 export let data;
 </script>
 
-<div id="main">
-    <div id="hero" style="background-image: url('{data.hero_url}')">
-        <div id="web_title">
-            ivebeenwastingtime
+<div id="main" class="w-full flex flex-col">
+    <div id="hero" style="background-image: url('{data.hero_url}')" class="flex flex-col relative w-full h-screen m-auto bg-cover bg-no-repeat bg-center">
+        <div id="web_title" class="m-auto cursor-default text-5xl text-white">
+            <h1>ivebeenwastingtime</h1>
         </div>
-        <div class="secondary">
-            <div id="left_side">
-            </div>
-            <div id="right_side">
-            </div> 
-        </div>
-        
     </div>
     <div id="content">
-        <div class="row">
-            <a href="/gallery">gallery</a>
-            <p>checkout my Gallery of photos</p>
+        <div class="row flex justify-evenly items-center m-24">
+            <a href="/gallery" class="btn btn-primary btn-lg">gallery</a>
+            <p class="text-2xl">checkout my Gallery of photos</p>
         </div>
-        <div class="row">
-            <p>Easily create grocery lists from recipes you find on the internet.</p>
-            <a href="/prep">prep</a>
+        <div class="row flex justify-evenly items-center m-24">
+            <p class="text-2xl">Easily create grocery lists from recipes you find on the internet.</p>
+            <a href="/prep" class="btn btn-primary btn-lg">prep</a>
         </div>
     </div>
     
 </div>
-
-
-
-
-
-
-<style>
-    #main {
-        width:100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    #left_side {
-        width: 50%;
-    }
-
-    #right_side {
-        width: 50%;
-    }
-
-    #hero {
-        display: flex;
-        flex-direction: column;
-        position: relative;
-        width: 100%;
-        height: 100svh;
-        margin: auto;
-        background-size:     cover;
-        background-repeat:   no-repeat;
-        background-position: center center;
-        z-index: 1;
-    }
-
-    #web_title {
-        margin: auto;
-        color: white;
-        font-size: 45px;
-        font-weight: 900;
-        cursor: default;
-    }
-
-    .row {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-items: center;
-        margin: 100px;
-    }
-     .row p {
-        font-size: 2em;
-     }
-
-     .row a {
-        font-size: 2em;
-         
-     }
-
-    @media (max-width: 600px) {
-        #web_title {
-            font-size: 2em;
-        }
-    }
-    
-
-</style>

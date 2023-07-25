@@ -6,28 +6,28 @@ export let recipe;
 
 </script>
 
-<div id="recipe">
-    <div class="img_info_container">
-        <div class="img_container">
-            <img src={recipe.image} alt={recipe.title}/>
+<div id="recipe" class="flex flex-col m-auto py-2 ">
+    <div class="img_info_container flex items-center justify-center">
+        <div class="img_container w-1/2">
+            <img src={recipe.image} alt={recipe.title} class="w-full"/>
         </div>
-        <div class="info_container">
-            <div class="title_container">
-                <div class="title" >{recipe.title}</div>
+        <div class="info_container w-1/2 flex flex-col m-1">
+            <div class="title_container flex justify-around">
+                <div class="title w-4/5 text-xl">{recipe.title}</div>
             </div>
             <div class="description_container">
-                <div class="desc" >{recipe.description}</div>
+                <div class="desc text-sm" >{recipe.description}</div>
             </div>
-            <div class="misc">
-                <div class="author_container">
+            <div class="misc flex justify-evenly">
+                <div class="author_container text-center">
                     <label for="auth">Author</label>
                     <div class="auth">{recipe.author}</div>
                 </div>
-                <div class="time_container">
+                <div class="time_container text-center">
                     <label for="time">Time</label>
                     <div class="time">{recipe.time}</div>
                 </div>
-                <div class="servings">
+                <div class="servings text-center">
                     servings
                     <div>{recipe.servings}</div>
                 </div>
@@ -35,15 +35,15 @@ export let recipe;
             </div>
         </div>
     </div>
-    <div class="ingr_directions_container">
+    <div class="ingr_directions_container flex flex-col w-4/5 m-auto">
         <div>Ingredients</div>
-        <div id="ingredient_list">
+        <div id="ingredient_list" class="flex flex-col w-full m-2">
             {#each recipe.ingredients as ingr}
                 {#if ingr}
-                    <div class="ingr_row">
-                        <div class="ingr_amount">{ingr.amount ? ingr.amount : ""}</div>
-                        <div class="ingr_unit">{ingr.unit ? ingr.unit : ""}</div>
-                        <div class="ingr_name">{ingr.name ? ingr.name : ingr.original}</div>
+                    <div class="ingr_row flex w-full ml-2.5">
+                        <div class="ingr_amount text-sm my-1 text-center w-9">{ingr.amount ? ingr.amount : ""}</div>
+                        <div class="ingr_unit w-24 text-center text-sm my-1">{ingr.unit ? ingr.unit : ""}</div>
+                        <div class="ingr_name w-7/10 text-sm">{ingr.name ? ingr.name : ingr.original}</div>
                     </div>
                 {/if}
             {/each}
@@ -52,140 +52,17 @@ export let recipe;
         <div>Directions</div>
         <div class="directions_list">
             {#each recipe.directions as curr, i}
-                <div class="step">
-                    <label for="directions">Step {i+1}</label>
-                    <p class="directions">{curr}</p>
+                <div class="step flex items-center justify-center">
+                    <label for="directions" class="flex text-right">Step {i+1}</label>
+                    <p class="directions flex grow m-1 w-4/5 h-fit text-sm">{curr}</p>
                 </div>
             {/each}
         </div>
         {#if recipe.notes}
             <div>Notes</div>
-            <div class="notes_container">
-                <div class="notes">{recipe.notes}</div>
+            <div class="notes_container flex items-center justify-center">
+                <div class="notes flex grow m-1 w-4/5 h-fit text-sm">{recipe.notes}</div>
             </div>
         {/if}
     </div>
 </div>
-
-
-
-
-
-<style>
-    #recipe {
-        display: flex;
-        margin: auto;
-        padding: 5px 0;
-    }
-
-    #ingredient_list {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        margin: 5px;
-    }
-
-    .ingr_row {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        margin-left: 10px;
-    }
-
-    #recipe {
-        flex-direction: column;
-    }
-
-    .ingr_amount {
-        width: 2.25em;
-        text-align: center;
-        font-size: 1em;
-        margin: 0 5px;
-    }
-
-    .ingr_unit {
-        width: 6em;
-        text-align: center;
-        font-size: 1em;
-        margin: 0 5px;
-    }
-
-    .ingr_name {
-        width: 70%;
-        font-size: 1em;
-    }
-
-
-    .title{
-        width: 80%;
-        font-size: 1.75em;
-    }
-
-    .desc {
-        font-size: 1em;
-    }
-
-    .title_container, .description_container {
-        display: flex;
-        justify-content: space-around;
-    }
-
-    .misc {
-        display: flex;
-        justify-content: space-evenly;
-    }
-
-    .step, .notes_container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    [for="directions"] {
-        display: flex;
-        text-align: right;
-    }
-
-    .directions, .notes {
-        display: flex;
-        flex-grow: 1;
-        margin: 5px;
-        max-width: 80%;
-        height: fit-content;
-        font-size: 1em;
-    }
-
-    .notes {
-        width: 80%;
-    }
-
-    .info_container {
-        width: 50%;
-        display: flex;
-        flex-direction: column;
-        margin: 5px;
-    }
-
-    .img_info_container {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-    }
-
-    img {
-        width: 100%;
-        max-width: 20em;
-    }
-
-    .ingr_directions_container {
-        display: flex;
-        flex-direction: column;
-        width: 80%;
-        margin: auto;
-    }
-
-    .author_container, .time_container, .servings {
-        text-align: center;
-    }
-</style>

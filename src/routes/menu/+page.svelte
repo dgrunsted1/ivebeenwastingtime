@@ -1,7 +1,6 @@
 <script>
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import { each } from 'svelte/internal';
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
     import RecipeList from "/src/lib/components/recipe_list.svelte";
@@ -23,6 +22,7 @@
     });
 
     function update_edit(e){
+        console.log(e);
         view_recipe = null;
         if (e.detail.index > -1) {
             edit_recipe = user_recipes.items[e.detail.index];
@@ -35,6 +35,7 @@
     }
 
     function update_view(e){
+        console.log(e);
         edit_recipe = null;
         if (e.detail.index > -1){
             view_recipe = user_recipes.items[e.detail.index];
@@ -43,6 +44,7 @@
         }else {
             view_recipe = null;
             mode = "menu";
+            console.log({menu_recipes});
         }
     }
 
@@ -62,22 +64,23 @@
 </script>
 
 <div id="main">
-    <h1>Menu</h1>
-    <div><a href="/prep">prep</a></div>
-    <div id="content">
-        {#if user_recipes}
-            <RecipeList recipes={user_recipes.items} 
-                on:update_view={update_view} on:update_edit={update_edit}
-                on:remove_from_menu={remove_from_menu}
-                on:add_to_menu={add_to_menu}/>
-        {/if}
-        <div id="right_column">
+    <div id="content" class="flex flex-row m-2">
+        <div id="left_column" class="w-1/2">
+            <div class="btn btn-primary mx-6 mb-1"><a href="/prep">prep</a></div>
+            {#if user_recipes}
+                <RecipeList recipes={user_recipes.items} 
+                    on:update_view={update_view} on:update_edit={update_edit}
+                    on:remove_from_menu={remove_from_menu}
+                    on:add_to_menu={add_to_menu}/>
+            {/if}
+        </div>
+        <div id="right_column" class="w-1/2 m-2">
             {#if menu_recipes && mode == "menu"}
                 <Menu menu={menu_recipes}/>
             {:else if view_recipe && mode == "view"}
                 <DisplayRecipe recipe={view_recipe}/>
             {:else if edit_recipe && mode == "edit"}
-                <EditRecipe recipe={edit_recipe} />
+                <EditRecipe recipe={edit_recipe}/>
             {:else}
                 <h2>select recipes to add to your menu</h2>
             {/if}
@@ -86,24 +89,3 @@
 </div>
 
 
-
-
-<style>
-    h1 {
-        font-variant: normal;
-        margin: 30px 150px;
-    }
-
-    #content {
-        /* border: 3px solid blue; */
-        margin: 5px;
-        display: flex;
-    }
-    #right_column {
-        /* border: 3px solid green; */
-        margin: 5px;
-        width: 50%;
-    }
-
-    
-</style>

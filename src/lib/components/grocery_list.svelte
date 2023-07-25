@@ -127,219 +127,43 @@
 
         return Math.round((result + Number.EPSILON) * 100) / 100
     }
+
+    function tooltip_originals(originals){
+        let output = "";
+        originals.forEach((curr, i) => {
+            if (i > 0) output += "<br>";
+            output += curr;
+        });
+        return output;
+    }
 </script>
 
-<div id="list">
-    <div id="header">
+<div id="list" class="flex flex-col">
+    <div id="header" class="flex justify-evenly items-center m-2.5">
         {#if grocery_list.length > 0}
-            <div id="count">{grocery_list.length} Items</div><div id="copy" on:click={copy_to_clipboard}>copy</div>
-        {:else}
-            <div id="add_recipe">Paste your recipes on the left.</div>
+            <div id="count">{grocery_list.length} Items</div><div id="copy" class="btn btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</div>
         {/if}
     </div>
-    <div class="grocery_list">
-        {#each grocery_list as item}
-                    <div class="grocery_item">
-                        
-                        <div class="checks" on:click|self={check_item}><input type="checkbox" class="checkbox" id="{item.name}"></div>
-                        <input type="text" class="amount" value={item.amount}>
-                        <input type="text" class="unit" value={item.unit}>
-                        <input type="text" class="name" value={item.name}> 
-                        <span class="original">
-                            {#each item.original as curr_original}
-                                {#if item.original.indexOf(curr_original) > 0}
-                                    <br>
-                                {/if}
-                                {curr_original}
-                            {/each}
-                        </span>
-                    </div>
-        {/each}
-    </div>
-    {#if skipped.length > 0}
-        <div id="skipped">
-            <div id="skip_head">Skipped:</div>
-            {#each skipped as skip}
-                <div class="skip_row"><div class="add_skip" on:click={add_to_list}>add to list</div><div class="skip_item">{skip.original}</div></div>
+    <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+        <div class="grocery_list">
+            {#each grocery_list as item}
+                    <div class="grocery_item flex relative my-1 tooltip" data-tip={tooltip_originals(item.original)}>
+                        <input type="checkbox" class="checkbox checkbox-sm" id="{item.name}">
+                        <input type="text" class="amount w-8 text-center m-auto text-sm" value={item.amount}>
+                        <input type="text" class="unit w-20 m-auto text-center text-sm" value={item.unit}>
+                        <input type="text" class="name w-3/4 m-auto text-sm" value={item.name}> 
+                    </div>                        
             {/each}
         </div>
-    {:else if grocery_list.length > 0}
-        <div id="skipped">No items skipped</div>
-    {/if}
+        {#if skipped.length > 0}
+            <div id="skipped" class="flex flex-col">
+                <div id="skip_head" class="w-1/3">Skipped:</div>
+                {#each skipped as skip}
+                    <div class="skip_row flex items-center"><div class="add_skip btn btn-secondary btn-xs m-1 text-xs" on:click={add_to_list}>add to list</div><div class="skip_item text-xs">{skip.original}</div></div>
+                {/each}
+            </div>
+        {:else if grocery_list.length > 0}
+            <div id="skipped">No items skipped</div>
+        {/if}
+    </div>
 </div>
-
-
-
-
-
-<style>
-    #list {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
-        margin: 10px;
-        align-items: center;
-    }
-
-    #copy {
-        cursor: copy;
-        border: 2px solid #555;
-        background:  hsla(35, 39%, 22%, 0.83);
-        color: white;
-        margin: 5px;
-        border-radius: 8px;
-        padding: 5px;
-    }
-
-    .grocery_item {
-        display: flex;
-    }
-
-    .amount {
-        width: 30px;
-        margin: auto;
-        text-align: center;
-    }
-
-    .unit {
-        width: 80px;
-        margin: auto;
-        text-align: center;
-    }
-
-    .name {
-        width: 75%;
-        margin: auto;
-
-    }
-
-    .original {
-        font-size: 9px;
-    }
-
-    .grocery_item {
-        position: relative;
-    }
-
-    .grocery_item .original {
-        visibility: hidden;
-        background-color:  hsla(35, 39%, 22%, 0.83);
-        color: #fff;
-        text-align: center;
-        padding: 5px 5px;
-        border-radius: 6px;
-
-        /* Position the tooltip text */
-        position: absolute;
-        z-index: 1;
-        bottom: 125%;
-        left: 50%;
-
-        /* Fade in tooltip */
-        opacity: 0;
-        transition: opacity 0.3s;
-    }
-
-    .grocery_item .original::after {
-        content: "";
-        position: absolute;
-        top: 100%;
-        left: 50%;
-        margin-left: -5px;
-        border-width: 5px;
-        border-style: solid;
-        border-color: #555 transparent transparent transparent;
-    }
-
-    .grocery_item:hover .original {
-        visibility: visible;
-        opacity: 1;
-    }
-
-    #skipped {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #skip_head {
-        width: 30%;
-        /* margin: auto; */
-    }
-
-    .skip_item {
-        font-size: 12px;
-    }
-
-    .skip_row {
-        display: flex;
-        align-items: center;
-    }
-
-    .add_skip {
-        border: 2px solid #555;
-        background:  hsla(35, 39%, 22%, 0.83);
-        color: white;
-        cursor: pointer;
-        font-size: 10px;
-        /* line-height: 8px; */
-        margin: 4px 5px;
-        border-radius: 5px;
-        padding: 0 5px;
-    }
-
-     .checks{
-        background-color: #fbe4cb;
-        border: 2px solid hsla(35, 39%, 22%, 0.83);
-        border-radius: 30px;
-        box-shadow: hsla(35, 39%, 22%, 0.83) 4px 4px 0 0;
-        color: hsla(35, 39%, 22%, 0.83);
-        cursor: initial;
-        display: inline-block;
-        font-weight: 600;
-        font-size: 18px;
-        padding: 0 10px;
-        line-height: 30px;
-        text-align: center;
-        text-decoration: none;
-        user-select: none;
-        -webkit-user-select: none;
-        touch-action: manipulation;
-        padding: 2px;
-        border-radius: 50%;
-        margin: 2px 0;
-        cursor: pointer;
-    }
-
-    input[type=checkbox] {
-        margin: 0px;
-        -webkit-appearance: none;
-        appearance: none;
-        background-color: #fbe4cb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-
-    input[type="checkbox"]::before {
-        content: "";
-        width: .8em;
-        height: .8em;
-        transform: scale(0);
-        transition: 120ms transform ease-in-out;
-        background-color: black;
-        transform-origin: bottom left;
-        clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-    }
-
-    input[type="checkbox"]:checked::before {
-        transform: scale(1);
-
-    }
-</style>
-

@@ -52,74 +52,41 @@
   </script>
   
   {#if $currentUser}
-    <p>
-      Signed in as {$currentUser.username} 
+    <div class="m-auto mt-32 flex flex-col">
+      <p class="m-auto">Signed in as {$currentUser.username}</p> 
       <button on:click={signOut}>Sign Out</button>
-    </p>
+    </div>
   {:else}
-    <form on:submit|preventDefault>
+    <form on:submit|preventDefault class="m-auto mt-32 flex flex-col w-72">
       <input
         placeholder="Username"
         type="text"
+        class="input input-bordered m-1.5"
         bind:value={username} 
         />
   
       <input 
         placeholder="Password" 
         type="password" 
+        class="input input-bordered m-1.5"
         bind:value={password} 
       />
 
       <input 
-        class="signup"
+        class="signup hidden m-1.5 input input-bordered"
         placeholder="email" 
         type="text" 
         bind:value={email} 
       />
 
       <input 
-        class="signup"
+        class="signup hidden m-1.5 input input-bordered"
         placeholder="name" 
         type="text" 
         bind:value={name} 
       />
 
-      <button on:click={signUp}>Sign Up</button>
-      <button on:click={login}>Login</button>
+      <button class="btn btn-accent m-2.5 w-fit my-1 mx-auto" on:click={signUp}>Sign Up</button>
+      <button class="btn btn-primary m-2.5 w-fit my-1 mx-auto" on:click={login}>Login</button>
     </form>
   {/if}
-
-
-  <style>
-    form{
-        margin: auto;
-        margin-top: 25vh;
-        display: flex;
-        flex-direction: column;
-        max-width: 400px;
-    }
-
-    p {
-        margin: auto;
-        margin-top: 25vh;
-        display: flex;
-        flex-direction: column;
-        /* max-width: 400px; */
-        
-    }
-
-    .signup {
-        display: none;
-    }
-
-    input, button {
-        margin: 10px;
-        /* line-height: 2em; */
-        font-size: 1.5em;
-    }
-
-    button {
-        width: fit-content;
-        margin: 7px auto;
-    }
-</style>

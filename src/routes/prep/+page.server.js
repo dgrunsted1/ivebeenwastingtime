@@ -29,32 +29,32 @@ const selectors = {
         },
         nyt: {
             title: 'h1',
-            author: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_header-block__LWcDS.recipeintro_hasImage__5ekpP > header > div > h2:nth-child(1) > a',
-            description: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_topnote-block__hFFPr > div > div > div > p',
-            image: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_image-block__8T89f.recipeintro_prints-image-hidden__3wv8_ > figure > div > img',
-            time: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipeintro_stats-block__YgbqJ > dl > dd:nth-child(2)',
-            servings: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > div.ingredients_recipeYield__Ljm9O > span.pantry--ui.ingredients_fontOverride__WoKY5',
-            ingredients: [{  
-                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > *',
-                            list: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > ul:nth-child(LIST_INDEX) > li',
-                            item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
+            author: '#__next > main > div > div:nth-child(1) > div:nth-child(1) > header > div > h2 > a',
+            description: '#__next > main > div > div:nth-child(1) > div:nth-child(4) > div > div > div > p',
+            image: 'img',
+            time: '#__next > main > div > div:nth-child(1) > div:nth-child(3) > dl > dd:nth-child(2)',
+            servings: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > div:nth-child(2) > span:nth-child(2)',
+            ingredients: [{
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
+                            list: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
                         },
                         {
-                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > li',
-                            item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_ingredients-block__lYSzh > div > ul > li:nth-child(ITEM_INDEX)'
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > li:nth-child(ITEM_INDEX)'
                         }],
-            directions: {
-                            group: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_prep-block__cpC8w > div > ol > li',
-                            item: '#__next > main > div > div.recipe.pagecontent_recipe-wrap__Pq_yd > div.recipebody_prep-block__cpC8w > div > ol > li:nth-child(ITEM_INDEX) > p'
-                        }
+            directions: [{
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > *',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > li:nth-child(ITEM_INDEX) > p'
+                        }]
         }
     };
 
 async function get_ingredients(page, selectors){
     console.log("get ingredients");
-    console.log({selectors});
+    // console.log({selectors});
     for (let k = 0; k < selectors.length; k++) {
-        console.log(selectors[k]);
+        // console.log(selectors[k]);
         let sel_len = selectors[k].group
         console.log({sel_len});
         let length = await page.evaluate((selector) => {
@@ -96,15 +96,23 @@ async function get_ingredients(page, selectors){
 
 async function get_directions(page, selector){
     // console.log("get directions");
-
-    let length = await page.evaluate((selector) => {
-                    return Array.from(document.querySelectorAll(selector)).length;
-                }, selector.group);
+    let length = 0;
+    let cnt = 0;
+    for (let i = 0; i < selector.length; i++){
+        // console.log("group", selector[i].group);
+        length = await page.evaluate((selector) => {
+            return Array.from(document.querySelectorAll(selector)).length;
+        }, selector[i].group);
+        cnt = i;
+        if (length > 0) break;
+    }
+    
     // console.log({selector});
     // console.log({length});
     let output = [];
-    for (let i = 0; i <= length; i++){
-        let sel = selector.item.replace("ITEM_INDEX", i);
+    for (let i = 0; i <= length && length > 0; i++){
+        let sel = selector[cnt].item.replace("ITEM_INDEX", i);
+        // console.log({sel});
         let temp = await page.evaluate((sel) => {
             return document.querySelector(sel)?.textContent;
         }, sel);
@@ -118,7 +126,7 @@ async function get_img(page, selector){
     let temp = await page.evaluate((sel) => {
         return document.querySelector(sel)?.src;
     }, selector);
-    console.log("img", temp);
+    // console.log("img", temp);
     return temp;
 }
 
@@ -180,7 +188,7 @@ export const actions = {
                 }
             }catch (e){
                 data = {
-                    data: JSON.stringify({message: e.message, url: url}),
+                    data: JSON.stringify({message: e.message, url: url, step: k, result: results[k]}),
                     function: "prep scrape"
                 };
                 console.log("error", data);
