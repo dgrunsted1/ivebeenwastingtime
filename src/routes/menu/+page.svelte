@@ -74,7 +74,7 @@
                     on:add_to_menu={add_to_menu}/>
             {/if}
         </div>
-        <div id="right_column" class="w-1/2 m-2">
+        <div id="right_column" class="w-1/2 m-2 max-h-[calc(100vh-90px)] overflow-y-auto">
             {#if menu_recipes && mode == "menu"}
                 <Menu menu={menu_recipes}/>
             {:else if view_recipe && mode == "view"}

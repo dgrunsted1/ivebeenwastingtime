@@ -6,7 +6,7 @@ export let recipe;
 
 </script>
 
-<div id="recipe" class="flex flex-col m-auto py-2 max-h-[calc(100vh-90px)] overflow-y-auto">
+<div id="recipe" class="flex flex-col m-auto py-2">
     <div class="img_info_container flex items-center justify-center">
         <div class="img_container w-1/2">
             <img src={recipe.image} alt={recipe.title} class="w-full"/>

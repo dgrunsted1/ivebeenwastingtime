@@ -17,6 +17,10 @@ export let data;
             <p class="text-2xl">Easily create grocery lists from recipes you find on the internet.</p>
             <a href="/prep" class="btn btn-primary btn-lg">prep</a>
         </div>
+        <div class="row flex justify-evenly items-center m-24">
+            <a href="/menu" class="btn btn-primary btn-lg">menu</a>
+            <p class="text-2xl">Create menus from recipes youve added</p>
+        </div>
     </div>
     
 </div>

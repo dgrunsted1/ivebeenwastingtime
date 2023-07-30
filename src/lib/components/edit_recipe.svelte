@@ -92,9 +92,9 @@
 }
 </script>
 
-<div id="recipe" class="flex flex-col max-h-[calc(100vh-90px)] overflow-y-auto">
+<div id="recipe" class="flex flex-col">
     <div class="img_info_container flex flex-row w-100 content-center justify-around">
-        <div class="img_container mr-3 flex width-1/2 content-center">
+        <div class="img_container mr-3 flex w-1/2 content-center">
             <img src={recipe.image} alt={recipe.title} class="self-center"/>
         </div>
         <div class="info_container w-1/2">
