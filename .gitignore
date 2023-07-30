@@ -10,3 +10,4 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 src/lib/components/edit_recipe.svelte
 package.json
+package_lock.json
