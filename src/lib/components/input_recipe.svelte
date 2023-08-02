@@ -20,7 +20,6 @@ const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .11111
 
 
 function forward_input(e) {
-    multiplier = get_multiplier(e);
     let items = process_recipe(e.srcElement.value.split("\n"));
 	dispatch('recipe_edited', {
         items: items, 
@@ -31,6 +30,7 @@ function forward_input(e) {
 
 function update_recipe(e){
     recipe = e.detail.recipe;
+    multiplier = e.detail.multiplier;
     dispatch('recipe_edited', {
         items: recipe.ingredients, 
         multiplier: multiplier,
@@ -156,12 +156,6 @@ function log_match(match_arr, loop_num){
 function make_singular(unit) {
     unit = unit.toLowerCase();
     return (unit.substring(unit.length-1) == "s") ? unit.substring(0, unit.length-1) : unit;
-}
-
-function get_multiplier(e){
-    let servings_in_recipe = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[0].getElementsByTagName("input")[0].value);
-    let desired_servings = parseFloat(e.target.parentElement.previousElementSibling.previousElementSibling.children[1].getElementsByTagName("input")[0].value);
-    return desired_servings / servings_in_recipe;
 }
 
 async function fetch_recipe(e){
