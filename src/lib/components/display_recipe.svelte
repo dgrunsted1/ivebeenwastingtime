@@ -19,20 +19,21 @@ export let recipe;
                 <div class="desc text-sm" >{recipe.description}</div>
             </div>
             <div class="misc flex justify-evenly">
-                <div class="author_container text-center">
+                <div class="author_container text-center w-1/3">
                     <label for="auth">Author</label>
                     <div class="auth">{recipe.author}</div>
                 </div>
-                <div class="time_container text-center">
+                <div class="time_container text-center w-1/3">
                     <label for="time">Time</label>
                     <div class="time">{recipe.time}</div>
                 </div>
-                <div class="servings text-center">
+                <div class="servings text-center w-1/3">
                     servings
                     <div>{recipe.servings}</div>
                 </div>
-
             </div>
+            <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url}>original recipe</a></div>
+
         </div>
     </div>
     <div class="ingr_directions_container flex flex-col w-4/5 m-auto">

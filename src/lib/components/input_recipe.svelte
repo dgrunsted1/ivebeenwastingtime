@@ -8,7 +8,6 @@ import { currentUser, pb } from '/src/lib/pocketbase';
 import EditRecipe from "/src/lib/components/edit_recipe.svelte";
 
 const dispatch = createEventDispatcher();
-export let test_mode;
 let recipe;
 const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
 let multiplier = 1;
@@ -173,6 +172,7 @@ async function fetch_recipe(e){
         e.srcElement.value = "";
     } else if (result.type === 'success') {
         result.data.ingredients = process_recipe(result.data.ingredients);
+        result.data.url = e.srcElement.value;
         recipe = result.data;
         dispatch('recipe_edited', {
             items: result.data.ingredients, 

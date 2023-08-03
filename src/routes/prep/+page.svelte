@@ -4,7 +4,6 @@
     import InputRecipe from "/src/lib/components/input_recipe.svelte";
     import GroceryList from "/src/lib/components/grocery_list.svelte";
 
-    let test_mode = false;
     $: input_count = 2;
     let recipes = [];
     
@@ -27,7 +26,7 @@
     <div id="content" class="flex flex-row m-3">
         <div id="recipes" class="flex flex-col basis-1/2">
             {#each Array(input_count) as _, index (index)}
-                <InputRecipe name="Recipe {index}" on:recipe_edited={update_list} on:update_multiplier={update_multiplier} {index} {test_mode}/>
+                <InputRecipe name="Recipe {index}" on:recipe_edited={update_list} on:update_multiplier={update_multiplier} {index}/>
                 {#if index < input_count}
                     <div class="divider"></div>
                 {/if}

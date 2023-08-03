@@ -1,15 +1,19 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate } from 'svelte';
+    import { page } from '$app/stores';  
 
     export let recipe;
     export let index;
-    let removed = [];
     let dispatch = createEventDispatcher();
-
+    let categories = ["Beverage", "Bread", "Dessert", "Main", "Salad", "Soup", "Side"];
+    
+    afterUpdate( () => {
+        if (!recipe.category) recipe.category = "Category";
+    });
 
     async function save_recipe(e) {
-        console.log(recipe);
+        console.log(recipe.id);
         // return;
         // console.log(e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
         e.srcElement.disabled = true;
@@ -29,15 +33,17 @@
             "directions": JSON.stringify(recipe.directions),
             "notes": recipe.notes,
             "servings": recipe.servings,
-            "image": recipe.image
+            "image": recipe.image,
+            "category": recipe.category,
+            "cuisine": recipe.cuisine,
+            "country": recipe.country
         };
+        console.log({data});
         if (recipe.id){
             const record = await pb.collection('recipes').update(recipe.id, data);
         }else {
             data.user = $currentUser.id;
-            if (e.srcElement.parentElement.parentElement.previousElementSibling){
-                data.url = e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value;
-            }
+            data.url = recipe.url;
             const record = await pb.collection('recipes').create(data);
             recipe = record;
         }
@@ -90,14 +96,24 @@
         index: index
     });
 }
+
+function select_category(e){
+    recipe.category = e.srcElement.innerHTML;
+    e.srcElement.parentElement.parentElement.parentElement.firstChild.innerHTML = e.srcElement.innerHTML;
+    const elem = document.activeElement;
+    if(elem){
+      elem?.blur();
+    }
+    enable_save();
+}
 </script>
 
-<div id="recipe" class="flex flex-col">
-    <div class="img_info_container flex flex-row w-100 content-center justify-around">
+<div id="recipe" class="flex flex-col w-full">
+    <div class="img_info_container flex flex-row w-full content-center justify-around">
         <div class="img_container mr-3 flex w-1/2 content-center">
             <img src={recipe.image} alt={recipe.title} class="self-center"/>
         </div>
-        <div class="info_container w-1/2">
+        <div class="info_container w-1/2 mx-1">
             <div class="title_container form-control">
                 <label for="title" class="label p-0"><span class="label-text-alt p-0">Title</span></label>
                 <input type="text" class="title input input-bordered input-xs" bind:value={recipe.title} on:input|preventDefault={enable_save}/>
@@ -119,16 +135,37 @@
                 </div>
                 <div>
                     <div id="servings" class="flex flex-row justify-center content-center">
-                        <div class="seperated mr-1 form-control w-1/2">
+                        <div class="mr-1 form-control w-1/2">
                             <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">recipe servings</span></label>
                             <input type="text" name="recipe_servings" id="recipe_servings" class="recipe_servings input input-bordered p-1 input-xs" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1>
                         </div>
-                        <div class="seperated form-control w-1/2">
-                            <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">desired servings</span></label>
-                            <input type="text" name="desired_servings" id="desired_servings" class="desired_servings input input-bordered p-1 input-xs" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1 >
+                        {#if $page.url.pathname == "/prep"}
+                            <div class="form-control w-1/2">
+                                <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">desired servings</span></label>
+                                <input type="text" name="desired_servings" id="desired_servings" class="desired_servings input input-bordered p-1 input-xs" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1 >
+                            </div>
+                        {/if}
+                    </div>
+                    <div class="flex justify-evenly content-center w-full space-x-1 flex-wrap">
+                        <div class="form-control w-3/7">
+                            <label for="cuisine" class="mx-1 label p-0"><span class="label-text-alt p-0">cuisine</span></label>
+                            <input type="text" name="cuisine"class="input input-bordered p-1 input-xs" bind:value={recipe.cuisine} on:input|preventDefault={enable_save}>
+                        </div>
+                        <div class="form-control w-3/7">
+                            <label for="country" class="mx-1 label p-0"><span class="label-text-alt p-0">country</span></label>
+                            <input type="text" name="country"class="input input-bordered p-1 input-xs" bind:value={recipe.country} on:input|preventDefault={enable_save}>
+                        </div>
+                        <div class="dropdown w-full flex justify-center">
+                            <label tabindex="0" class="btn btn-xs m-1" bind:innerHTML={recipe.category} contenteditable="true"></label>
+                            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                {#each categories as cat}
+                                <li on:click={select_category}><a>{cat}</a></li>
+                                {/each}
+                            </ul>
                         </div>
                     </div>
                 </div>
+                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url} target="_blank">original recipe</a></div>
             </div>
         </div>
     </div>
