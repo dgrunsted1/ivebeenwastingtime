@@ -38,9 +38,9 @@ const tests = {"serious eats":[{
         result: {
             title: 'Spring Vegetable Salad With Poached Egg and Crispy Bread Crumbs Recipe',
             author: 'J. Kenji López-Alt',
-            description: undefined,
+            description: "This fresh verdant salad of blanched favas, peas, asparagus, fiddleheads, and broccolini is enriched with runny egg yolk and a crunchy shallot-herb topping",
             image: 'https://www.seriouseats.com/thmb/9VxReoLxHJCBWFTuTiw0lEhGFro=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2017__04__20170419-spring-salad-crispy-egg-20-ecc817e1a96e47039eb75bb11cfba9b3.jpg',
-            time: '30 mins',
+            time: '45 mins',
             servings: 4,
             ingredients: [
             '12 ounces fava beans in their pods or 4 ounces shucked fava beans (120g shucked beans)',
