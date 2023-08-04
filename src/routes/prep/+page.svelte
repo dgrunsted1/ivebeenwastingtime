@@ -22,7 +22,10 @@
 
 
 <div id="main">
-    <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
+    <div>
+        <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
+        <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
+    </div>
     <div id="content" class="flex flex-row m-3">
         <div id="recipes" class="flex flex-col basis-1/2">
             {#each Array(input_count) as _, index (index)}

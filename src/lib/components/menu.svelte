@@ -1,6 +1,8 @@
 <script>
     import { onMount, afterUpdate, tick } from 'svelte';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
+    import { currentUser, pb } from '/src/lib/pocketbase';
+
 
     export let menu;
     console.log({menu});
@@ -28,13 +30,31 @@
         tab = e.srcElement.id;
     }
 
+    async function save_menu(e){
+        let recipe_ids = [];
+        for (let i = 0; i < menu.length; i++){
+            recipe_ids.push(menu[i].id);
+        }
+        const data = {
+            "recipes": recipe_ids,
+            "user": $currentUser.id
+        };
+
+        const record = await pb.collection('menus').create(data);
+        console.log({record});
+    }
+
 </script>
 
 <div id="menu">
-    <div class="tabs tabs-boxed w-fit mx-auto">
-        <a id="recipe_list" class="tab tab-active" on:click={switch_tab}>Recipes</a> 
-        <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a> 
+    <div class="flex content-center">
+        <div class="tabs tabs-boxed w-fit mx-auto">
+            <a id="recipe_list" class="tab tab-active" on:click={switch_tab}>Recipes</a> 
+            <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a>
+        </div>
+        <button class="btn btn-secondary self-end btn-sm" on:click={save_menu}>save menu</button>
     </div>
+    
     
     {#if tab == "recipe_list"}
         <div class="max-h-[calc(100vh-130px)] overflow-y-auto">

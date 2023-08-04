@@ -66,7 +66,10 @@
 <div id="main">
     <div id="content" class="flex flex-row m-2">
         <div id="left_column" class="w-1/2">
-            <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
+            <div>
+                <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
+                <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
+            </div>
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 
                     on:update_view={update_view} on:update_edit={update_edit}
