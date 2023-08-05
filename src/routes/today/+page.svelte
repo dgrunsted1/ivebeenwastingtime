@@ -13,21 +13,28 @@
             expand: `recipes`
         });
         todays_menu = result_list.items[0];
-        console.log(todays_menu.expand.recipes);
     });
 
     function cook_this_recipe(e){
-        console.log(e.srcElement.id);
         for (let i = 0; i < todays_menu.expand.recipes.length; i++){
             if (todays_menu.expand.recipes[i].id == e.srcElement.id){
                 cook_recipe = todays_menu.expand.recipes[i];
             }
         }
-        mode = "cook"
+        document.body.scrollIntoView();
+        mode = "cook";
+    }
+
+    function back_to_recipes(e){
+        mode = "recipes";
     }
 </script>
 
-
+<div>
+    <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
+    <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
+    <a class="btn btn-primary mx-6 mb-1" href="/menu">create menu</a>
+</div>
 {#if mode == "recipes" && todays_menu.id}
     <h2>which recipe are you making today?</h2>
     <div id="recipes" class="">
@@ -45,11 +52,11 @@
         {/each}
     </div>
 {:else if mode == "cook" && cook_recipe.id}
-    <h2>time to cook!</h2>
-    <div id="cook_recipe" class="flex flex-col m-auto py-2">
+<button class="btn btn-accent btn-xs m-3" on:click={back_to_recipes}>back to today's recipes</button>
+    <div id="cook_recipe" class="flex flex-col m-2 pb-10">
         <div class="img_info_container flex items-center justify-center">
-            <div class="img_container w-1/2">
-                <img src={cook_recipe.image} alt={cook_recipe.title} class="w-full"/>
+            <div class="img_container w-1/4">
+                <img src={cook_recipe.image} alt={cook_recipe.title} class=""/>
             </div>
             <div class="info_container w-1/2 flex flex-col m-1">
                 <div class="title_container flex justify-around">
@@ -76,8 +83,8 @@
     
             </div>
         </div>
-        <div class="ingr_directions_container flex w-full m-2 space-y-2">
-            <div id="ingredient_list" class="flex flex-col w-2/5 m-2 sticky top-0 h-fit py-10">
+        <div class="ingr_directions_container flex m-2 items-center">
+            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 pt-5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto">
                 {#each cook_recipe.ingredients as ingr}
                     {#if ingr}
                         <div class="ingr_row flex w-full gap-x-2 items-center">
@@ -92,7 +99,7 @@
                 {/each}
             </div>
         
-            <div class="directions_list w-3/5">
+            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 mt-5 max-h-[calc(100vh-250px)] overflow-y-auto">
                 {#each cook_recipe.directions as curr, i}
                     <div class="step flex items-center justify-center">
                         <label for="directions" class="flex text-right">Step {i+1}</label>
@@ -100,12 +107,12 @@
                     </div>
                 {/each}
             </div>
-            {#if cook_recipe.notes}
-                <div>Notes</div>
-                <div class="notes_container flex items-center justify-center">
-                    <div class="notes flex grow m-1 w-4/5 h-fit text-sm">{cook_recipe.notes}</div>
-                </div>
-            {/if}
+        </div>
+        <div class="notes_container form-control mx-5">
+            <label for="notes" class="label">
+                <span class="label-text">Notes</span>
+            </label>
+            <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Notes"></textarea>
         </div>
     </div>
 {/if}
