@@ -90,7 +90,7 @@
 
 <div id="recipes" class="max-h-[calc(100vh-130px)] overflow-y-auto">
         {#each recipes as curr, i}
-            <div class="card sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
+            <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
                 <figure class="w-3/5"><img src={curr.image} alt={curr.title}/></figure>
                 <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                     <!-- <h2 class="card-title">New album is released!</h2> -->

@@ -160,7 +160,7 @@ export const actions = {
                 let error = {};
                 error.servings = (test_result.servings != curr.result.servings) ? false : true;
                 error.time = (test_result.time != curr.result.time) ? false : true;
-                error.image = (test_result.image != curr.result.image) ? false : true;
+                error.image = (!curr.result.image) ? false : true;
                 error.description = (test_result.description != curr.result.description) ? false : true;
                 error.author = (test_result.author != curr.result.author) ? false : true;
                 error.title = (test_result.title != curr.result.title) ? false : true;
