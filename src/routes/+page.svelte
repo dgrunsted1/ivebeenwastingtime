@@ -18,7 +18,7 @@ export let data;
             <a href="/prep" class="btn btn-primary btn-lg">prep</a>
         </div>
         <div class="row flex justify-evenly items-center m-24">
-            <a href="/menu" class="btn btn-primary btn-lg">menu</a>
+            <a href="/menu" class="btn btn-primary btn-lg">create menu</a>
             <p class="text-2xl">Create menus from recipes youve added</p>
         </div>
     </div>

@@ -69,6 +69,7 @@
             <div>
                 <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
                 <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
+                <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
             </div>
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 

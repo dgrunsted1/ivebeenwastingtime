@@ -66,7 +66,8 @@
 
 <div>
     <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/menu">menu</a>
+    <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
+    <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
 </div>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     {#each user_menus as curr, i}
