@@ -40,16 +40,22 @@ function update_recipe(e){
 
 
 function process_recipe(in_lines) {
-    if (in_lines[0] == null) return false;
     in_lines[0] = in_lines[0].replace(
         /^(\*)([A-z0-9 ()/’,-.ñ;è'\t]+)/,
         "$2"
     ).trim();
 
     in_lines[0] = in_lines[0].replace(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z])/,
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
         "$1 $2"
     );
+
+    in_lines[0] = in_lines[0].replace(
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
+        "$2 $3"
+    );
+
+    console.log(in_lines[0]);
     
     let ingr = false;
     let curr = in_lines[0].match(
@@ -58,7 +64,7 @@ function process_recipe(in_lines) {
     //  6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved
     //  1 medium onion, thinly sliced (about 6 ounces; 170g)
     if (curr){
-        // log_match(curr, 1);
+        log_match(curr, 1);
         ingr = {
                 amount: convert_amount(curr[1]), 
                 unit: make_singular(curr[2]), 
@@ -73,7 +79,7 @@ function process_recipe(in_lines) {
     //  1 cup/200 grams granulated sugar
     //  ¼ cup/30 grams confectioners’ sugar
     if (curr){
-        // log_match(curr, 2);      
+        log_match(curr, 2);      
         ingr = {
             amount: convert_amount(curr[1]), 
             unit: make_singular(curr[2]), 
@@ -89,7 +95,7 @@ function process_recipe(in_lines) {
     //  1 tablespoon (15ml) vegetable oil
     //  1 1/4 cup (60ml) vegetable oil
     if (curr){
-        // log_match(curr, 3);      
+        log_match(curr, 3);      
         ingr = {
             amount: convert_amount(curr[1]), 
             unit: make_singular(curr[2]), 
@@ -99,16 +105,17 @@ function process_recipe(in_lines) {
     }
     curr = false;
     curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+[ -]\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/
+        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/
     );
     //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
     //  1 (1-inch) knob ginger, peeled, roughly chopped
     if (curr){
-        // log_match(curr, 4); 
+        log_match(curr, 4); 
+        if (curr[5].trim() == "can") curr[5] = "canned"
         ingr = {
-            amount: convert_amount(curr[1]), 
-            unit: make_singular(curr[2] + " " + curr[4]), 
-            name: trim_name(curr[5].trim()),
+            amount: convert_amount(curr[1]*curr[2]), 
+            unit: make_singular(curr[3]), 
+            name: trim_name(curr[5] + " " + curr[6]),
             original: [in_lines[0]]
         };
     }
@@ -117,7 +124,8 @@ function process_recipe(in_lines) {
         ingr.unit = "whole";
     }
     if (!ingr && in_lines[0]) ingr = {amount: false, unit: false, name: in_lines[0], original:[in_lines[0]]};
-    return [ingr].concat(process_recipe(in_lines.slice(1)));
+    if (in_lines.slice(1).length) return [ingr].concat(process_recipe(in_lines.slice(1)));
+    return ingr;
 }
 
 function convert_amount(in_amount) {
@@ -138,9 +146,9 @@ function convert_amount(in_amount) {
 
 function trim_name(in_name) {
     let out = in_name.replace(/\(([^\)]+)\)/, "");
-    out = (out.indexOf(",") > 0) ? out.substring(0, out.indexOf(",")) : out;
+    // out = (out.indexOf(",") > 0) ? out.substring(0, out.indexOf(",")) : out;
     out = out.trim();
-    if (out.indexOf("s") == out.length - 1) out = out.substring(0, out.length - 1);
+    // if (out.indexOf("s") == out.length - 1) out = out.substring(0, out.length - 1);
     return out
 }
 
@@ -171,7 +179,9 @@ async function fetch_recipe(e){
         alert(result.data.err);
         e.srcElement.value = "";
     } else if (result.type === 'success') {
+        console.log("before process", result.data.ingredients);
         result.data.ingredients = process_recipe(result.data.ingredients);
+        console.log("after process", result.data.ingredients);
         result.data.url = e.srcElement.value;
         recipe = result.data;
         dispatch('recipe_edited', {

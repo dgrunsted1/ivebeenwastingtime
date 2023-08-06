@@ -13,9 +13,6 @@
     });
 
     async function save_recipe(e) {
-        console.log(recipe.id);
-        // return;
-        // console.log(e.srcElement.parentElement.parentElement.previousElementSibling.getElementsByClassName("link_input")[0].value);
         e.srcElement.disabled = true;
         e.srcElement.innerHTML = "uploading";
         let temp = [];
@@ -24,6 +21,16 @@
         }
         recipe.ingredients = temp;
         reset_checks();
+        let note_ids = [];
+        if (recipe.notes){
+            const note_data = {
+                "content": recipe.notes
+            };
+            const note_record = await pb.collection('notes').create(note_data);
+            note_ids.push(note_record.id);
+        }
+        
+
         const data = {
             "title": recipe.title,
             "description": recipe.description,
@@ -31,14 +38,13 @@
             "time": recipe.time,
             "ingredients": JSON.stringify(recipe.ingredients),
             "directions": JSON.stringify(recipe.directions),
-            "notes": recipe.notes,
             "servings": recipe.servings,
             "image": recipe.image,
             "category": recipe.category,
             "cuisine": recipe.cuisine,
-            "country": recipe.country
+            "country": recipe.country,
+            "notes": note_ids
         };
-        console.log({data});
         if (recipe.id){
             const record = await pb.collection('recipes').update(recipe.id, data);
         }else {
@@ -87,15 +93,15 @@
     }
 
     function update_multiplier(e){
-    console.log(e.srcElement.parentElement.parentElement.parentElement);
-    let desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
-    let servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
-    multiplier = desired_servings / servings_in_recipe;
-    dispatch("update_multiplier", {
-        multiplier: multiplier,
-        index: index
-    });
-}
+        console.log(e.srcElement.parentElement.parentElement.parentElement);
+        let desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
+        let servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
+        multiplier = desired_servings / servings_in_recipe;
+        dispatch("update_multiplier", {
+            multiplier: multiplier,
+            index: index
+        });
+    }
 
 function select_category(e){
     recipe.category = e.srcElement.innerHTML;

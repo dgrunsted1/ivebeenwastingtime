@@ -5,12 +5,15 @@
     import { page } from '$app/stores';
 
     export let menu;
-    console.log({menu});
+    export let id = null;
+    // console.log({menu});
     let tab = "recipe_list";
     let grocery_list = [];
     afterUpdate(async () => {
-        if (!menu.id) return;
-        menu.expand.recipes.forEach((recipe, i) => {
+        // console.log({menu});
+        if (!menu.length) return;
+        // console.log({menu});
+        menu.forEach((recipe, i) => {
             let mult = (document.getElementsByClassName("servings")[i]) ? document.getElementsByClassName("servings")[i].value : recipe.servings;
             grocery_list[i] = {
                 ingredients: recipe.ingredients,
@@ -18,7 +21,7 @@
             };  
         });
         
-        console.log({grocery_list});
+        // console.log({grocery_list});
     });
 
     function switch_tab(e){
@@ -34,8 +37,8 @@
 
     async function save_menu(e){
         let recipe_ids = [];
-        for (let i = 0; i < menu.expand.recipes.length; i++){
-            recipe_ids.push(menu.expand.recipes[i].id);
+        for (let i = 0; i < menu.length; i++){
+            recipe_ids.push(menu[i].id);
         }
         const data = {
             "recipes": recipe_ids,
@@ -47,16 +50,19 @@
     }
     
     async function set_todays_menu(e){
-        console.log(`user = ${$currentUser.id} && today = True`);
+        // console.log(`user = ${$currentUser.id} && today = True`);
         const resultList = await pb.collection('menus').getList(1, 50, {
             filter: `user = '${$currentUser.id}' && today = True`,
         });
-        console.log({resultList});
-        return;
-        const data = {
-            "today": true
-        };
-        const record = await pb.collection('menus').update(menu.id, data);
+        if (resultList.items.length){
+            // console.log(resultList.items[0].id);
+            const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false });
+            // console.log({false_record});
+        }
+        
+        const true_record = await pb.collection('menus').update(id, { "today": true });
+        // console.log({true_record});
+
     }
 
 </script>
@@ -77,8 +83,7 @@
     
     {#if tab == "recipe_list"}
         <div class="max-h-[calc(100vh-130px)] overflow-y-auto">
-            {#if menu.id}
-                {#each menu.expand.recipes as recipe}
+                {#each menu as recipe}
                     <div class="img_serv_container card card-bordered sm:card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl">
                         <figure class="image w-1/3">
                             <img class="" src={recipe.image} alt={recipe.title}/>
@@ -93,7 +98,6 @@
                         </div>
                     </div>
                 {/each}
-            {/if}
         </div>
     {:else if tab == "grocery_list"}
         <GroceryList recipes={grocery_list}/>

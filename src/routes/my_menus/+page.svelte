@@ -91,9 +91,9 @@
     {/each}
 </div>
     <dialog id="my_modal_2" class="modal">
-        {#if modal_menu}
+        {#if modal_menu.id}
             <form method="dialog" class="modal-box max-w-full w-2/3 p-1">
-                <Menu menu={modal_menu}/>
+                <Menu menu={modal_menu.expand.recipes} id={modal_menu.id}/>
             </form>
             <form method="dialog" class="modal-backdrop">
                 <button>close</button>

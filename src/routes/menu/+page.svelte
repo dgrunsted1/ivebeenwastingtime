@@ -59,7 +59,7 @@
     function add_to_menu(e){
         menu_recipes.push(user_recipes.items[e.detail.index]);
         menu_recipes = menu_recipes;
-        console.log({menu_recipes});
+        // console.log({menu_recipes});
     }
 </script>
 

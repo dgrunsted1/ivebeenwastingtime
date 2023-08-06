@@ -84,7 +84,7 @@
             </div>
         </div>
         <div class="ingr_directions_container flex m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 pt-5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto">
+            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md p-1">
                 {#each cook_recipe.ingredients as ingr}
                     {#if ingr}
                         <div class="ingr_row flex w-full gap-x-2 items-center">
@@ -99,7 +99,7 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 mt-5 max-h-[calc(100vh-250px)] overflow-y-auto">
+            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 m-2 p-1 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md">
                 {#each cook_recipe.directions as curr, i}
                     <div class="step flex items-center justify-center">
                         <label for="directions" class="flex text-right">Step {i+1}</label>
