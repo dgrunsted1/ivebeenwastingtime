@@ -29,7 +29,7 @@
 						{#if !$currentUser}
 							<a href="login">login</a>
 						{:else}
-							<div>Hello {$currentUser.name}</div><div on:click={signOut}>logout</div>
+							<div>Hello {$currentUser.name}</div><div on:click={signOut} on:keypress={signOut}>logout</div>
 						{/if}
 					</li>
 				</ul>

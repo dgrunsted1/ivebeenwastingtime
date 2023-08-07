@@ -5,8 +5,10 @@ const conv_salt_sugar = {"gram/tablespoon": 14, "tablespoon/gram": 1/14, "gram/t
 export const merge = function(recipes) {
     let grocery_list = [];
     let skipped = [];
-    recipes.forEach(recipe => {
-        recipe.ingredients.forEach(item => {
+    for(let recipe of recipes){
+    // recipes.forEach(recipe => {
+        for(let item of recipe.ingredients){
+        // recipe.ingredients.forEach(item => {
             if (!item) return;
             if ((!item.amount || !item.unit || !item.name) && item.original) {
                 skipped.push(item);
@@ -29,14 +31,10 @@ export const merge = function(recipes) {
                 let tmp = { amount: 0, unit: "", name: "", original: []};
                 tmp.original = tmp.original.concat(match.original, item.original);
                 if (match.unit != item.unit) {
-                    item.amount = round_amount(item.amount, recipe.multiplier);
                     let conv = combine(match, item);
-                    // console.log(`${match.unit} != ${item.unit}`, conv);
-                    tmp.amount = conv.amount;
+                    tmp.amount = round_amount(conv.amount, recipe.multiplier);
                     tmp.unit = conv.unit;
                 } else {
-                    // console.log(`${match.unit} == ${item.unit}`, round_amount(item.amount, recipe.multiplier));
-                    // console.log(`match.amount`, match.amount);
                     tmp.amount = match.amount + round_amount(item.amount, recipe.multiplier);
                     tmp.unit = match.unit;
                 }
@@ -57,11 +55,11 @@ export const merge = function(recipes) {
                     original: item.original
                 });
             }
-        });
-    });
+        }
+    }
     return {
         grocery_list: grocery_list,
-        skipped: skipped,
+        skipped: skipped
     }
 }
 
@@ -73,15 +71,13 @@ const combine = (i, j) => {
     let unit = null;
     let conv_a;
     let conv_b;
-    if ((!conversions[conv_index_a] || !conversions[conv_index_a]) && (j.name.includes('salt') && j.name.includes('salt')) || (i.name.includes('sugar') || i.name.includes('sugar'))){
+    if ((!conversions[conv_index_a] || !conversions[conv_index_a]) && ((j.name.includes('salt') && j.name.includes('salt')) || (i.name.includes('sugar') || i.name.includes('sugar')) || (i.name.includes('oil') || i.name.includes('oil')))){
         conv_a = conv_salt_sugar[conv_index_a];
         conv_b = conv_salt_sugar[conv_index_b];
     } else {
         conv_a = conversions[conv_index_a];
         conv_b = conversions[conv_index_b];
     }
-    // console.log({conv_a});
-    // console.log({conv_b});
     if (conv_a < conv_b){
         unit = j.unit;
         amount = conv_a * i.amount + j.amount;
