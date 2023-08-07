@@ -25,6 +25,10 @@ export let data;
             <p class="text-2xl">Check out this weeks recipes and cook.</p>
             <a href="/today" class="btn btn-primary btn-lg">today</a>
         </div>
+        <div class="row flex justify-evenly items-center m-24">
+            <a href="/my_menus" class="btn btn-primary btn-lg">My Menus</a>
+            <p class="text-2xl">Look at your past menus and choose one for today.</p>
+        </div>
     </div>
     
 </div>
