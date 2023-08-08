@@ -2,14 +2,13 @@
 export let name;
 export let index;
 import { createEventDispatcher } from 'svelte';
-import { invalidateAll, goto } from '$app/navigation';
-import { applyAction, deserialize } from '$app/forms';
-import { currentUser, pb } from '/src/lib/pocketbase';
+import { invalidateAll} from '$app/navigation';
+import { deserialize } from '$app/forms';
 import EditRecipe from "/src/lib/components/edit_recipe.svelte";
 
 const dispatch = createEventDispatcher();
 let recipe;
-const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce"];
+const measurements = ["teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", "medium", "small", "clove", "whole", "ounce", "pint", "inch", "ear"];
 let multiplier = 1;
 
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
@@ -49,6 +48,8 @@ function process_recipe(in_lines) {
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
         "$1 $2"
     );
+
+    in_lines[0] = in_lines[0].replace(/about/i, "").trim();
 
     in_lines[0] = in_lines[0].replace(
         /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
@@ -129,19 +130,21 @@ function process_recipe(in_lines) {
 }
 
 function convert_amount(in_amount) {
+    let result = 0;
         if (typeof in_amount != "string") return in_amount;
         if (in_amount.match(/^[\u00BC-\u00BE\u2150-\u215E]/)){
-            return conv_frac[in_amount];
+            result = conv_frac[in_amount];
         } else if (in_amount.match(/\d[\u00BC-\u00BE\u2150-\u215E]/)) {
-            return parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)];
+            result = parseInt(in_amount.charAt(0)) + conv_frac[in_amount.charAt(1)];
         } else if (in_amount.match(/^\d\/\d/)) {
-            return eval(in_amount);
+            result = eval(in_amount);
         } else if (in_amount.match(/\d \d\/\d/)) {
             let tmp = in_amount.split(" ");
-            return parseInt(tmp[0]) + eval(tmp[1]);
+            result = parseInt(tmp[0]) + eval(tmp[1]);
         } else {
-            return parseFloat(in_amount);
+            result = parseFloat(in_amount);
         }
+        return Math.round((result + Number.EPSILON) * 100) / 100
     }
 
 function trim_name(in_name) {

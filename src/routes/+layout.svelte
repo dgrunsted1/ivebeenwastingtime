@@ -17,7 +17,7 @@
 		{#if !is_homepage}
 			<div class="navbar bg-base-100">
 				<div class="navbar-start">
-					{#if $currentUser && $currentUser.id == "67gxu7xk6x46gjy"}
+					{#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea")}
 						<a href="test_suite" class="btn btn-error btn-sm">test suite</a>
 					{/if}
 				</div>

@@ -15,6 +15,7 @@
             filter: `user="${$currentUser.id}"`,
             expand: `recipes`
         });
+        console.log({$currentUser});
         user_menus = result_list.items;
     });
 
