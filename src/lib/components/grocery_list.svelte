@@ -8,9 +8,7 @@
     let skipped = [];
 
     afterUpdate(async () => {
-        console.log({recipes});
         let result = merge(recipes);
-        console.log({result});
 
         grocery_list = result.grocery_list;
         skipped = result.skipped;

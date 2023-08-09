@@ -65,16 +65,10 @@
         if (mode_in == "view") btn = 0;
         else btn = 1;
 
-        console.log({old_index});
-        console.log({new_index});
-        console.log({mode_in});
-
         let btns = document.getElementsByClassName(`recipe_btn ${new_index}`);
-        console.log({btns});
 
         if (old_index > -1){
             let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
-            console.log({old_btns});
                 old_btns[1].classList.remove("btn-secondary");
                 old_btns[1].classList.add("btn-primary");
                 old_btns[0].classList.remove("btn-secondary");

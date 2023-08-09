@@ -16,13 +16,13 @@
 
     onMount(async () => {
         const result_list = await pb.collection('recipes').getList(1, 50, {
-            filter: `user="${$currentUser.id}"`
+            filter: `user="${$currentUser.id}"`,
+            expand: `notes`
         });
         user_recipes = result_list;
     });
 
     function update_edit(e){
-        console.log(e);
         view_recipe = null;
         if (e.detail.index > -1) {
             edit_recipe = user_recipes.items[e.detail.index];
@@ -35,7 +35,6 @@
     }
 
     function update_view(e){
-        console.log(e);
         edit_recipe = null;
         if (e.detail.index > -1){
             view_recipe = user_recipes.items[e.detail.index];
@@ -44,22 +43,25 @@
         }else {
             view_recipe = null;
             mode = "menu";
-            console.log({menu_recipes});
         }
     }
 
     function remove_from_menu(e){
+        console.log({user_recipes});
+        console.log(e.detail.index);
+        console.log(user_recipes.items[e.detail.index]);
         let remove = menu_recipes.indexOf(user_recipes.items[e.detail.index]);
         if (remove > -1){
             menu_recipes.splice(remove, 1);
             menu_recipes = menu_recipes;
+            console.log({menu_recipes});
         }
+
     }
 
     function add_to_menu(e){
         menu_recipes.push(user_recipes.items[e.detail.index]);
         menu_recipes = menu_recipes;
-        // console.log({menu_recipes});
     }
 </script>
 

@@ -10,6 +10,7 @@
     
     afterUpdate( () => {
         if (!recipe.category) recipe.category = "Category";
+        if (!recipe.expand.length) recipe.expand = {notes: [""]};
     });
 
     async function save_recipe(e) {
@@ -93,7 +94,6 @@
     }
 
     function update_multiplier(e){
-        console.log(e.srcElement.parentElement.parentElement.parentElement);
         let desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
         let servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
         multiplier = desired_servings / servings_in_recipe;
@@ -103,15 +103,23 @@
         });
     }
 
-function select_category(e){
-    recipe.category = e.srcElement.innerHTML;
-    e.srcElement.parentElement.parentElement.parentElement.firstChild.innerHTML = e.srcElement.innerHTML;
-    const elem = document.activeElement;
-    if(elem){
-      elem?.blur();
+    function select_category(e){
+        recipe.category = e.srcElement.innerHTML;
+        e.srcElement.parentElement.parentElement.parentElement.firstChild.innerHTML = e.srcElement.innerHTML;
+        const elem = document.activeElement;
+        if(elem){
+        elem?.blur();
+        }
+        enable_save();
     }
-    enable_save();
-}
+
+    function add_ingr(){
+        recipe.ingredients[recipe.ingredients.length] = {amount: 1, unit: "", name: "", original:[""]};
+    }
+
+    function add_dir(){
+        recipe.directions[recipe.directions.length] = "";
+    }
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
@@ -188,12 +196,13 @@ function select_category(e){
                         {:else}
                             <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80" bind:value={recipe.ingredients[i].original[0]} on:input|preventDefault={enable_save}>
                         {/if}
-                        <!-- <div class="checkbox checkbox-xs" on:click={check_item}> -->
-                            <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.ingredients[i].original}">
-                        <!-- </div> -->
+                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.ingredients[i].original}">
                     </div>
                 {/if}
             {/each}
+            <div class="flex justify-center mt-2">
+                <button class="btn btn-secondary btn-xs" on:click={add_ingr}>add ingredient</button>
+            </div>
         </div>
 
         <div class="directions_list w-full flex flex-col items-center">
@@ -204,11 +213,19 @@ function select_category(e){
                     <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]} on:input|preventDefault={enable_save}/>
                 </div>
             {/each}
+            <div class="flex justify-center mt-2">
+                <button class="btn btn-secondary btn-xs" on:click={add_dir}>add direction</button>
+            </div>
         </div>
 
         <div class="notes_container m-1 w-full flex flex-col items-center">
             <div class="badge badge-primary mt-3 self-start">Notes</div>
-            <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.notes} on:input|preventDefault={enable_save}></textarea>
+            {#if recipe.expand.notes}
+                {#each recipe.expand.notes as note, i}
+                    <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[i]} on:input|preventDefault={enable_save}></textarea>
+                {/each}
+            {/if}
+            <!-- <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[recipe.expand.notes.length]} on:input|preventDefault={enable_save}></textarea> -->
         </div>
         <div class="save_btn_container flex flex-col items-center">
             <button class="save_btn btn btn-secondary w-1/3" on:click={save_recipe}>

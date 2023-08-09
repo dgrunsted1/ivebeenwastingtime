@@ -10,9 +10,8 @@
     let tab = "recipe_list";
     let grocery_list = [];
     afterUpdate(async () => {
-        // console.log({menu});
+        grocery_list = [];
         if (!menu.length) return;
-        // console.log({menu});
         menu.forEach((recipe, i) => {
             let mult = (document.getElementsByClassName("servings")[i]) ? document.getElementsByClassName("servings")[i].value : recipe.servings;
             grocery_list[i] = {
@@ -20,8 +19,6 @@
                 multiplier: mult / recipe.servings
             };  
         });
-        
-        // console.log({grocery_list});
     });
 
     function switch_tab(e){
