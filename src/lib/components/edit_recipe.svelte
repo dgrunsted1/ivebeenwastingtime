@@ -120,6 +120,14 @@
     function add_dir(){
         recipe.directions[recipe.directions.length] = "";
     }
+
+    function remove_dir(e){
+        let output = [];
+        for (let i = 0; i < recipe.directions.length; i++){
+            if (i != e.srcElement.id) output.push(recipe.directions[i]);
+        }
+        recipe.directions = output;
+    }
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
@@ -209,7 +217,7 @@
             <div class="badge badge-primary mt-3 self-start">Directions</div>
             {#each recipe.directions as curr, i}
                 <div class="step w-4/5">
-                    <label for="directions" class="labelmx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span></label>
+                    <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
                     <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]} on:input|preventDefault={enable_save}/>
                 </div>
             {/each}
