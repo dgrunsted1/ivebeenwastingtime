@@ -10,6 +10,8 @@
     
     afterUpdate( () => {
         if (!recipe.category) recipe.category = "Category";
+        console.log(recipe.expand);
+        
     });
 
     async function save_recipe(e) {
@@ -127,6 +129,19 @@
         }
         recipe.directions = output;
     }
+
+    async function add_note(e){
+        let note_text = e.srcElement.parentElement.parentElement.getElementsByTagName("textarea")[0].value;
+        console.log({note_text});
+        console.log(recipe.expand);
+        if (!recipe.expand.notes){
+            recipe.expand.notes = [note_text];
+            console.log(recipe.expand);    
+        }else {
+            recipe.expand.notes.push({content: note_text});
+        }
+        console.log(recipe.expand);
+    }
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
@@ -229,10 +244,13 @@
             <div class="badge badge-primary mt-3 self-start">Notes</div>
             {#if recipe.expand.notes}
                 {#each recipe.expand.notes as note, i}
-                    <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[i]} on:input|preventDefault={enable_save}></textarea>
+                    <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[i].content} on:input|preventDefault={enable_save}></textarea>
                 {/each}
             {/if}
-            <!-- <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[recipe.expand.notes.length]} on:input|preventDefault={enable_save}></textarea> -->
+            <div class="w-4/5">
+                <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">New</span><button class="btn btn-xs my-1" on:click={add_note}>add</button></label>
+                <textarea class="notes textarea w-full textarea-bordered"></textarea>
+            </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">
             <button class="save_btn btn btn-secondary w-1/3" on:click={save_recipe}>
