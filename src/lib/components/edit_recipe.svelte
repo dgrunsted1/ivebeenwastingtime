@@ -10,7 +10,6 @@
     
     afterUpdate( () => {
         if (!recipe.category) recipe.category = "Category";
-        if (!recipe.expand.length) recipe.expand = {notes: [""]};
     });
 
     async function save_recipe(e) {
