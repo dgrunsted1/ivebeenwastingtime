@@ -271,7 +271,7 @@
 
         <div class="notes_container m-1 w-full flex flex-col items-center">
             <div class="badge badge-primary mt-3 self-start">Notes</div>
-            {#if recipe.expand.notes}
+            {#if recipe.expand && recipe.expand.notes}
                 {#each recipe.expand.notes as note, i}
                     <div class="w-4/5">
                         <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">{get_local_time(recipe.expand.notes[i].updated)}</span><button id={recipe.expand.notes[i].id} class="btn btn-xs my-1" on:click={remove_note}>remove</button></label>

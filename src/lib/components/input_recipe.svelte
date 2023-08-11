@@ -14,6 +14,28 @@ let multiplier = 1;
 const conv_frac = {"¼": .25, "½": .5, "¾": .75, "⅐": .142857, "⅑": .111111, "⅒": .1, "⅓": .333333, "⅔": .666667, "⅕": .2, 
                     "⅖": .4, "⅗": .6, "⅘": .8, "⅙": .166667, "⅚": .833333, "⅛": .125, "⅜": .375, "⅝": .625, "⅞": .875};
 
+const reg_exp = {replace: {
+                    "$2": /^(\*)([A-z0-9 ()/’,-.ñ;è'\t]+)/,
+                    "$1 $2": /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
+                    "": /about/i,
+                    "$2 $3": /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/
+                }, 
+                match: [
+                    //  6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved
+                    //  1 medium onion, thinly sliced (about 6 ounces; 170g)
+                    {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)(.*)/, amnt: 1, unit: 2, name: 3},
+                    //  1 cup/200 grams granulated sugar
+                    //  ¼ cup/30 grams confectioners’ sugar
+                    {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+)\/(\d+) ([A-z]+) (.*)/, amnt: 1, unit: 2, name: 5},
+                    //  amount unit (something in parenthasis) name
+                    //  1 tablespoon (15ml) vegetable oil
+                    //  1 1/4 cup (60ml) vegetable oil
+                    {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+) (\(\w+\)) (.*)/, amnt: 1, unit: 2, name: 4},
+                    //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
+                    //  1 (1-inch) knob ginger, peeled, roughly chopped
+                    {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/, amnt: [1,2], unit: 3, name: [5,6]},
+
+                ]};
 
 
 
@@ -39,94 +61,44 @@ function update_recipe(e){
 
 
 function process_recipe(in_lines) {
-    in_lines[0] = in_lines[0].replace(
-        /^(\*)([A-z0-9 ()/’,-.ñ;è'\t]+)/,
-        "$2"
-    ).trim();
+    for (let key in reg_exp.replace){
+        in_lines[0] = in_lines[0].replace(reg_exp.replace[key],key).trim();
+    }  
 
-    in_lines[0] = in_lines[0].replace(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
-        "$1 $2"
-    );
-
-    in_lines[0] = in_lines[0].replace(/about/i, "").trim();
-
-    in_lines[0] = in_lines[0].replace(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+)([A-z|(])/,
-        "$2 $3"
-    );
-
-    console.log(in_lines[0]);
-    
     let ingr = false;
-    let curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)(.*)/ 
-    );
-    //  6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved
-    //  1 medium onion, thinly sliced (about 6 ounces; 170g)
-    if (curr){
-        log_match(curr, 1);
-        ingr = {
-                amount: convert_amount(curr[1]), 
-                unit: make_singular(curr[2]), 
-                name: trim_name(curr[3].trim()),
-                original: [in_lines[0]]
-        };
+    let cnt = 0
+    for (let match of reg_exp.match){
+        let curr = in_lines[0].match(match.exp);
+        if (curr){
+            // log_match(curr, cnt);
+            let amount;
+            let name;
+            if (typeof match.amnt == "number") amount = curr[match.amnt];
+            else amount = curr[match.amnt[0]] * curr[match.amnt[1]];
+            
+            if (typeof match.name == "number") name = curr[match.name];
+            else name = curr[match.name[0]] + " " + curr[match.name[1]];
+
+            ingr = {
+                    amount: convert_amount(amount), 
+                    unit: make_singular(curr[match.unit]), 
+                    name: trim_name(name.trim()),
+                    original: [in_lines[0]]
+            };
+        }
+        curr = false;
+        cnt++;
     }
-    curr = false;
-    curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+)\/(\d+) ([A-z]+) (.*)/
-    );
-    //  1 cup/200 grams granulated sugar
-    //  ¼ cup/30 grams confectioners’ sugar
-    if (curr){
-        log_match(curr, 2);      
-        ingr = {
-            amount: convert_amount(curr[1]), 
-            unit: make_singular(curr[2]), 
-            name: trim_name(curr[5].trim()),
-            original: [in_lines[0]]
-        };
-    }
-    curr = false;
-    curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+) (\(\w+\)) (.*)/
-    );
-    //  amount unit (something in parenthasis) name
-    //  1 tablespoon (15ml) vegetable oil
-    //  1 1/4 cup (60ml) vegetable oil
-    if (curr){
-        log_match(curr, 3);      
-        ingr = {
-            amount: convert_amount(curr[1]), 
-            unit: make_singular(curr[2]), 
-            name: trim_name(curr[4].trim()),
-            original: [in_lines[0]]
-        };
-    }
-    curr = false;
-    curr = in_lines[0].match(
-        /^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/
-    );
-    //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
-    //  1 (1-inch) knob ginger, peeled, roughly chopped
-    if (curr){
-        log_match(curr, 4); 
-        if (curr[5].trim() == "can") curr[5] = "canned"
-        ingr = {
-            amount: convert_amount(curr[1]*curr[2]), 
-            unit: make_singular(curr[3]), 
-            name: trim_name(curr[5] + " " + curr[6]),
-            original: [in_lines[0]]
-        };
-    }
+
     if (ingr && !ingr.unit.includes("can") && !ingr.unit.includes("block") && !measurements.includes(ingr.unit)) {
         ingr.name = ingr.unit+" "+ingr.name;
         ingr.unit = "whole";
     }
+
     if (!ingr && in_lines[0]) ingr = {amount: false, unit: false, name: in_lines[0], original:[in_lines[0]]};
+
     if (in_lines.slice(1).length) return [ingr].concat(process_recipe(in_lines.slice(1)));
-    return ingr;
+    else return ingr;
 }
 
 function convert_amount(in_amount) {
@@ -182,9 +154,7 @@ async function fetch_recipe(e){
         alert(result.data.err);
         e.srcElement.value = "";
     } else if (result.type === 'success') {
-        console.log("before process", result.data.ingredients);
         result.data.ingredients = process_recipe(result.data.ingredients);
-        console.log("after process", result.data.ingredients);
         result.data.url = e.srcElement.value;
         recipe = result.data;
         dispatch('recipe_edited', {
