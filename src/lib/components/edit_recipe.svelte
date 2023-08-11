@@ -17,21 +17,14 @@
     async function save_recipe(e) {
         e.srcElement.disabled = true;
         e.srcElement.innerHTML = "uploading";
-        let temp = [];
-        for (let i = 0; i < recipe.ingredients.length; i++){
-            if (!recipe.ingredients[i].removed) temp.push(recipe.ingredients[i]);
-        }
-        recipe.ingredients = temp;
-        reset_checks();
-        let note_ids = [];
-        if (recipe.notes){
-            const note_data = {
-                "content": recipe.notes
-            };
-            const note_record = await pb.collection('notes').create(note_data);
-            note_ids.push(note_record.id);
-        }
         
+        recipe.ingredients = get_ingr(recipe);
+
+        reset_checks();
+
+        let note_ids = await get_note_ids(recipe);
+
+        note_ids = await add_new_note(note_ids);
 
         const data = {
             "title": recipe.title,
@@ -48,21 +41,54 @@
             "notes": note_ids
         };
         if (recipe.id){
-            const record = await pb.collection('recipes').update(recipe.id, data);
+            recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes"});
         }else {
             data.user = $currentUser.id;
             data.url = recipe.url;
-            const record = await pb.collection('recipes').create(data);
-            recipe = record;
+            recipe = await pb.collection('recipes').create(data, {expand: "notes"});
         }
+        
         dispatch("update_recipe", {recipe: recipe});
         e.srcElement.innerHTML = "saved";
+        document.getElementById("new_note").value = "";
     }
 
     function reset_checks(){
         Array.from(document.querySelectorAll(".removed input[type='checkbox']")).forEach(curr => {
             curr.checked = false;
         });
+    }
+
+    async function add_new_note(note_ids){
+        let note_text = document.getElementById("new_note").value;
+        if (note_text){
+            const new_note_record = await pb.collection('notes').create({ content: note_text });
+            note_ids.push(new_note_record.id);
+        }
+        return note_ids;
+    }
+    
+    async function get_note_ids(recipe){
+        let note_ids = [];
+        
+        if (recipe.expand.notes){
+            for (let note of recipe.expand.notes){
+                if (note.id){
+                    const note_record = await pb.collection('notes').update(note.id, { "content": note.content });
+                    note_ids.push(note_record.id);
+                }
+            }
+        }
+
+        return note_ids;
+    }
+
+    function get_ingr(recipe){
+        let temp = [];
+        for (let i = 0; i < recipe.ingredients.length; i++){
+            if (!recipe.ingredients[i].removed) temp.push(recipe.ingredients[i]);
+        }
+        return temp;
     }
 
     function check_item(e){
@@ -130,17 +156,20 @@
         recipe.directions = output;
     }
 
-    async function add_note(e){
-        let note_text = e.srcElement.parentElement.parentElement.getElementsByTagName("textarea")[0].value;
-        console.log({note_text});
-        console.log(recipe.expand);
-        if (!recipe.expand.notes){
-            recipe.expand.notes = [note_text];
-            console.log(recipe.expand);    
-        }else {
-            recipe.expand.notes.push({content: note_text});
+    function remove_note(e){
+        let note_id = e.srcElement.id;
+        let output = [];
+        for (let note of recipe.expand.notes){
+            if (note.id != note_id) output.push(note);
         }
-        console.log(recipe.expand);
+        recipe.expand.notes = output;
+    }
+
+    function get_local_time(utc_code){
+        const event = new Date(utc_code);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+        return event.toLocaleDateString(undefined, options);
     }
 </script>
 
@@ -244,12 +273,15 @@
             <div class="badge badge-primary mt-3 self-start">Notes</div>
             {#if recipe.expand.notes}
                 {#each recipe.expand.notes as note, i}
-                    <textarea class="notes textarea w-4/5 textarea-bordered" bind:value={recipe.expand.notes[i].content} on:input|preventDefault={enable_save}></textarea>
+                    <div class="w-4/5">
+                        <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">{get_local_time(recipe.expand.notes[i].updated)}</span><button id={recipe.expand.notes[i].id} class="btn btn-xs my-1" on:click={remove_note}>remove</button></label>
+                        <textarea class="notes textarea w-full textarea-bordered" bind:value={recipe.expand.notes[i].content} on:input|preventDefault={enable_save}/>
+                    </div>
                 {/each}
             {/if}
             <div class="w-4/5">
-                <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">New</span><button class="btn btn-xs my-1" on:click={add_note}>add</button></label>
-                <textarea class="notes textarea w-full textarea-bordered"></textarea>
+                <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">New</span></label>
+                <textarea id="new_note" class="notes textarea w-full textarea-bordered" on:input|preventDefault={enable_save}></textarea>
             </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">

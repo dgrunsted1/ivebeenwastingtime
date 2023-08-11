@@ -2,7 +2,12 @@
 
 export let recipe;
 
+function get_local_time(utc_code){
+        const event = new Date(utc_code);
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
+        return event.toLocaleDateString(undefined, options);
+    }
 
 </script>
 
@@ -59,11 +64,14 @@ export let recipe;
                 </div>
             {/each}
         </div>
-        {#if recipe.notes}
+        {#if recipe.expand.notes}
             <div>Notes</div>
-            <div class="notes_container flex items-center justify-center">
-                <div class="notes flex grow m-1 w-4/5 h-fit text-sm">{recipe.notes}</div>
-            </div>
+            {#each recipe.expand.notes as note, i}
+                <div class="notes_container flex items-center justify-center">
+                    <div class="notes flex grow m-1 w-4/5 h-fit text-sm">{get_local_time(note.updated)}</div>
+                    <div class="notes flex grow m-1 w-4/5 h-fit text-sm">{note.content}</div>
+                </div>
+            {/each}
         {/if}
     </div>
 </div>

@@ -10,7 +10,7 @@
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
-            expand: `recipes`
+            expand: `recipes,recipes.notes`
         });
         todays_menu = result_list.items[0];
     });
@@ -112,6 +112,11 @@
             <label for="notes" class="label">
                 <span class="label-text">Notes</span>
             </label>
+            {#if cook_recipe.expand.notes}
+                {#each cook_recipe.expand.notes as note, i}
+                    <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Notes" value={note.content}></textarea>
+                {/each}
+            {/if}
             <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Notes"></textarea>
         </div>
     </div>
