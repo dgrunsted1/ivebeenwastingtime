@@ -34,7 +34,6 @@ const reg_exp = {replace: {
                     //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
                     //  1 (1-inch) knob ginger, peeled, roughly chopped
                     {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/, amnt: [1,2], unit: 3, name: [5,6]},
-
                 ]};
 
 
