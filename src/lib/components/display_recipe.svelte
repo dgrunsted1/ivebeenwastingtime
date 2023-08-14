@@ -37,7 +37,7 @@ function get_local_time(utc_code){
                     <div>{recipe.servings}</div>
                 </div>
             </div>
-            <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url}>original recipe</a></div>
+            <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url} target="_blank">original recipe</a></div>
 
         </div>
     </div>

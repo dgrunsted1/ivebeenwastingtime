@@ -71,7 +71,7 @@
     async function get_note_ids(recipe){
         let note_ids = [];
         
-        if (recipe.expand.notes){
+        if (recipe.expand && recipe.expand.notes){
             for (let note of recipe.expand.notes){
                 if (note.id){
                     const note_record = await pb.collection('notes').update(note.id, { "content": note.content });

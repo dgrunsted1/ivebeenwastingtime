@@ -1,5 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
+    import { currentUser, pb } from '/src/lib/pocketbase';
     import EditIcon from "/src/lib/icons/EditIcon.svelte";
     import ViewIcon from "/src/lib/icons/ViewIcon.svelte";
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
@@ -21,7 +22,7 @@
                 check_box.checked = true;
             }
         }else {
-            index = e.srcElement.parentNode.parentNode.getElementsByTagName("p")[0].id;
+            index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
             check_box = e.srcElement;
             if (check_box.checked) {
                 dispatch("add_to_menu", {index: index});
@@ -72,8 +73,16 @@
         }
     }
 
-    function delete_recipe(e){
-
+    async function delete_recipe(e){
+        let delete_recipe = confirm("Are you sure you want to delete this recipe?");
+        if (delete_recipe){
+            await pb.collection('recipes').delete(e.srcElement.id);
+            let tmp = []
+            for (let recipe of recipes){
+                if (recipe.id != e.srcElement.id) tmp.push(recipe);
+            }
+            recipes = tmp;
+        }
     }
 </script>
 
@@ -83,11 +92,15 @@
                 <figure class="w-2/5"><img src={curr.image} alt={curr.title}/></figure>
                 <div class="card-body max-h-full flex flex-row p-2 items-center w-3/5">
                     <p id={i} class="w-3/4">{curr.title}</p>
-                    <div class="card-actions w-1/4 justify-self-end justify-end">
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} view" on:click={view}><ViewIcon/></button>
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} edit" on:click={view}><EditIcon/></button>
-                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent" id="{curr.id}">
-                        <button class="recipe_btn btn w-fit p-1 btn-xs {i}" on:click={delete_recipe}><DeleteIcon/></button>
+                    <div class="card-actions flex w-14 justify-self-end justify-center">
+                        <div class="flex w-fit space-x-1">
+                            <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} view" on:click={view}><ViewIcon/></button>
+                            <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} edit" on:click={view}><EditIcon/></button>
+                        </div>
+                        <div class="flex space-x-1">
+                            <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent" id="{curr.id}">
+                            <button class="recipe_btn btn w-fit p-1 btn-xs {i} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                        </div>
                     </div>
                 </div>
             </div>
