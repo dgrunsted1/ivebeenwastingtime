@@ -20,6 +20,7 @@
             expand: `notes`
         });
         user_recipes = result_list;
+        console.log(user_recipes.items[0]);
     });
 
     function update_edit(e){
@@ -72,6 +73,7 @@
                 <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
                 <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
                 <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
+                <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
             </div>
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 

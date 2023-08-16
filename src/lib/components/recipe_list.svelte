@@ -105,4 +105,7 @@
                 </div>
             </div>
         {/each}
+        <div class="flex justify-center m-5">
+            <a class="btn btn-primary" href="/add_recipe">Add New Recipes</a>
+        </div>
 </div>

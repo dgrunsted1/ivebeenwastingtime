@@ -34,6 +34,7 @@
     <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
     <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
     <a class="btn btn-primary mx-6 mb-1" href="/menu">create menu</a>
+    <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
 </div>
 {#if mode == "recipes" && todays_menu.id}
     <h2>which recipe are you making today?</h2>

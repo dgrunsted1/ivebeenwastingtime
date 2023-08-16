@@ -165,6 +165,38 @@
         recipe.expand.notes = output;
     }
 
+    const update_image_upload = async () => {
+        const fileList = event.target.files;
+        let too_big = [];
+        let success_cnt = 0;
+        for (let file of fileList) {
+            if (file.size > 5242880){
+                too_big.push(file.name);
+            }else {
+                document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">uploading ${file.name}</p>`;
+                let result = await uploadImage(file);
+                if (result.id) success_cnt++;
+            }
+        }
+        document.getElementById("status").innerHTML = `<p class="m-auto w-4/5 text-center">uploaded ${success_cnt}/${fileList.length} successfully</p>`;
+        let first = true;
+        for (let curr of too_big){
+            if (first){
+                document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">These files were too big:</p>`;
+                first = false;
+            }
+            document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">${curr}</p>`;
+        }
+    }
+
+    async function uploadImage(file) {
+        let formData = new FormData();
+        formData.append('file', file);
+        formData.append("album", curr_album);
+        const record = await pb.collection('photos').create(formData);
+        return record;
+    }
+
     function get_local_time(utc_code){
         const event = new Date(utc_code);
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -176,7 +208,14 @@
 <div id="recipe" class="flex flex-col w-full">
     <div class="img_info_container flex flex-row w-full content-center justify-around">
         <div class="img_container mr-3 flex w-1/2 content-center">
-            <img src={recipe.image} alt={recipe.title} class="self-center"/>
+            {#if recipe.image}
+                <img src={recipe.image} alt={recipe.title} class="self-center"/>
+            {:else}
+            <div class="w-full flex flex-col space-y-2">
+                <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
+                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.url}/>
+            </div>
+            {/if}
         </div>
         <div class="info_container w-1/2 mx-1">
             <div class="title_container form-control">

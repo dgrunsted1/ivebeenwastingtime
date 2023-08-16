@@ -26,6 +26,7 @@
         <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
         <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
         <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
+        <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
     </div>
     <div id="content" class="flex flex-row m-3">
         <div id="recipes" class="flex flex-col basis-1/2">

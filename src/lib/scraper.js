@@ -49,6 +49,27 @@ const selectors = {
                             group: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > *',
                             item: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > li:nth-child(ITEM_INDEX) > p'
                         }]
+        },
+        ba: {
+            title: 'h1',
+            author: '#__next > main > div > div:nth-child(1) > div:nth-child(1) > header > div > h2 > a',
+            description: '#__next > main > div > div:nth-child(1) > div:nth-child(4) > div > div > div > p',
+            image: 'img',
+            time: '#__next > main > div > div:nth-child(1) > div:nth-child(3) > dl > dd:nth-child(2)',
+            servings: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > div:nth-child(2) > span:nth-child(2)',
+            ingredients: [{
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
+                            list: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
+                        },
+                        {
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > li:nth-child(ITEM_INDEX)'
+                        }],
+            directions: [{
+                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > *',
+                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > li:nth-child(ITEM_INDEX) > p'
+                        }]
         }
     };
 
@@ -159,6 +180,8 @@ export const scrape = async function(url) {
             site_selectors = selectors.serious_eats;
         }else if(url.includes("cooking.nytimes.com")){
             site_selectors = selectors.nyt;
+        }else if(url.includes("www.bonappetit.com")){
+            site_selectors = selectors.ba;
         }else{
             return {err: "website not supported"};
         }
