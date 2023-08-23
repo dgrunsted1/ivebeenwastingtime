@@ -1,6 +1,7 @@
 const measurements = [
     "teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", 
-    "medium", "small", "clove", "whole", "ounce", "pint", "inch", "ear"
+    "medium", "small", "clove", "whole", "ounce", "pint", "inch", "ear",
+    "oz", "tsp", "tbsp", "lb", "sprig", "bunch"
 ];
 
 const conv_frac = {
@@ -93,7 +94,7 @@ function convert_amount(in_amount) {
 
 function trim_name(in_name) {
     let out = in_name.replace(/\(([^\)]+)\)/, "");
-    // out = (out.indexOf(",") > 0) ? out.substring(0, out.indexOf(",")) : out;
+    out = in_name.replace(/^[ .]+/, "");
     out = out.trim();
     // if (out.indexOf("s") == out.length - 1) out = out.substring(0, out.length - 1);
     return out

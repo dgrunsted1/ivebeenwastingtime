@@ -140,7 +140,7 @@ function array_test(scrape, test, in_type){
         }
     }else if (typeof scrape == typeof test) {
         // output.status = false;
-        output.message.push(`scraped length:${test.length} != test length:${scrape[j]}`);
+        output.message.push(`scraped length:${test.length} != test length:${scrape.length}`);
     }else {
         // output.status = false;
         output.message.push(`scraped type:${typeof test} != test type:${typeof scrape}`);

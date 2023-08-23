@@ -30,8 +30,8 @@ const selectors = {
                         // #ingredient-list_1-0 > li:nth-child(2)
         },
         nyt: {
-            title: 'h1',
-            author: '#__next > main > div > div:nth-child(1) > div:nth-child(1) > header > div > h2 > a',
+            title: 'header > h1',
+            author: 'header > div > h2 > a',
             description: '#__next > main > div > div:nth-child(1) > div:nth-child(4) > div > div > div > p',
             image: 'img',
             time: '#__next > main > div > div:nth-child(1) > div:nth-child(3) > dl > dd:nth-child(2)',
@@ -52,23 +52,18 @@ const selectors = {
         },
         ba: {
             title: 'h1',
-            author: '#__next > main > div > div:nth-child(1) > div:nth-child(1) > header > div > h2 > a',
-            description: '#__next > main > div > div:nth-child(1) > div:nth-child(4) > div > div > div > p',
-            image: 'img',
-            time: '#__next > main > div > div:nth-child(1) > div:nth-child(3) > dl > dd:nth-child(2)',
-            servings: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > div:nth-child(2) > span:nth-child(2)',
+            author: '#main-content > article > div:nth-child(1) > header > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(3) > p > span > span > a',
+            description: '#main-content > article > div:nth-child(2) > div > div > div > div:nth-child(2) > div > div > div > p:nth-child(1)',
+            image: '#main-content > article > div:nth-child(1) > header > div > div:nth-child(2) div > div > span > picture > img',
+            servings: '#main-content > article > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5) > p',
             ingredients: [{
-                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
-                            list: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li',
-                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > ul:nth-child(LIST_INDEX) > li:nth-child(ITEM_INDEX)'
-                        },
-                        {
-                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > *',
-                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(8) > div > ul > li:nth-child(ITEM_INDEX)'
+                            group: '#main-content > article > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5) > div:nth-child(3) > *',
+                            pitem: '#main-content > article > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5) > div:nth-child(3) > p:nth-child(ITEM_INDEX)',
+                            item: '#main-content > article > div:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(5) > div:nth-child(3) > div:nth-child(ITEM_INDEX)'
                         }],
             directions: [{
-                            group: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > *',
-                            item: '#__next > main > div > div:nth-child(1) > div:nth-child(9) > div > ol > li:nth-child(ITEM_INDEX) > p'
+                            group: '#main-content > article > div:nth-child(2) > div > div > div > div:nth-child(6) > ol > li > *',
+                            item: '#main-content > article > div:nth-child(2) > div > div > div > div:nth-child(6) > ol > li > p:nth-child(ITEM_INDEX)'
                         }]
         }
     };
@@ -89,6 +84,7 @@ async function get_ingredients(page, selectors){
             if (selectors[k].list){
                 let sel = selectors[k].list.replace("LIST_INDEX", i);
                 // console.log({sel});
+                
                 let list_length = await page.evaluate((selector) => {
                                     return Array.from(document.querySelectorAll(selector)).length;
                                 }, sel);
@@ -106,10 +102,25 @@ async function get_ingredients(page, selectors){
                 }
             }else{
                 let sel_item = selectors[k].item.replace("ITEM_INDEX", i);
-                let temp = await page.evaluate((sel) => {
-                    return document.querySelector(sel)?.textContent;
-                }, sel_item);
-                if (temp) output.push(temp.trim());
+                let temp;
+                if (selectors[k].pitem){
+                    let p_item = selectors[k].pitem.replace("ITEM_INDEX", i);
+                    temp = await page.evaluate((sel, p_item) => {
+                        if (document.querySelector(p_item)) return document.querySelector(p_item)?.textContent;
+                        else return document.querySelector(sel)?.textContent;
+                    }, sel_item, p_item);
+                }else {
+                    temp = await page.evaluate((sel) => {
+                        return document.querySelector(sel)?.textContent;
+                    }, sel_item);
+                }
+                if (temp) {
+                    if (output[output.length - 1] && !output[output.length - 1].includes(" ") && !/[a-z]/i.test(output[output.length - 1])){
+                        output[output.length - 1] = output[output.length - 1] + " " + temp;
+                    }else {
+                        output.push(temp.trim());
+                    }
+                }
             }
         }
         if (output.length) return output;
@@ -169,6 +180,55 @@ function format_servings(input){
     else return input;
 }
 
+async function get_ba_data(page){
+    let result = await page.evaluate(() => {
+        let article = document.querySelector("#main-content > article");
+        let header = article.querySelector("header");
+        let img = header.querySelector("img").src;
+        let title = header.querySelector("h1").textContent;
+        let author = header.querySelector("span > a").textContent;
+        let body = article.querySelector(".recipe__main-content");
+        let description = body.querySelector(".body").textContent;
+        let ingr_list = body.querySelector("[data-testid='IngredientList']");
+        let servings = ingr_list.querySelector("p").textContent;
+        let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
+        if (ingredient_list.length <= 1) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
+        // return ingredient_list;
+        let ingredients = [];
+        for (let i = 0; i < ingredient_list.length; i++){
+            if (ingredient_list[i].tagName == "DIV" || ingredient_list[i].tagName == "P") {
+                if (ingredients[ingredients.length - 1] && !ingredients[ingredients.length - 1].includes(" ") && !/[a-z]/i.test(ingredients[ingredients.length - 1])){
+                    ingredients[ingredients.length - 1] = ingredients[ingredients.length - 1] + " " + ingredient_list[i].textContent;
+                }else ingredients.push(ingredient_list[i].textContent);
+            }
+        }
+        let dir_list = body.querySelectorAll("[data-testid='InstructionsWrapper'] > ol > *");
+        let directions = [];
+        let tags = [];
+        for (let i = 0; i < dir_list.length; i++){
+            let curr_list = dir_list[i].querySelectorAll("li > *");
+            for (let j = 0; j < curr_list.length; j++){
+                tags.push(ingredient_list[i].tagName+"* "+ingredient_list[i].textContent);
+                if (curr_list[j].tagName == "P") directions.push(curr_list[j].textContent);
+            }
+        }
+        
+        return {
+            title: title,
+            author: author,
+            description: description,
+            image: img,
+            time: null,
+            servings: servings,
+            ingredients: ingredients,
+            directions: directions,
+            tags: tags
+        };
+    });
+    console.log({result});
+    return result;
+}
+
 export const scrape = async function(url) {
         const start = Date.now();
         const browser = await puppeteer.launch({headless: "new"});
@@ -182,6 +242,9 @@ export const scrape = async function(url) {
             site_selectors = selectors.nyt;
         }else if(url.includes("www.bonappetit.com")){
             site_selectors = selectors.ba;
+            // let recipe_data = await get_ba_data(page, site_selectors);
+            // console.log({recipe_data});
+            // return recipe_data;
         }else{
             return {err: "website not supported"};
         }
@@ -195,29 +258,35 @@ export const scrape = async function(url) {
 
         let results = {};
 
-        for (const k in site_selectors){
-            try{
-                if(k == "ingredients"){
-                    results[k] = await get_ingredients(page, site_selectors[k]);
-                }else if(k == "directions"){
-                    results[k] = await get_directions(page, site_selectors[k]);
-                }else if(k == "image"){
-                    results[k] = await get_img(page, site_selectors[k]);
-                }else {
-                    results[k] = await get_element(page, site_selectors[k]);
+        if (url.includes("www.bonappetit.com")){
+            results = await get_ba_data(page, site_selectors);
+            console.log({results});
+            // return recipe_data;
+        }else {
+            for (const k in site_selectors){
+                try{
+                    if(k == "ingredients"){
+                        results[k] = await get_ingredients(page, site_selectors[k]);
+                    }else if(k == "directions"){
+                        results[k] = await get_directions(page, site_selectors[k]);
+                    }else if(k == "image"){
+                        results[k] = await get_img(page, site_selectors[k]);
+                    }else {
+                        results[k] = await get_element(page, site_selectors[k]);
+                    }
+                }catch (e){
+                    let data = {
+                        data: JSON.stringify({message: e.message, url: url, step: k, result: results[k]}),
+                        function: "prep scrape"
+                    };
+                    console.log("error", data);
+                    const result = await pb.collection('errors').create(data);
                 }
-            }catch (e){
-                data = {
-                    data: JSON.stringify({message: e.message, url: url, step: k, result: results[k]}),
-                    function: "prep scrape"
-                };
-                console.log("error", data);
-                const result = await pb.collection('errors').create(data);
-            }
-        };
+            };
+        }
+        
         results.description = (results.description) ? results.description.split(".")[0] : results.description;
         results.servings = format_servings(results.servings);
-        // console.log("results", results);
         await browser.close();
         const end = Date.now();
         results.execution_time = `${(end-start)/1000}s`;

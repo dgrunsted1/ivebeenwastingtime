@@ -22,7 +22,8 @@
 
         reset_checks();
 
-        let note_ids = await get_note_ids(recipe);
+        let note_ids = [];
+        note_ids = await get_note_ids(recipe);
 
         note_ids = await add_new_note(note_ids);
 
@@ -38,8 +39,9 @@
             "category": recipe.category,
             "cuisine": recipe.cuisine,
             "country": recipe.country,
-            "notes": note_ids
         };
+        if (note_ids.length) data.notes = note_ids;
+        console.log({data});
         if (recipe.id){
             recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes"});
         }else {
