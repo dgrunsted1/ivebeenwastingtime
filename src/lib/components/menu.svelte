@@ -6,7 +6,6 @@
 
     export let menu;
     export let id = null;
-    // console.log({menu});
     let tab = "recipe_list";
     let grocery_list = [];
     afterUpdate(async () => {
@@ -47,19 +46,13 @@
     }
     
     async function set_todays_menu(e){
-        // console.log(`user = ${$currentUser.id} && today = True`);
         const resultList = await pb.collection('menus').getList(1, 50, {
             filter: `user = '${$currentUser.id}' && today = True`,
         });
         if (resultList.items.length){
-            // console.log(resultList.items[0].id);
             const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false });
-            // console.log({false_record});
         }
-        
         const true_record = await pb.collection('menus').update(id, { "today": true });
-        // console.log({true_record});
-
     }
 
 </script>

@@ -6,7 +6,6 @@ export async function load() {
     let response = await pb.collection('photos').getFullList({
         fields: 'album,id,file'
     });
-    // console.log(response);
     let output = {message: "no photo found"};
     let photos = [];
 

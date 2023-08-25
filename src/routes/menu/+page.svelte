@@ -47,16 +47,11 @@
     }
 
     function remove_from_menu(e){
-        console.log({user_recipes});
-        console.log(e.detail.index);
-        console.log(user_recipes.items[e.detail.index]);
         let remove = menu_recipes.indexOf(user_recipes.items[e.detail.index]);
         if (remove > -1){
             menu_recipes.splice(remove, 1);
             menu_recipes = menu_recipes;
-            console.log({menu_recipes});
         }
-
     }
 
     function add_to_menu(e){

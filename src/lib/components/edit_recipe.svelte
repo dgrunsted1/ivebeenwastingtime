@@ -10,8 +10,6 @@
     
     afterUpdate( () => {
         if (!recipe.category) recipe.category = "Category";
-        console.log(recipe.expand);
-        
     });
 
     async function save_recipe(e) {

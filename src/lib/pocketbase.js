@@ -5,7 +5,6 @@ export const pb = new PocketBase('http://db.ivebeenwastingtime.com');
 export const currentUser = writable(pb.authStore.model);
 
 pb.authStore.onChange((auth) => {
-    console.log('authStore changed', auth);
     currentUser.set(pb.authStore.model);
 });
 
