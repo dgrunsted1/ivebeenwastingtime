@@ -1,3 +1,5 @@
+import { parse } from 'recipe-ingredient-parser-v3';
+
 const measurements = [
     "teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", 
     "medium", "small", "clove", "whole", "ounce", "pint", "inch", "ear",
@@ -33,7 +35,15 @@ const reg_exp = {
     ]
 };
 
-export const process_recipe = function(in_lines) {
+export const process_recipe = function(in_lines){
+    let result = [];
+    for(let ingr of in_lines){
+        if (ingr) result.push(parse(ingr, 'eng'));
+    }
+    return result;
+}
+
+const process_recipe_old = function(in_lines) {
     for (let key in reg_exp.replace){
         in_lines[0] = in_lines[0].replace(reg_exp.replace[key],key).trim();
     }  

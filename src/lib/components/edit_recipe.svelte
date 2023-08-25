@@ -41,7 +41,6 @@
             "country": recipe.country,
         };
         if (note_ids.length) data.notes = note_ids;
-        console.log({data});
         if (recipe.id){
             recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes"});
         }else {
@@ -281,13 +280,9 @@
             {#each recipe.ingredients as ingr, i}
                 {#if ingr}
                     <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
-                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.ingredients[i].amount} on:input|preventDefault={enable_save}>
+                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.ingredients[i].quantity} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.ingredients[i].unit} on:input|preventDefault={enable_save}>
-                        {#if recipe.ingredients[i].name}
-                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.ingredients[i].name} on:input|preventDefault={enable_save}>
-                        {:else}
-                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80" bind:value={recipe.ingredients[i].original[0]} on:input|preventDefault={enable_save}>
-                        {/if}
+                        <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.ingredients[i].ingredient} on:input|preventDefault={enable_save}>
                         <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.ingredients[i].original}">
                     </div>
                 {/if}

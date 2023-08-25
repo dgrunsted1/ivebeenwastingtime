@@ -8,15 +8,10 @@ export const merge = function(recipes) {
     for(let recipe of recipes){
         for(let item of recipe.ingredients){
             if (!item) continue;
-            if ((!item.amount || !item.unit || !item.name) && item.original) {
-                skipped.push(item);
-                skipped = skipped;
-                continue;
-            }
             let match = false;
             if (grocery_list) {
                 grocery_list.forEach(element => {
-                    if (element.name === item.name || element.name.includes(item.name) || item.name.includes(element.name)){
+                    if (element.ingredient === item.ingredient || element.ingredient.includes(item.ingredient) || item.ingredient.includes(element.ingredient)){
                         match = element;
                         return;
                     }
@@ -26,31 +21,33 @@ export const merge = function(recipes) {
                             && !(match.unit == "clove" ^ item.unit == "clove") && !(match.unit == "whole" ^ item.unit == "whole")) {
                 
                 
-                let tmp = { amount: 0, unit: "", name: "", original: []};
-                tmp.original = tmp.original.concat(match.original, item.original);
+                let tmp = { ingredient: "",
+                            maxQty: 0,
+                            minQty: 0,
+                            quantity: 0,
+                            symbol: null,
+                            unit: null,
+                            unitPlural: null
+                        };
                 if (match.unit != item.unit) {
                     let conv = combine(match, item);
-                    tmp.amount = round_amount(conv.amount, recipe.multiplier);
+                    tmp.quantity = round_amount(conv.quantity, recipe.multiplier);
                     tmp.unit = conv.unit;
                 } else {
-                    tmp.amount = match.amount + round_amount(item.amount, recipe.multiplier);
+                    tmp.quantity = match.quantity + round_amount(item.quantity, recipe.multiplier);
                     tmp.unit = match.unit;
                 }
-                if (match.name != item.name){
-                    tmp.name = match.name+" and/or "+item.name;
+                if (match.ingredient != item.ingredient){
+                    tmp.ingredient = match.ingredient+" and/or "+item.ingredient;
                 }else {
-                    tmp.name = match.name;
+                    tmp.ingredient = match.ingredient;
                 }
                 grocery_list.splice(grocery_list.indexOf(match), 1);
                 grocery_list.push(tmp);
-                console.log(`merge${match.amount} ${match.unit} ${match.name} ${item.amount} ${item.unit} ${item.name}`, tmp);
+                console.log(`merge${match.quantity} ${match.unit} ${match.ingredient} ${item.quantity} ${item.unit} ${item.ingredient}`, tmp);
             }else {
-                grocery_list.push({
-                    amount: round_amount(item.amount, recipe.multiplier),
-                    unit: item.unit,
-                    name: item.name,
-                    original: item.original
-                });
+                item.quantity = round_amount(item.quantity, recipe.multiplier);
+                grocery_list.push(item);
             }
         }
     }
@@ -61,14 +58,13 @@ export const merge = function(recipes) {
 }
 
 const combine = (i, j) => {
-
     let conv_index_a = `${j.unit}/${i.unit}`;
     let conv_index_b = `${i.unit}/${j.unit}`;
     let amount = null;
     let unit = null;
     let conv_a;
     let conv_b;
-    if ((!conversions[conv_index_a] || !conversions[conv_index_a]) && ((j.name.includes('salt') && j.name.includes('salt')) || (i.name.includes('sugar') || i.name.includes('sugar')) || (i.name.includes('oil') || i.name.includes('oil')))){
+    if ((!conversions[conv_index_a] || !conversions[conv_index_a]) && ((j.ingredient.includes('salt') && j.ingredient.includes('salt')) || (i.ingredient.includes('sugar') || i.ingredient.includes('sugar')) || (i.ingredient.includes('oil') || i.ingredient.includes('oil')))){
         conv_a = weight_volume_conv[conv_index_a];
         conv_b = weight_volume_conv[conv_index_b];
     } else {
@@ -77,10 +73,10 @@ const combine = (i, j) => {
     }
     if (conv_a < conv_b){
         unit = j.unit;
-        amount = conv_a * i.amount + j.amount;
+        amount = conv_a * i.quantity + j.quantity;
     }else {
         unit = i.unit;
-        amount = conv_b * j.amount + i.amount;
+        amount = conv_b * j.quantity + i.quantity;
     }
     return {unit: unit, amount: amount};
 }

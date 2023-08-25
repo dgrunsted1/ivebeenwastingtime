@@ -16,7 +16,7 @@
             let mult = (document.getElementsByClassName("servings")[i]) ? document.getElementsByClassName("servings")[i].value : recipe.servings;
             grocery_list[i] = {
                 ingredients: recipe.ingredients,
-                multiplier: mult / recipe.servings
+                multiplier: parseFloat(mult) / parseFloat(recipe.servings)
             };  
         });
     });

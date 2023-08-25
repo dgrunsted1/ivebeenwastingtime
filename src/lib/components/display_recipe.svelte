@@ -47,9 +47,9 @@ function get_local_time(utc_code){
             {#each recipe.ingredients as ingr}
                 {#if ingr}
                     <div class="ingr_row flex w-full ml-2.5">
-                        <div class="ingr_amount text-sm my-1 text-center w-9">{ingr.amount ? ingr.amount : ""}</div>
+                        <div class="ingr_amount text-sm my-1 text-center w-9">{ingr.quantity ? ingr.quantity : ""}</div>
                         <div class="ingr_unit w-24 text-center text-sm my-1">{ingr.unit ? ingr.unit : ""}</div>
-                        <div class="ingr_name w-7/10 text-sm">{ingr.name ? ingr.name : ingr.original}</div>
+                        <div class="ingr_name w-7/10 text-sm">{ingr.ingredient ? ingr.ingredient : ""}</div>
                     </div>
                 {/if}
             {/each}

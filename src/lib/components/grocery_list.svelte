@@ -42,15 +42,6 @@
         skipped = skipped;
         grocery_list = grocery_list;
     }
-
-    function tooltip_originals(originals){
-        let output = "";
-        originals.forEach((curr, i) => {
-            if (i > 0) output += "<br>";
-            output += curr;
-        });
-        return output;
-    }
 </script>
 
 <div id="list" class="flex flex-col w-full">
@@ -62,11 +53,11 @@
     <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
         <div class="grocery_list">
             {#each grocery_list as item}
-                    <div class="grocery_item flex relative my-1 tooltip" data-tip={tooltip_originals(item.original)}>
-                        <input type="checkbox" class="checkbox checkbox-sm" id="{item.name}">
-                        <input type="text" class="amount w-8 text-center m-auto text-sm" value={item.amount}>
+                    <div class="grocery_item flex relative my-1 tooltip">
+                        <input type="checkbox" class="checkbox checkbox-sm" id="{item.ingredient}">
+                        <input type="text" class="amount w-8 text-center m-auto text-sm" value={item.quantity}>
                         <input type="text" class="unit w-20 m-auto text-center text-sm" value={item.unit}>
-                        <input type="text" class="name w-3/4 m-auto text-sm" value={item.name}> 
+                        <input type="text" class="name w-3/4 m-auto text-sm" value={item.ingredient}> 
                     </div>                        
             {/each}
         </div>

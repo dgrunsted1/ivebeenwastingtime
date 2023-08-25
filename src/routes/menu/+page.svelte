@@ -20,7 +20,6 @@
             expand: `notes`
         });
         user_recipes = result_list;
-        console.log(user_recipes.items[0]);
     });
 
     function update_edit(e){

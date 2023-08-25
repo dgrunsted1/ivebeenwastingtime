@@ -89,9 +89,9 @@
                 {#each cook_recipe.ingredients as ingr}
                     {#if ingr}
                         <div class="ingr_row flex w-full gap-x-2 items-center">
-                            <div class="ingr_amount text-sm text-center">{ingr.amount ? ingr.amount : ""}</div>
+                            <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity : ""}</div>
                             <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
-                            <div class="ingr_name text-center text-sm">{ingr.name ? ingr.name : ingr.original}</div>
+                            <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
                         </div>
                         {#if cook_recipe.ingredients[cook_recipe.ingredients.length-1] != ingr}
                             <div class="divider my-1 "></div>
