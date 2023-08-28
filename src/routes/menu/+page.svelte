@@ -17,9 +17,10 @@
     onMount(async () => {
         const result_list = await pb.collection('recipes').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
-            expand: `notes`
+            expand: `notes, ingr_list`
         });
         user_recipes = result_list;
+        console.log({user_recipes});
     });
 
     function update_edit(e){

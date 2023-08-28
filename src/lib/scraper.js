@@ -220,7 +220,7 @@ async function get_ba_data(page){
             image: img,
             time: null,
             servings: servings,
-            ingredients: ingredients,
+            expand: {ingr_list: ingredients},
             directions: directions,
             tags: tags
         };
@@ -260,13 +260,12 @@ export const scrape = async function(url) {
 
         if (url.includes("www.bonappetit.com")){
             results = await get_ba_data(page, site_selectors);
-            console.log({results});
-            // return recipe_data;
         }else {
             for (const k in site_selectors){
                 try{
                     if(k == "ingredients"){
-                        results[k] = await get_ingredients(page, site_selectors[k]);
+                        results.expand = {ingrlist: []};
+                        results.expand.ingr_list = await get_ingredients(page, site_selectors[k]);
                     }else if(k == "directions"){
                         results[k] = await get_directions(page, site_selectors[k]);
                     }else if(k == "image"){

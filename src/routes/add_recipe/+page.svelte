@@ -13,17 +13,9 @@
         cuisine: "",
         description: "",
         directions: [""],
-        expand: {},
+        expand: {ingr_list:[{quantity: 1, unit: "", ingredient: ""}]},
         id: "",
         image: "",
-        ingredients: [
-            {
-                amount: 1,
-                name: "",
-                original: [""],
-                unit: ""
-            }
-        ],
         notes: [],
         servings: "",
         time: "",
@@ -47,11 +39,12 @@
             alert(result.data.err);
             // e.srcElement.value = "";
         } else if (result.type === 'success') {
-            result.data.ingredients = process_recipe(result.data.ingredients);
+            result.data.expand.ingr_list = process_recipe(result.data.expand.ingr_list);
             result.data.url = e.srcElement.value;
             recipe = result.data;
+            console.log("ingr", recipe.expand.ingr_list);
             // dispatch('recipe_edited', {
-            //     items: result.data.ingredients, 
+            //     items: result.data.expand.ingr_list, 
             //     multiplier: multiplier,
             //     index: index
             // });

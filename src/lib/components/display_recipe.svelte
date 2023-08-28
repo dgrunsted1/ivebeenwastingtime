@@ -44,7 +44,7 @@ function get_local_time(utc_code){
     <div class="ingr_directions_container flex flex-col w-4/5 m-auto">
         <div>Ingredients</div>
         <div id="ingredient_list" class="flex flex-col w-full m-2">
-            {#each recipe.ingredients as ingr}
+            {#each recipe.expand.ingr_list as ingr}
                 {#if ingr}
                     <div class="ingr_row flex w-full ml-2.5">
                         <div class="ingr_amount text-sm my-1 text-center w-9">{ingr.quantity ? ingr.quantity : ""}</div>

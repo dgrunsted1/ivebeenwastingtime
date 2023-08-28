@@ -13,9 +13,10 @@
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
-            expand: `recipes`
+            expand: `recipes,recipes.ingr_list`
         });
         user_menus = result_list.items;
+        console.log({user_menus});
     });
 
     function show_menu_modal(e){

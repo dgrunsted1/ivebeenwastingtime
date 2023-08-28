@@ -26,7 +26,7 @@ function update_recipe(e){
     recipe = e.detail.recipe;
     multiplier = e.detail.multiplier;
     dispatch('recipe_edited', {
-        items: recipe.ingredients, 
+        items: recipe.expand.ingr_list, 
         multiplier: multiplier,
         index: index
     });
@@ -46,11 +46,11 @@ async function fetch_recipe(e){
         alert(result.data.err);
         e.srcElement.value = "";
     } else if (result.type === 'success') {
-        result.data.ingredients = process_recipe(result.data.ingredients);
+        result.data.expand.ingr_list = process_recipe(result.data.expand.ingr_list);
         result.data.url = e.srcElement.value;
         recipe = result.data;
         dispatch('recipe_edited', {
-            items: result.data.ingredients, 
+            items: result.data.expand.ingr_list, 
             multiplier: multiplier,
             index: index
         });

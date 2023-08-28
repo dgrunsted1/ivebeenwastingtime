@@ -3,10 +3,12 @@ const conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/
 const weight_volume_conv = {"gram/tablespoon": 14, "tablespoon/gram": 1/14, "gram/teaspoon": 14/3, "teaspoon/gram": 3/14, "gram/cup": 224/1, "cup/gram": 1/224}
 
 export const merge = function(recipes) {
+    console.log({recipes});
     let grocery_list = [];
     let skipped = [];
     for(let recipe of recipes){
-        for(let item of recipe.ingredients){
+        let ingrs = (recipe.ingredients) ? recipe.ingredients : recipe.expand.ingr_list;
+        for(let item of ingrs){
             if (!item) continue;
             let match = false;
             if (grocery_list) {

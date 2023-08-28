@@ -2,6 +2,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate } from 'svelte';
     import { page } from '$app/stores';  
+  import { validate_component } from 'svelte/internal';
 
     export let recipe;
     export let index;
@@ -14,42 +15,65 @@
 
     async function save_recipe(e) {
         e.srcElement.disabled = true;
-        e.srcElement.innerHTML = "uploading";
+        e.srcElement.innerHTML = "validating";
+
+        let validate_err = validate();
+        if (validate_err){
+            let ans = alert(`${validate_err}`);
+            e.srcElement.disabled = false;
+            e.srcElement.innerHTML = "save recipe";
+            return;
+        }
+        e.srcElement.innerHTML = "uploading ingredients";
         
-        recipe.ingredients = get_ingr(recipe);
+        recipe.expand.ingr_list = get_ingr();
 
+        let ingr_ids = await get_ingr_ids();
         reset_checks();
-
+        e.srcElement.innerHTML = "uploading notes";
         let note_ids = [];
-        note_ids = await get_note_ids(recipe);
+        note_ids = await get_note_ids();
 
         note_ids = await add_new_note(note_ids);
-
+        e.srcElement.innerHTML = "uploading recipe";
         const data = {
             "title": recipe.title,
             "description": recipe.description,
             "author": recipe.author,
             "time": recipe.time,
-            "ingredients": JSON.stringify(recipe.ingredients),
             "directions": JSON.stringify(recipe.directions),
             "servings": recipe.servings,
             "image": recipe.image,
             "category": recipe.category,
             "cuisine": recipe.cuisine,
             "country": recipe.country,
+            "ingr_list": ingr_ids
         };
         if (note_ids.length) data.notes = note_ids;
+        console.log({data});
         if (recipe.id){
-            recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes"});
+            recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes,ingr_list"});
         }else {
             data.user = $currentUser.id;
             data.url = recipe.url;
-            recipe = await pb.collection('recipes').create(data, {expand: "notes"});
+            recipe = await pb.collection('recipes').create(data, {expand: "notes,ingr_list"});
         }
-        
+        console.log("upload result", recipe);
+        e.srcElement.innerHTML = "updating ingredients";
+        for (let curr_ingr_id of ingr_ids){
+            let update_ingr = await pb.collection('ingredients').update(curr_ingr_id, {"recipe+": recipe.id});
+            console.log("update ingr", update_ingr);
+        }
         dispatch("update_recipe", {recipe: recipe});
         e.srcElement.innerHTML = "saved";
         document.getElementById("new_note").value = "";
+    }
+
+    function validate(){
+        let err = "";
+        console.log("recipe category", recipe.category);
+        if (recipe.category == "Category") err += "Please pick a category.";
+        return err;
     }
 
     function reset_checks(){
@@ -66,14 +90,78 @@
         }
         return note_ids;
     }
+
+    async function get_ingr_ids(){
+        let ids_to_update = [];
+        let curr_ingrs = (recipe.id) ? await pb.collection('ingredients').getList(1, 50, {filter: `recipe='${recipe.id}'`}) : null;
+        console.log({curr_ingrs});
+        for (let i = 0; i < recipe.expand.ingr_list.length; i++){
+            let found = false;
+            if (curr_ingrs){
+                for (let ingr of curr_ingrs.items){
+                    if (ingr.id == recipe.id) found = true;
+                    if (ingr.quantity == recipe.expand.ingr_list[i].quantity && ingr.ingredient == recipe.expand.ingr_list[i].ingredient && ingr.unit == recipe.expand.ingr_list[i].unit){
+                        const data = {
+                            "quantity": recipe.expand.ingr_list[i].quantity,
+                            "ingredient": recipe.expand.ingr_list[i].ingredient,
+                            "unit": recipe.expand.ingr_list[i].unit,
+                            "unitPlural": recipe.expand.ingr_list[i].unitPlural,
+                            "symbol": recipe.expand.ingr_list[i].symbol,
+                            "recipe+": recipe.id
+                        };
+                        console.log({data});
+                        console.log("recipes for ingr", ingr.recipe);
+                        if (ingr.recipe.length > 1){
+                            // create new ingredient reference
+                            const new_ingr = await pb.collection('ingredients').create(data);
+                            // remove recipe from old ingr
+                            const curr_ingr_result = await pb.collection('ingredients').update('RECORD_ID', {'recipe-': recipe.id});
+                        }else {
+                            //update ingredient
+                            const curr_ingr_result = await pb.collection('ingredients').update('RECORD_ID', data);
+                        }
+                        
+                    }
+                }
+            }
+            if (!found){
+                let db_ingr = await pb.collection('ingredients').getList(1, 50, { filter: `quantity='${recipe.expand.ingr_list[i].quantity}' && unit='${recipe.expand.ingr_list[i].unit}' && ingredient='${recipe.expand.ingr_list[i].ingredient}'` });
+                console.log("ing result", db_ingr);
+                if (db_ingr.items.length == 1) {
+                    ids_to_update.push(db_ingr.items[0].id);
+                }else if (db_ingr.items.length == 0){
+                    let ingr_data = {
+                        "quantity": recipe.expand.ingr_list[i].quantity,
+                        "ingredient": recipe.expand.ingr_list[i].ingredient,
+                        "unit": recipe.expand.ingr_list[i].unit,
+                        "unitPlural": recipe.expand.ingr_list[i].unitPlural,
+                        "symbol": recipe.expand.ingr_list[i].symbol
+                    };
+                    if (recipe.id) ingr_data.recipe = [recipe.id];
+                    let ingr_result = await pb.collection('ingredients').create(ingr_data);
+                    ids_to_update.push(ingr_result.id);
+                } else {
+                    let data = {
+                        data: JSON.stringify({message: `${recipe.expand.ingr_list[i]} in ${recipe.title} has multiple references`, result: db_ingr}),
+                        function: "add_new_ingr"
+                    };
+                    console.log("error", data);
+                    let error_result = await pb.collection('errors').create(data);
+                }
+            }
+        }
+        return ids_to_update;
+    }
     
-    async function get_note_ids(recipe){
+    async function get_note_ids(){
         let note_ids = [];
         
         if (recipe.expand && recipe.expand.notes){
             for (let note of recipe.expand.notes){
                 if (note.id){
+                    console.log("note id", note.id);
                     const note_record = await pb.collection('notes').update(note.id, { "content": note.content });
+                    console.log("note id", note_record.id);
                     note_ids.push(note_record.id);
                 }
             }
@@ -82,10 +170,10 @@
         return note_ids;
     }
 
-    function get_ingr(recipe){
+    function get_ingr(){
         let temp = [];
-        for (let i = 0; i < recipe.ingredients.length; i++){
-            if (!recipe.ingredients[i].removed) temp.push(recipe.ingredients[i]);
+        for (let i = 0; i < recipe.expand.ingr_list.length; i++){
+            if (!recipe.expand.ingr_list[i].removed) temp.push(recipe.expand.ingr_list[i]);
         }
         return temp;
     }
@@ -106,9 +194,9 @@
             is_removed = e.srcElement.checked;
         }
         let temp = [];
-        for (let i = 0; i < recipe.ingredients.length; i++){
-            if (recipe.ingredients[i].original == original){
-                recipe.ingredients[i].removed = is_removed;
+        for (let i = 0; i < recipe.expand.ingr_list.length; i++){
+            if (recipe.expand.ingr_list[i].original == original){
+                recipe.expand.ingr_list[i].removed = is_removed;
             }
         }
     }
@@ -140,7 +228,7 @@
     }
 
     function add_ingr(){
-        recipe.ingredients[recipe.ingredients.length] = {amount: 1, unit: "", name: "", original:[""]};
+        recipe.expand.ingr_list[recipe.expand.ingr_list.length] = {amount: 1, unit: "", name: "", original:[""]};
     }
 
     function add_dir(){
@@ -275,13 +363,13 @@
     <div class="ingr_directions_container">
         <div class="badge badge-primary ml-14 mt-3">Ingredients</div>
         <div id="ingredient_list">
-            {#each recipe.ingredients as ingr, i}
+            {#each recipe.expand.ingr_list as ingr, i}
                 {#if ingr}
                     <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
-                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.ingredients[i].quantity} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.ingredients[i].unit} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.ingredients[i].ingredient} on:input|preventDefault={enable_save}>
-                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.ingredients[i].original}">
+                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
+                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
+                        <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
+                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].original}">
                     </div>
                 {/if}
             {/each}

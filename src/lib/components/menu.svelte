@@ -13,8 +13,9 @@
         if (!menu.length) return;
         menu.forEach((recipe, i) => {
             let mult = (document.getElementsByClassName("servings")[i]) ? document.getElementsByClassName("servings")[i].value : recipe.servings;
+            console.log(recipe.expand.ingr_list);
             grocery_list[i] = {
-                ingredients: recipe.ingredients,
+                ingredients: recipe.expand.ingr_list,
                 multiplier: parseFloat(mult) / parseFloat(recipe.servings)
             };  
         });

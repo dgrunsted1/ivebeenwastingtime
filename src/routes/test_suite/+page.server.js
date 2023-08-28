@@ -165,9 +165,9 @@ export const actions = {
                 error.author = (test_result.author != curr.result.author) ? false : true;
                 error.title = (test_result.title != curr.result.title) ? false : true;
                 error.directions = array_test(test_result.directions, curr.result.directions, "directions");
-                error.ingredients = array_test(test_result.ingredients, curr.result.ingredients, "ingredients");
+                error.expand.ingr_list = array_test(test_result.expand.ingr_list, curr.result.expand.ingr_list, "ingredients");
                 
-                if (error.title && error.author && error.description && error.image && error.time && error.servings && error.ingredients.status && error.directions.status){
+                if (error.title && error.author && error.description && error.image && error.time && error.servings && error.expand.ingr_list.status && error.directions.status){
                     error.message = `${key} ${i} passed`;
                 }else {
                     error.message = `${key} ${i} failed`;

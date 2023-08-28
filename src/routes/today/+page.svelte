@@ -10,7 +10,7 @@
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
-            expand: `recipes,recipes.notes`
+            expand: `recipes,recipes.notes,recipes.ingr_list`
         });
         todays_menu = result_list.items[0];
     });
@@ -86,14 +86,14 @@
         </div>
         <div class="ingr_directions_container flex m-2 items-center">
             <div id="ingredient_list" class="flex flex-col h-fit w-2/5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md p-1">
-                {#each cook_recipe.ingredients as ingr}
+                {#each cook_recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex w-full gap-x-2 items-center">
                             <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity : ""}</div>
                             <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
                         </div>
-                        {#if cook_recipe.ingredients[cook_recipe.ingredients.length-1] != ingr}
+                        {#if cook_recipe.expand.ingr_list[cook_recipe.expand.ingr_list.length-1] != ingr}
                             <div class="divider my-1 "></div>
                         {/if}
                     {/if}
