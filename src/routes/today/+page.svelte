@@ -85,10 +85,10 @@
             </div>
         </div>
         <div class="ingr_directions_container flex m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md p-1">
+            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md py-4">
                 {#each cook_recipe.expand.ingr_list as ingr}
                     {#if ingr}
-                        <div class="ingr_row flex w-full gap-x-2 items-center">
+                        <div class="ingr_row flex items-center m-2 gap-x-2">
                             <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity : ""}</div>
                             <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
@@ -100,9 +100,9 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 m-2 p-1 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md">
+            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 m-2 p-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md">
                 {#each cook_recipe.directions as curr, i}
-                    <div class="step flex items-center justify-center">
+                    <div class="step flex items-center justify-center gap-x-3 mx-2">
                         <label for="directions" class="flex text-right">Step {i+1}</label>
                         <p class="directions flex grow m-1 w-4/5 h-fit text-sm">{curr}</p>
                     </div>
