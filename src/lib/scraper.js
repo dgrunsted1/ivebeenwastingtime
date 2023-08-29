@@ -180,6 +180,44 @@ function format_servings(input){
     else return input;
 }
 
+async function get_nyt_data(page){
+    let result = await page.evaluate(() => {
+        let article = document.querySelector("main > div > div");
+
+        let title = article.querySelector("h1").textContent;
+        let author = article.querySelector("h2 > a").textContent;
+        let description = article.querySelector("p").textContent;
+        let img = article.querySelector("img").src;
+        let time = article.querySelector("dd").textContent;
+
+        let ingr_list = article.querySelector("div:nth-child(8) > div");
+        let servings = ingr_list.querySelector("div > div > span:nth-child(2)").textContent;
+
+        let ingredient_list = ingr_list.querySelectorAll("div > ul > *");
+        let ingredients = [];
+        for (let i = 0; i < ingredient_list.length; i++) ingredients.push(ingredient_list[i].textContent);
+
+        let dir_list = article.querySelectorAll("div:nth-child(9) > div > ol > *");
+        let directions = [];
+        let tags = [];
+        for (let i = 0; i < dir_list.length; i++) directions.push(dir_list[i].querySelector("p").textContent);
+        
+        return {
+            title: title,
+            author: author,
+            description: description,
+            image: img,
+            time: time,
+            servings: servings,
+            expand: {ingr_list: ingredients},
+            directions: directions,
+            tags: tags
+        };
+    });
+    console.log({result});
+    return result;
+}
+
 async function get_ba_data(page){
     let result = await page.evaluate(() => {
         let article = document.querySelector("#main-content > article");
@@ -259,8 +297,10 @@ export const scrape = async function(url) {
         let results = {};
 
         if (url.includes("www.bonappetit.com")){
-            results = await get_ba_data(page, site_selectors);
-        }else {
+            results = await get_ba_data(page);
+        }else if ("cooking.nytimes.com") {
+            results = await get_nyt_data(page);
+        } else {
             for (const k in site_selectors){
                 try{
                     if(k == "ingredients"){
