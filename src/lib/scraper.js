@@ -298,7 +298,7 @@ export const scrape = async function(url) {
 
         if (url.includes("www.bonappetit.com")){
             results = await get_ba_data(page);
-        }else if ("cooking.nytimes.com") {
+        }else if (url.includes("cooking.nytimes.com")) {
             results = await get_nyt_data(page);
         } else {
             for (const k in site_selectors){
