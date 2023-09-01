@@ -2,6 +2,9 @@
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
+
 
     let todays_menu = {};
     let cook_recipe = {};
@@ -30,12 +33,7 @@
     }
 </script>
 
-<div>
-    <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/menu">create menu</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
-</div>
+<NavBtns page={$page.url.pathname}/>
 {#if mode == "recipes" && todays_menu.id}
     <h2>which recipe are you making today?</h2>
     <div id="recipes" class="">

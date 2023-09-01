@@ -1,5 +1,7 @@
 <script>
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
     import { process_recipe } from '/src/lib/process_recipe.js';
     import { deserialize } from '$app/forms';
 
@@ -60,12 +62,7 @@
 
     }
 </script>
-<div>
-    <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
-</div>
+<NavBtns page={$page.url.pathname}/>
 <div class="flex flex-col max-w-5xl m-auto space-y-5">
     
     <div class="link">

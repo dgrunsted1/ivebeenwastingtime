@@ -5,6 +5,8 @@
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
     import RecipeList from "/src/lib/components/recipe_list.svelte";
     import Menu from "/src/lib/components/menu.svelte";
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
 
 
     let user_recipes;
@@ -92,14 +94,9 @@
 </script>
 
 <div id="main">
-    <div id="content" class="flex flex-row m-2">
+    <div id="content" class="flex flex-row m-2 mt-0">
         <div id="left_column" class="w-1/2">
-            <div>
-                <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
-                <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
-                <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
-                <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
-            </div>
+            <NavBtns page={$page.url.pathname}/>
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 
                     on:update_view={update_view} on:update_edit={update_edit}

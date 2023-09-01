@@ -3,7 +3,8 @@
     import { onMount } from 'svelte';
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
-
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
 
 
     let user_menus = []
@@ -65,12 +66,7 @@
     }
 </script>
 
-<div>
-    <a class="btn btn-primary mx-6 mb-1" href="/prep">prep</a>
-    <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
-    <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
-</div>
+<NavBtns page={$page.url.pathname}/>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     {#each user_menus as curr, i}
         <div id={curr.id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>

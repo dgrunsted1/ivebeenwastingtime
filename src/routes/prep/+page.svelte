@@ -3,6 +3,8 @@
     import { createEventDispatcher } from 'svelte';
     import InputRecipe from "/src/lib/components/input_recipe.svelte";
     import GroceryList from "/src/lib/components/grocery_list.svelte";
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
 
     $: input_count = 2;
     let recipes = [];
@@ -22,12 +24,7 @@
 
 
 <div id="main">
-    <div>
-        <a href="/menu" class="btn btn-primary mx-6">Create Menu</a>
-        <a class="btn btn-primary mx-6 mb-1" href="/my_menus">my menus</a>
-        <a class="btn btn-primary mx-6 mb-1" href="/today">today</a>
-        <a class="btn btn-primary mx-6 mb-1" href="/add_recipe">add recipe</a>
-    </div>
+    <NavBtns page={$page.url.pathname}/>
     <div id="content" class="flex flex-row m-3">
         <div id="recipes" class="flex flex-col basis-1/2">
             {#each Array(input_count) as _, index (index)}
