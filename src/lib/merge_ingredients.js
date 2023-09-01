@@ -84,6 +84,7 @@ const combine = (i, j) => {
 }
 
 function round_amount(in_amount, mult){
+    if (!mult) return Math.round((in_amount + Number.EPSILON) * 100) / 100
     let result = 0;
     if (typeof in_amount != "string"){
         result = in_amount * mult;

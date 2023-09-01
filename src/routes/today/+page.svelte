@@ -1,14 +1,15 @@
 <script>
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
+    import GroceryList from "/src/lib/components/grocery_list.svelte";
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
 
 
     let todays_menu = {};
     let cook_recipe = {};
-    let mode = "recipes";
+    let display_mode = "recipes";
+    let mode = "menu";
 
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
@@ -25,32 +26,48 @@
             }
         }
         document.body.scrollIntoView();
-        mode = "cook";
+        display_mode = "cook";
     }
 
     function back_to_recipes(e){
-        mode = "recipes";
+        display_mode = "recipes";
     }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
-{#if mode == "recipes" && todays_menu.id}
-    <h2>which recipe are you making today?</h2>
-    <div id="recipes" class="">
-        {#each todays_menu.expand.recipes as curr, i}
-            <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
-                <figure class="w-3/5"><img src={curr.image} alt={curr.title}/></figure>
-                <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
-                    <!-- <h2 class="card-title">New album is released!</h2> -->
-                    <p id={i} class="w-1/3">{curr.title}</p>
-                    <div class="card-actions justify-self-end justify-end">
-                        <button id={curr.id} class="recipe_btn btn btn-primary btn-xs {i}" on:click={cook_this_recipe}>cook this recipe</button>
-                    </div>
+{#if display_mode == "recipes" && todays_menu.id}
+    <div id="main">
+        <div id="content" class="flex flex-row m-2 mt-0">
+            <div id="left_column" class="w-1/2">
+                <div id="recipes" class="">
+                    {#each todays_menu.expand.recipes as curr, i}
+                        <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
+                            <figure class="w-3/5"><img src={curr.image} alt={curr.title}/></figure>
+                            <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
+                                <!-- <h2 class="card-title">New album is released!</h2> -->
+                                <p id={i} class="w-1/3">{curr.title}</p>
+                                <div class="card-actions justify-self-end justify-end">
+                                    <button id={curr.id} class="recipe_btn btn btn-primary btn-xs {i}" on:click={cook_this_recipe}>cook this recipe</button>
+                                </div>
+                            </div>
+                        </div>
+                    {/each}
                 </div>
             </div>
-        {/each}
+            <div id="right_column" class="w-1/2">
+                {#if todays_menu && mode == "menu"}
+                    <GroceryList recipes={todays_menu.expand.recipes}/>
+                <!-- {:else if view_recipe && mode == "view"} -->
+                    <!-- <DisplayRecipe recipe={view_recipe}/> -->
+                <!-- {:else if edit_recipe && mode == "edit"} -->
+                    <!-- <EditRecipe recipe={edit_recipe}/> -->
+                {:else}
+                    <h2>select recipes to add to your menu</h2>
+                {/if}
+            </div>
+        </div>
     </div>
-{:else if mode == "cook" && cook_recipe.id}
+{:else if display_mode == "cook" && cook_recipe.id}
 <button class="btn btn-accent btn-xs m-3" on:click={back_to_recipes}>back to today's recipes</button>
     <div id="cook_recipe" class="flex flex-col m-2 pb-10">
         <div class="img_info_container flex items-center justify-center">
