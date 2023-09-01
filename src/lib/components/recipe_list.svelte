@@ -4,9 +4,23 @@
     import EditIcon from "/src/lib/icons/EditIcon.svelte";
     import ViewIcon from "/src/lib/icons/ViewIcon.svelte";
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+    import { onMount, afterUpdate } from "svelte";
     const dispatch = createEventDispatcher();
     export let recipes;
+    let display_recipes = recipes;
     let curr_recipe_id = -1;
+    let categories = {cuisines:[], countries:[], cats:[]};
+    let display_cats = {cuisines:[], countries:[], cats:[]};
+
+    onMount(async () => {
+        for (let i = 0; i < recipes.length; i++){
+            if (!categories.cuisines.includes(recipes[i].cuisine) && recipes[i].cuisine) categories.cuisines.push(recipes[i].cuisine);
+            if (!categories.countries.includes(recipes[i].country) && recipes[i].country) categories.countries.push(recipes[i].country);
+            if (!categories.cats.includes(recipes[i].category) && recipes[i].category) categories.cats.push(recipes[i].category);
+        }
+        console.log({categories});
+        categories = categories;
+    });
 
     function check_item(e){
         let index = 0;
@@ -30,6 +44,9 @@
                 dispatch("remove_from_menu", {index: index});
             }
         }
+        for (let recipe of recipes){
+            if (recipe.id == index) recipe.checked = false;
+        }
        
     }
 
@@ -39,14 +56,11 @@
         let element = e.srcElement;
         let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
         if (element.classList.contains("bg-base-200")){
-            
-            
             update_btn_style(curr_recipe_id, index, mode_in);
-
             curr_recipe_id = index;
             dispatch(`update_${mode_in}`, {index: index});
         }else {
-            update_btn_style(curr_recipe_id, index, mode);
+            update_btn_style(curr_recipe_id, -1, mode);
             dispatch(`update_${mode_in}`, {index: -1});
         }
     }
@@ -57,10 +71,8 @@
         else btn = 1;
 
         let btns = document.getElementsByClassName(`recipe_btn ${new_index}`);
-
-        if (old_index > -1){
-            let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
-            
+        let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
+        if (old_index != -1){
                 old_btns[1].classList.remove("bg-secondary");
                 old_btns[1].classList.add("bg-base-200");
                 old_btns[0].classList.remove("bg-secondary");
@@ -84,28 +96,134 @@
             recipes = tmp;
         }
     }
-</script>
 
+    function select_cat(e){
+        document.getElementById("menu_loading").classList.remove('hidden');
+        document.getElementsByClassName("checkbox");
+        for (let curr of document.getElementsByClassName("checkbox")){
+            // curr.checked = false;
+        }
+        let classes = Array.from(e.srcElement.classList);
+        let clicked = (classes.includes('btn-accent')) ? true : false;
+        if (clicked){
+            e.srcElement.classList.remove('btn-accent');
+            e.srcElement.classList.add('btn-secondary');
+        } else {
+            e.srcElement.classList.add('btn-accent');
+            e.srcElement.classList.remove('btn-secondary');
+        }
+        let selected_cat = e.srcElement.textContent;
+        let type_cat;
+        if (classes.includes('cuisine')){
+            type_cat = 'cuisines';
+        }else if (classes.includes('country')){
+            type_cat = 'countries';
+        }else if (classes.includes('category')){
+            type_cat = 'cats';
+        }
+
+        if (clicked){
+            if (!display_cats[type_cat].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
+        } else {
+            let tmp_cats = [];
+            for (let [key, value] of Object.entries(display_cats)){
+                if (key == type_cat){
+                    for (let curr_cat of value){
+                        if (curr_cat != selected_cat){
+                            tmp_cats.push(curr_cat);
+                        }
+                    }
+                    display_cats[key] = tmp_cats;
+                }
+            }
+        }
+        
+        if (display_cats.cats.length || display_cats.countries.length || display_cats.cuisines.length){
+            let new_display = [];
+            for (let curr_recipe of recipes){
+                for (let [key, value] of Object.entries(display_cats)){
+                    if (key == 'cats') continue;
+                    for (let curr_cat of value){
+                        if (key == 'cuisines') {
+                            key = 'cuisine';
+                        } else if (key == 'countries') {
+                            key = 'country';
+                        }
+                        
+                        if (curr_recipe[key] == curr_cat){
+                            if (!new_display.includes(curr_recipe)){
+                                console.log({curr_recipe});
+                                console.log({display_cats});
+                                let cat_found = (!display_cats.cats.length) ? true : false;
+                                for (let cat of display_cats.cats){
+                                    
+                                    if (cat == curr_recipe.category){
+                                        cat_found = true;
+                                    }
+                                }
+                                if (cat_found) new_display.push(curr_recipe);
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (!new_display.length){
+                for (let recipe of recipes){
+                    for (let cat of display_cats.cats){
+                        if (recipe.category == cat){
+                            new_display.push(recipe);
+                        }
+                    }
+                }
+            }
+
+
+            display_recipes = new_display;
+        }else{
+            display_recipes = recipes;
+        }
+        update_btn_style(curr_recipe_id, -1, "menu");
+        dispatch(`reset_mode`, {index: -1});
+        document.getElementById("menu_loading").classList.add('hidden');
+    }
+</script>
+<div class="">
+    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
+        {#each categories.cuisines as cuisine}
+            <button class="btn btn-accent btn-xs text-white cuisine" on:click={select_cat}>{cuisine}</button> 
+        {/each}
+        {#each categories.countries as country}
+            <button class="btn btn-accent btn-xs text-white country" on:click={select_cat}>{country}</button> 
+        {/each}
+        {#each categories.cats as cat}
+            <button class="btn btn-accent btn-xs text-white category" on:click={select_cat}>{cat}</button> 
+        {/each}
+      </div>
+</div>
 <div id="recipes" class="max-h-[calc(100vh-130px)] overflow-y-auto">
-        {#each recipes as curr, i}
-            <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
-                <figure class="w-2/5"><img src={curr.image} alt={curr.title}/></figure>
-                <div class="card-body max-h-full flex flex-row p-2 items-center w-3/5">
-                    <p id={i} class="w-3/4">{curr.title}</p>
-                    <div class="card-actions flex w-14 justify-self-end justify-center">
-                        <div class="flex w-fit space-x-1">
-                            <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} view" on:click={view}><ViewIcon/></button>
-                            <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {i} edit" on:click={view}><EditIcon/></button>
-                        </div>
-                        <div class="flex space-x-1">
-                            <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent" id="{curr.id}">
-                            <button class="recipe_btn btn w-fit p-1 btn-xs {i} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
-                        </div>
+    <div id="menu_loading" class="hidden w-full flex justify-center">
+        <span class="loading loading-ring loading-lg"></span>
+    </div>
+    {#each display_recipes as curr, i}
+        <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
+            <figure class="w-2/5"><img src={curr.image} alt={curr.title}/></figure>
+            <div class="card-body max-h-full flex flex-row p-2 items-center w-3/5">
+                <p id={curr.id} class="w-3/4">{curr.title}</p>
+                <div class="card-actions flex w-14 justify-self-end justify-center">
+                    <div class="flex w-fit space-x-1">
+                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view" on:click={view}><ViewIcon/></button>
+                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit" on:click={view}><EditIcon/></button>
+                    </div>
+                    <div class="flex space-x-1">
+                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent" id={curr.id} bind:checked={curr.checked}>
+                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
                     </div>
                 </div>
             </div>
-        {/each}
-        <div class="flex justify-center m-5">
-            <a class="btn btn-primary" href="/add_recipe">Add New Recipes</a>
         </div>
+    {/each}
+    <div class="flex justify-center m-5">
+        <a class="btn btn-primary" href="/add_recipe">Add New Recipes</a>
+    </div>
 </div>
