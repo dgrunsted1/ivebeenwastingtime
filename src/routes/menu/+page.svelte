@@ -11,6 +11,7 @@
 
     let user_recipes;
     let menu_recipes = [];
+    let mults = {};
     let mode = "menu";
     let view_recipe;
     let edit_recipe;
@@ -71,6 +72,11 @@
             cnt++;
         }
         if (remove > -1){
+            let tmp_mults = {};
+            for (let [key, value] in mults){
+                if (!key == e.detail.index) tmp_mults[key] = value;
+            }
+            mults = tmp_mults;
             menu_recipes.splice(remove, 1);
             menu_recipes = menu_recipes;
         }
@@ -81,6 +87,7 @@
             if (recipe.id == e.detail.index){
                 recipe.checked = true;
                 menu_recipes.push(recipe);
+                mults[recipe.id] = recipe.servings;
             }
         }
         menu_recipes = menu_recipes;
@@ -106,7 +113,7 @@
         </div>
         <div id="right_column" class="w-1/2 m-2 max-h-[calc(100vh-90px)] overflow-y-auto">
             {#if menu_recipes && mode == "menu"}
-                <Menu menu={menu_recipes}/>
+                <Menu menu={menu_recipes} {mults}/>
             {:else if view_recipe && mode == "view"}
                 <DisplayRecipe recipe={view_recipe}/>
             {:else if edit_recipe && mode == "edit"}

@@ -6,19 +6,21 @@
 
     export let menu;
     export let id = null;
+    export let mults;
     let tab = "recipe_list";
     let grocery_list = [];
-    afterUpdate(async () => {
+
+
+    afterUpdate(() => {
         grocery_list = [];
         if (!menu.length) return;
         menu.forEach((recipe, i) => {
-            let mult = (document.getElementsByClassName("servings")[i]) ? document.getElementsByClassName("servings")[i].value : recipe.servings;
-            console.log(recipe.expand.ingr_list);
             grocery_list[i] = {
                 ingredients: recipe.expand.ingr_list,
-                multiplier: parseFloat(mult) / parseFloat(recipe.servings)
+                multiplier: parseFloat(mults[recipe.id]) / parseFloat(recipe.servings)
             };  
         });
+
     });
 
     function switch_tab(e){
@@ -40,7 +42,8 @@
         const data = {
             "recipes": recipe_ids,
             "user": $currentUser.id,
-            "today": false
+            "today": false,
+            "servings": mults
         };
 
         const record = await pb.collection('menus').create(data);
@@ -83,7 +86,7 @@
                             <p class="title text-xl">{recipe.title}</p>
                             <p class="time">{recipe.time}</p>
                             <div class="servings_container">
-                                servings:<input type="text" class="servings w-2" id={recipe.id} value={recipe.servings}>
+                                servings:<input type="text" class="servings w-4" id={recipe.id} bind:value={mults[recipe.id]}>
                             </div>
                             <p class="description">{recipe.description}</p>
                         </div>

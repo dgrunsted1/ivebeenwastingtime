@@ -3,7 +3,6 @@ const conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/
 const weight_volume_conv = {"gram/tablespoon": 14, "tablespoon/gram": 1/14, "gram/teaspoon": 14/3, "teaspoon/gram": 3/14, "gram/cup": 224/1, "cup/gram": 1/224}
 
 export const merge = function(recipes) {
-    console.log({recipes});
     let grocery_list = [];
     let skipped = [];
     for(let recipe of recipes){
@@ -32,8 +31,9 @@ export const merge = function(recipes) {
                             unitPlural: null
                         };
                 if (match.unit != item.unit) {
+                    let qty = round_amount(item.quantity, recipe.multiplier);
                     let conv = combine(match, item);
-                    tmp.quantity = round_amount(conv.quantity, recipe.multiplier);
+                    tmp.quantity = conv.amount;
                     tmp.unit = conv.unit;
                 } else {
                     tmp.quantity = match.quantity + round_amount(item.quantity, recipe.multiplier);
@@ -48,8 +48,16 @@ export const merge = function(recipes) {
                 grocery_list.push(tmp);
                 console.log(`merge${match.quantity} ${match.unit} ${match.ingredient} ${item.quantity} ${item.unit} ${item.ingredient}`, tmp);
             }else {
-                item.quantity = round_amount(item.quantity, recipe.multiplier);
-                grocery_list.push(item);
+                let tmp = { ingredient: item.ingredient,
+                            maxQty: item.maxQty,
+                            minQty: item.minQty,
+                            quantity: item.quantity,
+                            symbol: item.symbol,
+                            unit: item.unit,
+                            unitPlural: item.unitPlural
+                        };
+                tmp.quantity = round_amount(item.quantity, recipe.multiplier);
+                grocery_list.push(tmp);
             }
         }
     }

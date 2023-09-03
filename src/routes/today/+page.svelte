@@ -9,14 +9,22 @@
     let todays_menu = {};
     let cook_recipe = {};
     let display_mode = "recipes";
+    let grocery_list = []; 
     let mode = "menu";
 
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
             expand: `recipes,recipes.notes,recipes.ingr_list`
-        });
+        })
         todays_menu = result_list.items[0];
+        // console.log("servings", todays_menu.servings[recipe.id]);
+        todays_menu.expand.recipes.forEach((recipe, i) => {
+            grocery_list[i] = {
+                ingredients: recipe.expand.ingr_list,
+                multiplier: parseFloat(todays_menu.servings[recipe.id]) / parseFloat(recipe.servings)
+            };  
+        });
     });
 
     function cook_this_recipe(e){
@@ -56,7 +64,7 @@
             </div>
             <div id="right_column" class="w-1/2">
                 {#if todays_menu && mode == "menu"}
-                    <GroceryList recipes={todays_menu.expand.recipes}/>
+                    <GroceryList recipes={grocery_list} />
                 <!-- {:else if view_recipe && mode == "view"} -->
                     <!-- <DisplayRecipe recipe={view_recipe}/> -->
                 <!-- {:else if edit_recipe && mode == "edit"} -->
@@ -92,7 +100,7 @@
                     </div>
                     <div class="servings text-center w-1/3">
                         servings
-                        <div>{cook_recipe.servings}</div>
+                        <div>{todays_menu.servings[cook_recipe.id]}</div>
                     </div>
                 </div>
                 <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={cook_recipe.url}>original cook_recipe</a></div>
@@ -104,7 +112,7 @@
                 {#each cook_recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center m-2 gap-x-2">
-                            <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity : ""}</div>
+                            <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity * (parseFloat(todays_menu.servings[cook_recipe.id]) / parseFloat(cook_recipe.servings)) : ""}</div>
                             <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
                         </div>
