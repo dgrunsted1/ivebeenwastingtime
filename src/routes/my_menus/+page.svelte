@@ -10,14 +10,12 @@
     let user_menus = []
     $: modal_menu = [];
 
-
     onMount(async () => {
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
             expand: `recipes,recipes.ingr_list`
         });
         user_menus = result_list.items;
-        console.log({user_menus});
     });
 
     function show_menu_modal(e){
@@ -91,7 +89,7 @@
     <dialog id="my_modal_2" class="modal">
         {#if modal_menu.id}
             <form method="dialog" class="modal-box max-w-full w-2/3 p-1">
-                <Menu menu={modal_menu.expand.recipes} id={modal_menu.id}/>
+                <Menu menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
             </form>
             <form method="dialog" class="modal-backdrop">
                 <button>close</button>
