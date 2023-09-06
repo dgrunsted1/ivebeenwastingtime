@@ -6,6 +6,7 @@
 
     export let recipe;
     export let index;
+    export let save = false;
     let dispatch = createEventDispatcher();
     let categories = ["Beverage", "Bread", "Dessert", "Main", "Salad", "Soup", "Side"];
 
@@ -14,6 +15,12 @@
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
+        }
+        if (save && recipe.title){
+            let save_btns = document.getElementsByClassName("save_btn");
+            for (let i = 0; i < save_btns.length; i++) {
+                save_btns[i].disabled = false;
+            }
         }
     });
 
@@ -207,6 +214,7 @@
         if (!index) index = 0;
         document.getElementsByClassName("save_btn")[index].disabled = false;
         document.getElementsByClassName("save_btn")[index].innerHTML = "save recipe";
+        save = true;
     }
 
     function update_multiplier(e){
@@ -302,6 +310,11 @@
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
+    <div class="save_btn_container flex flex-col items-center mb-5">
+        <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe}>
+            save recipe
+        </button>
+    </div>
     <div class="img_info_container flex flex-row w-full content-center justify-around">
         <div class="img_container mr-3 flex w-1/2 content-center">
             {#if recipe.image}
@@ -416,7 +429,7 @@
             </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">
-            <button class="save_btn btn btn-secondary w-1/3" on:click={save_recipe}>
+            <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe}>
                 save recipe
             </button>
         </div>

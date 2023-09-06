@@ -63,12 +63,12 @@
     }
 </script>
 <NavBtns page={$page.url.pathname}/>
-<div class="flex flex-col max-w-5xl m-auto space-y-5">
+<div class="flex flex-col max-w-5xl m-auto space-y-5 mb-5">
     
     <div class="link">
         <form method='POST' on:input|preventDefault={fetch_recipe}>
             <input placeholder="Link to recipe" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent"/>
         </form>
     </div>
-    <EditRecipe {recipe} index=0 on:update_recipe={update_recipe}/>
+    <EditRecipe {recipe} index=0 on:update_recipe={update_recipe} save={true}/>
 </div>
