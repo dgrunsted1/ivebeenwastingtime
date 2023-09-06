@@ -9,6 +9,8 @@
     export let mults;
     let tab = "recipe_list";
     let grocery_list = [];
+    let num_servings = 0;
+    let total_time = 0;
 
 
     afterUpdate(() => {
@@ -21,6 +23,8 @@
             };  
         });
 
+        num_servings = get_servings(menu, mults);
+        total_time = get_total_time(menu);
     });
 
     function switch_tab(e){
@@ -59,6 +63,36 @@
         const true_record = await pb.collection('menus').update(id, { "today": true });
     }
 
+    function get_servings(recipes, mults){
+        let total_serv = 0;
+        for (let i = 0; i < recipes.length; i++){
+            console.log(recipes[i]);
+            total_serv += parseInt(mults[recipes[i].id]);
+        }
+        return total_serv;
+    }
+
+    function get_total_time(recipes){
+        let total_time = 0;
+        let mins = 0;
+        for (let i = 0; i < recipes.length; i++){
+            console.log(recipes[i]);
+            let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
+            if (min_result){
+                mins += parseInt(min_result[1]);
+            }
+
+            let hr_result = recipes[i].time.match(/(\d+) [hrs|hours|hour|hr]/);
+            if (hr_result){
+                mins += parseInt(hr_result[1]) * 60;
+            }
+        }
+        let hours = parseInt(mins/60);
+        mins = mins % 60;
+        total_time = hours + "hrs " + mins + "mins";
+        return total_time;
+    }
+
 </script>
 
 <div id="menu">
@@ -73,7 +107,11 @@
             <button class="btn btn-secondary self-end btn-sm" on:click={set_todays_menu}>make todays menu</button>
         {/if}
     </div>
-    
+    <div class="flex justify-around">
+        <p>{menu.length} recipes</p>
+        <p>{num_servings} servings</p>
+        <p>{total_time}</p>
+    </div>
     
     {#if tab == "recipe_list"}
         <div class="max-h-[calc(100vh-130px)] overflow-y-auto">
