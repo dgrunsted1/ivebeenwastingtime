@@ -26,6 +26,7 @@
 
     async function save_recipe(e) {
         e.srcElement.disabled = true;
+        save = false;
         e.srcElement.innerHTML = "validating";
 
         let validate_err = validate();
