@@ -8,9 +8,13 @@
     export let index;
     let dispatch = createEventDispatcher();
     let categories = ["Beverage", "Bread", "Dessert", "Main", "Salad", "Soup", "Side"];
-    
+
     afterUpdate( () => {
         if (!recipe.category) recipe.category = "Category";
+        let textareas = document.getElementsByTagName("textarea");
+        for (let i = 0; i < textareas.length; i++) {
+            resizeIt(textareas[i]);
+        }
     });
 
     async function save_recipe(e) {
@@ -50,7 +54,6 @@
             "ingr_list": ingr_ids
         };
         if (note_ids.length) data.notes = note_ids;
-        console.log({data});
         if (recipe.id){
             recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes,ingr_list"});
         }else {
@@ -58,7 +61,6 @@
             data.url = recipe.url;
             recipe = await pb.collection('recipes').create(data, {expand: "notes,ingr_list"});
         }
-        console.log("upload result", recipe);
         e.srcElement.innerHTML = "updating ingredients";
         for (let curr_ingr_id of ingr_ids){
             let update_ingr = await pb.collection('ingredients').update(curr_ingr_id, {"recipe+": recipe.id});
@@ -290,6 +292,13 @@
 
         return event.toLocaleDateString(undefined, options);
     }
+
+    function resizeIt(element) {
+        let str = element.value;
+        if (!str) return;
+        let cols = ($page.url.pathname == "/add_recipe") ? element.cols * 10 : element.cols * 2.8;
+        element.rows = Math.ceil( str.length / cols ) + 1;
+    };
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
