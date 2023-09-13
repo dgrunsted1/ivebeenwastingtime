@@ -23,14 +23,12 @@
             expand: `notes, ingr_list`
         });
         user_recipes = result_list;
-        console.log({user_recipes});
     });
 
     function update_edit(e){
         view_recipe = null;
         if (e.detail.index != -1) {
             for (let curr of user_recipes.items){
-                // console.log({curr});
                 if (curr.id == e.detail.index){
                     edit_recipe = curr;
                     continue;
@@ -44,13 +42,10 @@
     }
 
     function update_view(e){
-        console.log("index", e.detail.index);
         edit_recipe = null;
         if (e.detail.index != -1){
             for (let curr of user_recipes.items){
-                // console.log({curr});
                 if (curr.id == e.detail.index){
-                    console.log({curr});
                     view_recipe = curr;
                     continue;
                 }

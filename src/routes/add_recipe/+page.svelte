@@ -44,14 +44,6 @@
             result.data.expand.ingr_list = process_recipe(result.data.expand.ingr_list);
             result.data.url = e.srcElement.value;
             recipe = result.data;
-            console.log("ingr", recipe.expand.ingr_list);
-            // dispatch('recipe_edited', {
-            //     items: result.data.expand.ingr_list, 
-            //     multiplier: multiplier,
-            //     index: index
-            // });
-            // // re-run all `load` functions, following the successful update
-            // await invalidateAll();
         }
         
         
