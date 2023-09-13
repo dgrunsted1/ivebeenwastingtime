@@ -1,8 +1,8 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate } from 'svelte';
-    import { page } from '$app/stores';  
-  import { validate_component } from 'svelte/internal';
+    import { page } from '$app/stores';
+    import { parse } from 'recipe-ingredient-parser-v3';
 
     export let recipe;
     export let index;
@@ -106,7 +106,13 @@
                     if (db_ingr.quantity != recipe.expand.ingr_list[i].quantity || 
                         db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
                         db_ingr.unit != recipe.expand.ingr_list[i].unit){
-
+                        const ingr_string = recipe.expand.ingr_list[i].quantity+ " " + recipe.expand.ingr_list[i].unit+ " " + recipe.expand.ingr_list[i].ingredient;
+                        const ingr_obj = parse(ingr_string, 'eng');
+                        recipe.expand.ingr_list[i].quantity = ingr_obj.quantity;
+                        recipe.expand.ingr_list[i].ingredient = ingr_obj.ingredient;
+                        recipe.expand.ingr_list[i].unit = ingr_obj.unit;
+                        recipe.expand.ingr_list[i].unitPlural = ingr_obj.unitPlural;
+                        recipe.expand.ingr_list[i].symbol = ingr_obj.symbol;
                         if (recipe.expand.ingr_list[i].recipe.length > 1){
                             const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.expand.ingr_list[i].id]});
                             const new_ingr_data = {
@@ -394,7 +400,7 @@
                 {#if ingr}
                     <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
                         <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
+                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
                         <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
                     </div>
