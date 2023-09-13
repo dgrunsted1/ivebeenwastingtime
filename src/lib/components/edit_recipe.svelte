@@ -37,18 +37,15 @@
             return;
         }
         e.srcElement.innerHTML = "uploading ingredients";
-        
-        recipe.expand.ingr_list = get_ingr();
 
         let ingr_ids = await get_ingr_ids();
         reset_checks();
         e.srcElement.innerHTML = "uploading notes";
         let note_ids = [];
         note_ids = await get_note_ids();
-
         note_ids = await add_new_note(note_ids);
         e.srcElement.innerHTML = "uploading recipe";
-        const data = {
+        let data = {
             "title": recipe.title,
             "description": recipe.description,
             "author": recipe.author,
@@ -68,12 +65,12 @@
             data.user = $currentUser.id;
             data.url = recipe.url;
             recipe = await pb.collection('recipes').create(data, {expand: "notes,ingr_list"});
+            e.srcElement.innerHTML = "updating ingredients";
+            for (let curr_ingr_id of ingr_ids){
+                let update_ingr = await pb.collection('ingredients').update(curr_ingr_id, {"recipe+": recipe.id});
+            }
         }
-        e.srcElement.innerHTML = "updating ingredients";
-        for (let curr_ingr_id of ingr_ids){
-            let update_ingr = await pb.collection('ingredients').update(curr_ingr_id, {"recipe+": recipe.id});
-            console.log("update ingr", update_ingr);
-        }
+        
         dispatch("update_recipe", {recipe: recipe});
         e.srcElement.innerHTML = "saved";
         document.getElementById("new_note").value = "";
@@ -81,7 +78,6 @@
 
     function validate(){
         let err = "";
-        console.log("recipe category", recipe.category);
         if (recipe.category == "Category") err += "Please pick a category.";
         return err;
     }
@@ -102,76 +98,83 @@
     }
 
     async function get_ingr_ids(){
-        let ids_to_update = [];
-        let curr_ingrs = (recipe.id) ? await pb.collection('ingredients').getList(1, 50, {filter: `recipe='${recipe.id}'`}) : null;
-        console.log({curr_ingrs});
+        let ingr_ids = [];
         for (let i = 0; i < recipe.expand.ingr_list.length; i++){
-            let found = false;
-            if (curr_ingrs){
-                for (let ingr of curr_ingrs.items){
-                    if (ingr.id == recipe.id) found = true;
-                    if (ingr.quantity == recipe.expand.ingr_list[i].quantity && ingr.ingredient == recipe.expand.ingr_list[i].ingredient && ingr.unit == recipe.expand.ingr_list[i].unit){
-                        const data = {
+            if (!recipe.expand.ingr_list[i].removed){
+                if (recipe.expand.ingr_list[i].id){
+                    const db_ingr = await pb.collection('ingredients').getOne(recipe.expand.ingr_list[i].id);
+                    if (db_ingr.quantity != recipe.expand.ingr_list[i].quantity || 
+                        db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
+                        db_ingr.unit != recipe.expand.ingr_list[i].unit){
+
+                        if (recipe.expand.ingr_list[i].recipe.length > 1){
+                            const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.expand.ingr_list[i].id]});
+                            const new_ingr_data = {
+                                "quantity": recipe.expand.ingr_list[i].quantity,
+                                "ingredient": recipe.expand.ingr_list[i].ingredient,
+                                "unit": recipe.expand.ingr_list[i].unit,
+                                "unitPlural": recipe.expand.ingr_list[i].unitPlural,
+                                "symbol": recipe.expand.ingr_list[i].symbol,
+                                "recipe": [
+                                    recipe.id
+                                ]
+                            };
+                            const new_ingr = await pb.collection('ingredients').create(new_ingr_data);
+                            ingr_ids.push(new_ingr.id);
+                        } else {
+                            const update_ingr_data = {
+                                "quantity": recipe.expand.ingr_list[i].quantity,
+                                "ingredient": recipe.expand.ingr_list[i].ingredient,
+                                "unit": recipe.expand.ingr_list[i].unit,
+                                "unitPlural": recipe.expand.ingr_list[i].unitPlural,
+                                "symbol": recipe.expand.ingr_list[i].symbol,
+                                "recipe": [
+                                    recipe.id
+                                ]
+                            };
+                            const update_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, update_ingr_data);
+                            ingr_ids.push(recipe.expand.ingr_list[i].id);
+                        }
+                    } else {
+                        ingr_ids.push(recipe.expand.ingr_list[i].id);
+                    }
+                } else {
+                    const similar_ingr = await pb.collection('ingredients').getList(1, 1, { filter: `quantity='${recipe.expand.ingr_list[i].quantity}' && unit='${recipe.expand.ingr_list[i].unit}' && ingredient='${recipe.expand.ingr_list[i].ingredient}'` });
+                    if (similar_ingr.items.length){
+                        const add_to_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe+": [recipe.id]});
+                        ingr_ids.push(recipe.expand.ingr_list[i].id);
+                    }else {
+                        const new_ingr_data = {
                             "quantity": recipe.expand.ingr_list[i].quantity,
                             "ingredient": recipe.expand.ingr_list[i].ingredient,
                             "unit": recipe.expand.ingr_list[i].unit,
                             "unitPlural": recipe.expand.ingr_list[i].unitPlural,
                             "symbol": recipe.expand.ingr_list[i].symbol,
-                            "recipe+": recipe.id
+                            "recipe": [
+                                recipe.id
+                            ]
                         };
-                        console.log({data});
-                        console.log("recipes for ingr", ingr.recipe);
-                        if (ingr.recipe.length > 1){
-                            // create new ingredient reference
-                            const new_ingr = await pb.collection('ingredients').create(data);
-                            // remove recipe from old ingr
-                            const curr_ingr_result = await pb.collection('ingredients').update('RECORD_ID', {'recipe-': recipe.id});
-                        }else {
-                            //update ingredient
-                            const curr_ingr_result = await pb.collection('ingredients').update('RECORD_ID', data);
-                        }
-                        
+                        const new_ingr = await pb.collection('ingredients').create(new_ingr_data);
+                        ingr_ids.push(new_ingr.id);
                     }
                 }
-            }
-            if (!found){
-                let db_ingr = await pb.collection('ingredients').getList(1, 50, { filter: `quantity='${recipe.expand.ingr_list[i].quantity}' && unit='${recipe.expand.ingr_list[i].unit}' && ingredient='${recipe.expand.ingr_list[i].ingredient}'` });
-                console.log("ing result", db_ingr);
-                if (db_ingr.items.length == 1) {
-                    ids_to_update.push(db_ingr.items[0].id);
-                }else if (db_ingr.items.length == 0){
-                    let ingr_data = {
-                        "quantity": recipe.expand.ingr_list[i].quantity,
-                        "ingredient": recipe.expand.ingr_list[i].ingredient,
-                        "unit": recipe.expand.ingr_list[i].unit,
-                        "unitPlural": recipe.expand.ingr_list[i].unitPlural,
-                        "symbol": recipe.expand.ingr_list[i].symbol
-                    };
-                    if (recipe.id) ingr_data.recipe = [recipe.id];
-                    let ingr_result = await pb.collection('ingredients').create(ingr_data);
-                    ids_to_update.push(ingr_result.id);
+            } else {
+                if (recipe.expand.ingr_list[i].recipe.length > 1){
+                    const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.id]});
                 } else {
-                    let data = {
-                        data: JSON.stringify({message: `${recipe.expand.ingr_list[i]} in ${recipe.title} has multiple references`, result: db_ingr}),
-                        function: "add_new_ingr"
-                    };
-                    console.log("error", data);
-                    let error_result = await pb.collection('errors').create(data);
+                    await pb.collection('ingredients').delete(recipe.expand.ingr_list[i].id);
                 }
             }
         }
-        return ids_to_update;
+        return ingr_ids;    
     }
     
     async function get_note_ids(){
         let note_ids = [];
-        
         if (recipe.expand && recipe.expand.notes){
             for (let note of recipe.expand.notes){
                 if (note.id){
-                    console.log("note id", note.id);
                     const note_record = await pb.collection('notes').update(note.id, { "content": note.content });
-                    console.log("note id", note_record.id);
                     note_ids.push(note_record.id);
                 }
             }
@@ -189,7 +192,8 @@
     }
 
     function check_item(e){
-        let original;
+        enable_save();
+        let id;
         let is_removed = false;
         if (e.srcElement.type != "checkbox"){
             original = e.target.firstChild.id;
@@ -200,12 +204,12 @@
                 is_removed = true;
             }
         }else{
-            original = e.srcElement.id;
+            id = e.srcElement.id;
             is_removed = e.srcElement.checked;
         }
         let temp = [];
         for (let i = 0; i < recipe.expand.ingr_list.length; i++){
-            if (recipe.expand.ingr_list[i].original == original){
+            if (recipe.expand.ingr_list[i].id == id){
                 recipe.expand.ingr_list[i].removed = is_removed;
             }
         }
@@ -392,7 +396,7 @@
                         <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
                         <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
-                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].original}">
+                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
                     </div>
                 {/if}
             {/each}
