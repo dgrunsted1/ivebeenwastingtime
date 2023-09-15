@@ -68,8 +68,8 @@
         }
         if (remove > -1){
             let tmp_mults = {};
-            for (let [key, value] in mults){
-                if (!key == e.detail.index) tmp_mults[key] = value;
+            for (let key of Object.keys(mults)){
+                if (key != e.detail.index) tmp_mults[key] = mults[key];
             }
             mults = tmp_mults;
             menu_recipes.splice(remove, 1);

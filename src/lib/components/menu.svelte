@@ -15,6 +15,7 @@
 
     afterUpdate(() => {
         grocery_list = [];
+        num_servings = get_servings(menu, mults);
         if (!menu.length) return;
         menu.forEach((recipe, i) => {
             grocery_list[i] = {
@@ -23,7 +24,7 @@
             };  
         });
 
-        num_servings = get_servings(menu, mults);
+        
         total_time = get_total_time(menu);
     });
 
