@@ -125,7 +125,7 @@
                             <p class="title text-xl">{recipe.title}</p>
                             <p class="time">{recipe.time}</p>
                             <div class="servings_container">
-                                servings:<input type="text" class="servings w-8" id={recipe.id} bind:value={mults[recipe.id]}>
+                                servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" id={recipe.id} bind:value={mults[recipe.id]}>
                             </div>
                             <p class="description">{recipe.description}</p>
                         </div>

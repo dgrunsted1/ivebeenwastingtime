@@ -5,6 +5,7 @@
     import { merge } from '/src/lib/merge_ingredients.js';
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
+    import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
 
 
     let user_menus = []
@@ -59,28 +60,42 @@
         }
         let hours = parseInt(mins/60);
         mins = mins % 60;
-        total_time = hours + "hrs " + mins + "mins";
+        total_time = hours + " hrs " + mins + " mins";
         return total_time;
+    }
+
+    async function delete_menu(e){
+        if (confirm("Are you sure you want to delete this recipe?")) {
+            await pb.collection('menus').delete(e.srcElement.id);
+            let tmp_menus = [];
+            for (let i = 0; i < user_menus.length; i++){
+                if (user_menus[i].id != e.srcElement.id) tmp_menus.push(user_menus[i]);
+            }
+            user_menus = tmp_menus;
+        }
     }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     {#each user_menus as curr, i}
-        <div id={curr.id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
+        <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
             <figure class="w-2/3">
-                {#each curr.expand.recipes as recipe}
+                {#each user_menus[i].expand.recipes as recipe}
                         <img class="w-44" src={recipe.image} alt={recipe.title}/>
                 {/each}
             </figure>
-            <div class="card-body flex flex-row justify-evenly content-center">
+            <div class="card-body flex flex-row justify-evenly content-center p-2">
                 <div class="flex flex-col justify-center">
-                    <p>{curr.expand.recipes.length} recipes</p>
-                    <p>{merge(curr.expand.recipes).grocery_list.length} ingredients</p>
+                    <p>{user_menus[i].expand.recipes.length} recipes</p>
+                    <p>{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
                 </div>
                 <div class="flex flex-col justify-center">
-                    <p>{get_servings(curr.expand.recipes)} servings</p>
-                    <p>{get_total_time(curr.expand.recipes)}</p>
+                    <p>{get_servings(user_menus[i].expand.recipes)} servings</p>
+                    <p>{get_total_time(user_menus[i].expand.recipes)}</p>
+                </div>
+                <div class="flex conten-center items-center">
+                        <button class="recipe_btn btn w-fit btn-xs bg-base-200" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
                 </div>
               </div>
         </div>

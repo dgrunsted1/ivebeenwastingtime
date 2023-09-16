@@ -191,13 +191,13 @@
 <div class="">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
         {#each categories.cuisines as cuisine}
-            <button class="btn btn-accent btn-xs text-white cuisine" on:click={select_cat}>{cuisine}</button> 
+            <button class="btn btn-secondary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each categories.countries as country}
-            <button class="btn btn-accent btn-xs text-white country" on:click={select_cat}>{country}</button> 
+            <button class="btn btn-secondary btn-xs country" on:click={select_cat}>{country}</button> 
         {/each}
         {#each categories.cats as cat}
-            <button class="btn btn-accent btn-xs text-white category" on:click={select_cat}>{cat}</button> 
+            <button class="btn btn-secondary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
       </div>
 </div>

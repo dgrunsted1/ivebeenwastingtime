@@ -53,11 +53,11 @@
     <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
         <div class="grocery_list">
             {#each grocery_list as item}
-                    <div class="grocery_item flex relative my-1 tooltip">
+                    <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">
                         <input type="checkbox" class="checkbox checkbox-sm" id="{item.ingredient}">
-                        <input type="text" class="amount w-8 text-center m-auto text-sm" value={item.quantity}>
-                        <input type="text" class="unit w-20 m-auto text-center text-sm" value={item.unit}>
-                        <input type="text" class="name w-3/4 m-auto text-sm" value={item.ingredient}> 
+                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center" value={item.quantity}>
+                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center" value={item.unit}>
+                        <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" value={item.ingredient}> 
                     </div>                        
             {/each}
         </div>
