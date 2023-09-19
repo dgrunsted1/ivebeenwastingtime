@@ -23,6 +23,7 @@
                 multiplier: parseFloat(mults[recipe.id]) / parseFloat(recipe.servings)
             };  
         });
+        if (!menu.title) menu.title = "New Menu";
 
         
         total_time = get_total_time(menu);
@@ -48,6 +49,7 @@
             "recipes": recipe_ids,
             "user": $currentUser.id,
             "today": false,
+            "title": menu.title,
             "servings": mults
         };
 
@@ -97,6 +99,9 @@
 </script>
 
 <div id="menu">
+    <div class="flex flex-col items-center p-3">
+        <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={menu.title}/>
+    </div>
     <div class="flex content-center">
         <div class="tabs tabs-boxed w-fit mx-auto">
             <a id="recipe_list" class="tab tab-active" on:click={switch_tab}>Recipes</a> 

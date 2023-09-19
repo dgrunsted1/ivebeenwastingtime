@@ -94,11 +94,10 @@
         edit_recipe = null;
     }
 </script>
-
+<NavBtns page={$page.url.pathname}/>
 <div id="main">
     <div id="content" class="flex flex-row m-2 mt-0">
         <div id="left_column" class="w-1/2">
-            <NavBtns page={$page.url.pathname}/>
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 
                     on:update_view={update_view} on:update_edit={update_edit}

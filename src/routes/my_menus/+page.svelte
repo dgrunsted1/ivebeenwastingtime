@@ -74,6 +74,32 @@
             user_menus = tmp_menus;
         }
     }
+
+    function format_date(in_date){
+        const day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        let output = "";
+        let menu_date = new Date(in_date);
+        let menu_day = menu_date.getDate();
+        let menu_month = menu_date.getMonth();
+        let menu_year = menu_date.getFullYear();
+        let today = new Date();
+        if (menu_year == today.getFullYear()){
+            if (menu_month == today.getMonth()){
+                if (menu_day == today.getDate()){
+                    output = "Today";
+                } else if (today.getDate() - menu_day < 7){
+                    output = day_names[menu_date.getDay()];
+                } else {
+                    output = menu_date.toLocaleDateString(undefined, {month: 'short', day: 'numeric' });
+                }
+            } else {
+                output = menu_date.toLocaleDateString(undefined, {month: 'short', day: 'numeric' });
+            } 
+        } else {
+            output = menu_date.toLocaleDateString(undefined, {year: '2-digit', month: 'short', day: 'numeric' });
+        }
+        return output;
+    }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
@@ -87,15 +113,19 @@
             </figure>
             <div class="card-body flex flex-row justify-evenly content-center p-2">
                 <div class="flex flex-col justify-center">
-                    <p>{user_menus[i].expand.recipes.length} recipes</p>
-                    <p>{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
+                    <p class="text-center">{user_menus[i].title}</p>
+                    <p class="text-center w-20">{format_date(user_menus[i].created)}</p>
                 </div>
                 <div class="flex flex-col justify-center">
-                    <p>{get_servings(user_menus[i].expand.recipes)} servings</p>
-                    <p>{get_total_time(user_menus[i].expand.recipes)}</p>
+                    <p class="text-center">{user_menus[i].expand.recipes.length} recipes</p>
+                    <p class="text-center">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                    <p class="text-center">{get_total_time(user_menus[i].expand.recipes)}</p>
                 </div>
                 <div class="flex conten-center items-center">
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                        <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
                 </div>
               </div>
         </div>

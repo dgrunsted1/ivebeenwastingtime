@@ -12,6 +12,8 @@
     {#each page_links as link}
         {#if link.href != page}
             <a href={link.href} class="btn btn-xs btn-primary">{link.display}</a>
+        {:else}
+            <a href={link.href} class="btn btn-xs btn-secondary">{link.display}</a>
         {/if}
     {/each}
 </div>
