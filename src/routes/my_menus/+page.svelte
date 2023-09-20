@@ -6,6 +6,7 @@
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+  import { debug } from 'svelte/internal';
 
 
     let user_menus = []
@@ -17,6 +18,7 @@
             expand: `recipes,recipes.ingr_list`
         });
         user_menus = result_list.items;
+        console.log({user_menus});
     });
 
     function show_menu_modal(e){
@@ -100,35 +102,41 @@
         }
         return output;
     }
+
+    function log(input){
+        console.log({input});
+        return "";
+    }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     {#each user_menus as curr, i}
-        <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
-            <figure class="w-2/3">
-                {#each user_menus[i].expand.recipes as recipe}
-                        <img class="w-44" src={recipe.image} alt={recipe.title}/>
-                {/each}
-            </figure>
-            <div class="card-body flex flex-row justify-evenly content-center p-2">
-                <div class="flex flex-col justify-center">
-                    <p class="text-center">{user_menus[i].title}</p>
-                    <p class="text-center w-20">{format_date(user_menus[i].created)}</p>
+            {log(user_menus[i])}
+            <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
+                <figure class="w-2/3">
+                    {#each user_menus[i].expand.recipes as recipe}
+                            <img class="w-44" src={recipe.image} alt={recipe.title}/>
+                    {/each}
+                </figure>
+                <div class="card-body flex flex-row justify-evenly content-center p-2">
+                    <div class="flex flex-col justify-center">
+                        <p class="text-center">{user_menus[i].title}</p>
+                        <p class="text-center w-20">{format_date(user_menus[i].created)}</p>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-center">{user_menus[i].expand.recipes.length} recipes</p>
+                        <p class="text-center">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                        <p class="text-center">{get_total_time(user_menus[i].expand.recipes)}</p>
+                    </div>
+                    <div class="flex conten-center items-center">
+                            <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                    </div>
                 </div>
-                <div class="flex flex-col justify-center">
-                    <p class="text-center">{user_menus[i].expand.recipes.length} recipes</p>
-                    <p class="text-center">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
-                    <p class="text-center">{get_total_time(user_menus[i].expand.recipes)}</p>
-                </div>
-                <div class="flex conten-center items-center">
-                        <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
-                </div>
-              </div>
-        </div>
+            </div>
     {/each}
 </div>
     <dialog id="my_modal_2" class="modal">

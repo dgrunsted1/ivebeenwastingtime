@@ -16,7 +16,12 @@
     afterUpdate(() => {
         grocery_list = [];
         num_servings = get_servings(menu, mults);
-        if (!menu.length) return;
+        if (!menu.length){
+            if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = true;
+            return;
+        } else {
+            if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = false;
+        }
         menu.forEach((recipe, i) => {
             grocery_list[i] = {
                 ingredients: recipe.expand.ingr_list,
@@ -24,7 +29,7 @@
             };  
         });
         if (!menu.title) menu.title = "New Menu";
-
+        
         
         total_time = get_total_time(menu);
     });
@@ -41,6 +46,7 @@
     }
 
     async function save_menu(e){
+        e.srcElement.innerHTML = '<span class="loading loading-dots loading-md mx-7"></span>';
         let recipe_ids = [];
         for (let i = 0; i < menu.length; i++){
             recipe_ids.push(menu[i].id);
@@ -52,8 +58,12 @@
             "title": menu.title,
             "servings": mults
         };
-
         const record = await pb.collection('menus').create(data);
+        id = record.id;
+        await set_todays_menu();
+        e.srcElement.innerHTML = 'save menu';
+        e.srcElement.disabled = true;
+        return true;
     }
     
     async function set_todays_menu(e){
@@ -69,7 +79,6 @@
     function get_servings(recipes, mults){
         let total_serv = 0;
         for (let i = 0; i < recipes.length; i++){
-            console.log(recipes[i]);
             total_serv += parseInt(mults[recipes[i].id]);
         }
         return total_serv;
@@ -79,7 +88,6 @@
         let total_time = 0;
         let mins = 0;
         for (let i = 0; i < recipes.length; i++){
-            console.log(recipes[i]);
             let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
             if (min_result){
                 mins += parseInt(min_result[1]);
@@ -108,9 +116,9 @@
             <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a>
         </div>
         {#if $page.url.pathname == "/menu"}
-            <button class="btn btn-secondary self-end btn-sm" on:click={save_menu}>save menu</button>
+            <a class="btn btn-secondary self-end btn-sm" id="save_btn" href="/today" on:click={save_menu}>save menu</a>
         {:else if $page.url.pathname == "/my_menus"}
-            <button class="btn btn-secondary self-end btn-sm" on:click={set_todays_menu}>make todays menu</button>
+            <button class="btn btn-secondary self-end btn-sm" id="today_btn" on:click={set_todays_menu}>make todays menu</button>
         {/if}
     </div>
     <div class="flex justify-around">
