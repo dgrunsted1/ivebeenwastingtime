@@ -45,6 +45,9 @@
 <NavBtns page={$page.url.pathname}/>
 {#if display_mode == "recipes" && todays_menu.id}
     <div id="main">
+        <div class="flex justify-center p-1">
+            <h1 class="text-2xl">{todays_menu.title}</h1>
+        </div>
         <div id="content" class="flex flex-row m-2 mt-0">
             <div id="left_column" class="w-1/2">
                 <div id="recipes" class="">

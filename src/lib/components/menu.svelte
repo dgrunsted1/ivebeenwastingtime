@@ -63,7 +63,7 @@
         await set_todays_menu();
         e.srcElement.innerHTML = 'save menu';
         e.srcElement.disabled = true;
-        return true;
+        window.location.href = "/today";
     }
     
     async function set_todays_menu(e){
@@ -116,7 +116,7 @@
             <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a>
         </div>
         {#if $page.url.pathname == "/menu"}
-            <a class="btn btn-secondary self-end btn-sm" id="save_btn" href="/today" on:click={save_menu}>save menu</a>
+            <button class="btn btn-secondary self-end btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
         {:else if $page.url.pathname == "/my_menus"}
             <button class="btn btn-secondary self-end btn-sm" id="today_btn" on:click={set_todays_menu}>make todays menu</button>
         {/if}

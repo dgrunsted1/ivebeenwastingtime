@@ -6,6 +6,7 @@
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+    import { invalidateAll } from '$app/navigation';
   import { debug } from 'svelte/internal';
 
 
@@ -103,20 +104,55 @@
         return output;
     }
 
-    function log(input){
-        console.log({input});
-        return "";
+    async function search(e){
+        let search_str = e.srcElement.value;
+        let recipe_ids = [];
+        if (search_str == ""){
+            const result_list = await pb.collection('menus').getList(1, 50, {
+                filter: `user="${$currentUser.id}"`,
+                expand: `recipes,recipes.ingr_list`
+            });
+            user_menus = result_list.items;
+            return;
+        }
+        const result_ingr = await pb.collection('ingredients').getList(1, 50, {
+            filter: `ingredient ~ '${search_str}'`,
+            expand: `recipe`
+        });
+        for (let i = 0; i < result_ingr.items.length; i++){
+            for (let j = 0; j < result_ingr.items[i].recipe.length; j++){
+                if (!recipe_ids.includes(result_ingr.items[i].recipe[j])) recipe_ids.push(result_ingr.items[i].recipe[j]);
+            }
+        }
+        const result_recipe = await pb.collection('recipes').getList(1, 50, {
+            filter: `title ~ '${search_str}'`,
+        });
+        for (let i = 0; i < result_recipe.items.length; i++){
+            if (!recipe_ids.includes(result_recipe.items[i].id)) recipe_ids.push(result_recipe.items[i].id);
+        }
+        let recipe_id_string = "";
+        for (let i = 0; i < recipe_ids.length; i++){
+            recipe_id_string += ` || recipes ~ '${recipe_ids[i]}'`;
+        }
+        const result_menu = await pb.collection('menus').getList(1, 50, {
+            filter: `title ~ '${search_str}'${recipe_id_string}`,
+            expand: `recipes,recipes.ingr_list`
+        });
+        user_menus = result_menu.items;
     }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
+<div class="form-control w-full max-w-xs">
+    <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" on:change|preventDefault={search}/>
+  </div>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
+    
     {#each user_menus as curr, i}
-            {log(user_menus[i])}
             <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
                 <figure class="w-2/3">
-                    {#each user_menus[i].expand.recipes as recipe}
-                            <img class="w-44" src={recipe.image} alt={recipe.title}/>
+                    {#each user_menus[i].expand.recipes as recipe, j}
+                            <img class="w-44" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
                     {/each}
                 </figure>
                 <div class="card-body flex flex-row justify-evenly content-center p-2">
