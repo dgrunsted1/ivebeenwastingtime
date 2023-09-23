@@ -99,19 +99,17 @@
 
     function select_cat(e){
         document.getElementById("menu_loading").classList.remove('hidden');
-        document.getElementsByClassName("checkbox");
-        for (let curr of document.getElementsByClassName("checkbox")){
-            // curr.checked = false;
-        }
         let classes = Array.from(e.srcElement.classList);
-        let clicked = (classes.includes('btn-accent')) ? true : false;
+        let clicked = (classes.includes('btn-primary')) ? true : false;
+ 
         if (clicked){
-            e.srcElement.classList.remove('btn-accent');
+            e.srcElement.classList.remove('btn-primary');
             e.srcElement.classList.add('btn-secondary');
         } else {
-            e.srcElement.classList.add('btn-accent');
+            e.srcElement.classList.add('btn-primary');
             e.srcElement.classList.remove('btn-secondary');
         }
+        
         let selected_cat = e.srcElement.textContent;
         let type_cat;
         if (classes.includes('cuisine')){
@@ -137,7 +135,6 @@
                 }
             }
         }
-        
         if (display_cats.cats.length || display_cats.countries.length || display_cats.cuisines.length){
             let new_display = [];
             for (let curr_recipe of recipes){
@@ -188,18 +185,18 @@
         document.getElementById("menu_loading").classList.add('hidden');
     }
 </script>
-<div class="">
+<div class="flex flex-col space-y-1">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
         {#each categories.cuisines as cuisine}
-            <button class="btn btn-secondary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
+            <button class="btn btn-primary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each categories.countries as country}
-            <button class="btn btn-secondary btn-xs country" on:click={select_cat}>{country}</button> 
+            <button class="btn btn-primary btn-xs country" on:click={select_cat}>{country}</button> 
         {/each}
         {#each categories.cats as cat}
-            <button class="btn btn-secondary btn-xs category" on:click={select_cat}>{cat}</button> 
+            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
-      </div>
+    </div>
 </div>
 <div id="recipes" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">

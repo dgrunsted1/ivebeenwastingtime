@@ -145,7 +145,7 @@
 <NavBtns page={$page.url.pathname}/>
 <div class="form-control w-full max-w-xs">
     <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" on:change|preventDefault={search}/>
-  </div>
+</div>
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     
     {#each user_menus as curr, i}
