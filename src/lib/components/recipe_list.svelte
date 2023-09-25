@@ -97,29 +97,7 @@
         }
     }
 
-    function select_cat(e){
-        document.getElementById("menu_loading").classList.remove('hidden');
-        let classes = Array.from(e.srcElement.classList);
-        let clicked = (classes.includes('btn-primary')) ? true : false;
- 
-        if (clicked){
-            e.srcElement.classList.remove('btn-primary');
-            e.srcElement.classList.add('btn-secondary');
-        } else {
-            e.srcElement.classList.add('btn-primary');
-            e.srcElement.classList.remove('btn-secondary');
-        }
-        
-        let selected_cat = e.srcElement.textContent;
-        let type_cat;
-        if (classes.includes('cuisine')){
-            type_cat = 'cuisines';
-        }else if (classes.includes('country')){
-            type_cat = 'countries';
-        }else if (classes.includes('category')){
-            type_cat = 'cats';
-        }
-
+    function update_display_cats(selected_cat, clicked, type_cat){
         if (clicked){
             if (!display_cats[type_cat].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
         } else {
@@ -135,10 +113,15 @@
                 }
             }
         }
+    }
+
+    function filter_recipes(recipes_in){
         if (display_cats.cats.length || display_cats.countries.length || display_cats.cuisines.length){
             let new_display = [];
-            for (let curr_recipe of recipes){
+            // update new display array
+            for (let curr_recipe of recipes_in){
                 for (let [key, value] of Object.entries(display_cats)){
+                    // cats handled after this loop
                     if (key == 'cats') continue;
                     for (let curr_cat of value){
                         if (key == 'cuisines') {
@@ -166,7 +149,7 @@
             }
 
             if (!new_display.length){
-                for (let recipe of recipes){
+                for (let recipe of recipes_in){
                     for (let cat of display_cats.cats){
                         if (recipe.category == cat){
                             new_display.push(recipe);
@@ -178,11 +161,72 @@
 
             display_recipes = new_display;
         }else{
-            display_recipes = recipes;
+            display_recipes = recipes_in;
         }
+    }
+
+    function update_filter_style(clicked, e){
+        if (clicked){
+            e.srcElement.classList.remove('btn-primary');
+            e.srcElement.classList.add('btn-secondary');
+        } else {
+            e.srcElement.classList.add('btn-primary');
+            e.srcElement.classList.remove('btn-secondary');
+        }
+    }
+
+    function get_cat_name(classes){
+        let type_cat;
+        if (classes.includes('cuisine')){
+            type_cat = 'cuisines';
+        }else if (classes.includes('country')){
+            type_cat = 'countries';
+        }else if (classes.includes('category')){
+            type_cat = 'cats';
+        }
+        return type_cat;
+    }
+
+    function select_cat(e){
+        document.getElementById("menu_loading").classList.remove('hidden');
+
+        let search_recipes = search();
+
+        if (e.srcElement.tagName != "INPUT"){
+            //get info
+            let classes = Array.from(e.srcElement.classList);
+            let clicked = (classes.includes('btn-primary')) ? true : false;
+    
+            //update btn style
+            update_filter_style(clicked, e);
+            
+            //select type of category selected
+            let selected_cat = e.srcElement.textContent;
+            let type_cat = get_cat_name(classes);
+            
+            
+
+            update_display_cats(selected_cat, clicked, type_cat);
+        }
+        
+        filter_recipes(search_recipes);
+
         update_btn_style(curr_recipe_id, -1, "menu");
         dispatch(`reset_mode`, {index: -1});
         document.getElementById("menu_loading").classList.add('hidden');
+    }
+
+    function search(){
+        let recipes_with_ingr = [];
+        for (let i = 0; i < recipes.length; i ++){
+            for (let j = 0; j < recipes[i].expand.ingr_list.length; j++){
+                if (recipes[i].expand.ingr_list[j].ingredient.includes(document.getElementById("search").value)){
+                    recipes_with_ingr.push(recipes[i]);
+                    break;
+                }
+            }
+        }
+        return recipes_with_ingr;
     }
 </script>
 <div class="flex flex-col space-y-1">
@@ -197,7 +241,12 @@
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
     </div>
+    <div class="form-control flex flex-row justify-between w-full items-center">
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs" on:change={select_cat}/>
+        <p class="mx-5">{display_recipes.length}</p>
+    </div>
 </div>
+
 <div id="recipes" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
