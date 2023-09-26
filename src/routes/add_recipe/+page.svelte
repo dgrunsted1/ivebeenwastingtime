@@ -39,7 +39,7 @@
         const result = deserialize(await response.text());
         if (result.data.err) {
             alert(result.data.err);
-            // e.srcElement.value = "";
+            e.srcElement.value = "";
         } else if (result.type === 'success') {
             result.data.expand.ingr_list = process_recipe(result.data.expand.ingr_list);
             result.data.url = e.srcElement.value;

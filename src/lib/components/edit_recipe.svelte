@@ -147,8 +147,8 @@
                 } else {
                     const similar_ingr = await pb.collection('ingredients').getList(1, 1, { filter: `quantity='${recipe.expand.ingr_list[i].quantity}' && unit='${recipe.expand.ingr_list[i].unit}' && ingredient='${recipe.expand.ingr_list[i].ingredient}'` });
                     if (similar_ingr.items.length){
-                        const add_to_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe+": [recipe.id]});
-                        ingr_ids.push(recipe.expand.ingr_list[i].id);
+                        const add_to_ingr = await pb.collection('ingredients').update(similar_ingr.items[0].id, {"recipe+": [recipe.id]});
+                        ingr_ids.push(similar_ingr.items[0].id);
                     }else {
                         const new_ingr_data = {
                             "quantity": recipe.expand.ingr_list[i].quantity,

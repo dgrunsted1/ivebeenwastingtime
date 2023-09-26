@@ -241,7 +241,7 @@
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
     </div>
-    <div class="form-control flex flex-row justify-between w-full items-center">
+    <div class="form-control flex flex-row justify-around w-full items-center">
         <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs" on:change={select_cat}/>
         <p class="mx-5">{display_recipes.length}</p>
     </div>
