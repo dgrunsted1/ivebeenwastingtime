@@ -10,4 +10,5 @@ pb.authStore.onChange((auth) => {
 
 export const signOut = function() {
     pb.authStore.clear();
+    window.location.href = "/";
 }

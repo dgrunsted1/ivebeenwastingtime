@@ -94,6 +94,7 @@
                 if (recipe.id != e.srcElement.id) tmp.push(recipe);
             }
             recipes = tmp;
+            filter_recipes(recipes);
         }
     }
 

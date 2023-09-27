@@ -6,7 +6,6 @@
     import { process_recipe } from '/src/lib/process_recipe.js';
     import { deserialize } from '$app/forms';
     import { onMount } from "svelte";
-    if (!$currentUser) window.location.href = "/login";
 
     let recipe = {
         author: "",
