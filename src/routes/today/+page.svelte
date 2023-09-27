@@ -13,6 +13,7 @@
     let mode = "menu";
 
     onMount(async () => {
+        if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
             expand: `recipes,recipes.notes,recipes.ingr_list`

@@ -9,11 +9,11 @@
     import { invalidateAll } from '$app/navigation';
   import { debug } from 'svelte/internal';
 
-
     let user_menus = []
     $: modal_menu = [];
 
     onMount(async () => {
+        if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
             expand: `recipes,recipes.ingr_list`

@@ -1,8 +1,13 @@
 <script>
 import { deserialize } from '$app/forms';
 import { invalidateAll } from '$app/navigation';
+  import { onMount } from 'svelte';
+import { currentUser, pb } from '/src/lib/pocketbase.js';
 import { process_recipe } from '/src/lib/process_recipe.js';
 import { parse } from 'recipe-ingredient-parser-v3';
+
+
+
 
 const process_recipe_tests = {
     input:[
@@ -125,6 +130,11 @@ const process_recipe_tests = {
 }
 $: scraper_test_result = [];
 $: process_recipe_results = [];
+
+
+onMount(() => {
+        if (!$currentUser) window.location.href = "/login";
+});
 
 async function fetch_recipe(e){
     document.getElementById("scrape_loading").classList.remove("hidden");

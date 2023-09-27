@@ -26,9 +26,9 @@
 				</div>
 				<ul class="menu menu-horizontal navbar-end px-1">
 					<li class="flex flex-row">
-						{#if !$currentUser}
+						{#if !$currentUser && $page.url.pathname != "/login"}
 							<a href="login">login</a>
-						{:else}
+						{:else if $currentUser && $page.url.pathname != "/login"}
 							<div>Hello {$currentUser.name}</div><div on:click={signOut} on:keypress={signOut}>logout</div>
 						{/if}
 					</li>

@@ -2,8 +2,11 @@
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
+    import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { process_recipe } from '/src/lib/process_recipe.js';
     import { deserialize } from '$app/forms';
+    import { onMount } from "svelte";
+    if (!$currentUser) window.location.href = "/login";
 
     let recipe = {
         author: "",
@@ -26,6 +29,10 @@
         url: "",
         user: ""
     }
+
+    onMount(() => {
+        if (!$currentUser) window.location.href = "/login";
+    });
 
     async function fetch_recipe(e){
         const data = new FormData(this);

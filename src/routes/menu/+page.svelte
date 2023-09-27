@@ -8,7 +8,6 @@
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
 
-
     let user_recipes;
     let menu_recipes = [];
     let mults = {};
@@ -18,6 +17,7 @@
 
 
     onMount(async () => {
+        if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('recipes').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
             expand: `notes, ingr_list`

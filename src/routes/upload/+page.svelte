@@ -1,6 +1,7 @@
 
 
 <script>
+  import { onMount } from 'svelte';
 import { currentUser, pb } from '/src/lib/pocketbase';
 export let data;
 
@@ -9,6 +10,10 @@ export let data;
 let albums = data.albums;
 let curr_album = "";
 let new_album = "";
+
+onMount(() => {
+    if (!$currentUser) window.location.href = "/login";
+});
 
 const update_album = (selected_album) => {
     if (selected_album == "new"){
