@@ -43,8 +43,10 @@ export const process_recipe = function(in_lines){
     return result;
 }
 
-const process_recipe_old = function(in_lines) {
+export const process_recipe_old = function(in_lines) {
+    console.log(in_lines[0]);
     for (let key in reg_exp.replace){
+        console.log(1);
         in_lines[0] = in_lines[0].replace(reg_exp.replace[key],key).trim();
     }  
 
@@ -53,21 +55,24 @@ const process_recipe_old = function(in_lines) {
     for (let match of reg_exp.match){
         let curr = in_lines[0].match(match.exp);
         if (curr){
-            // log_match(curr, cnt);
+            log_match(curr, cnt);
             let amount;
             let name;
+            console.log(typeof match.amnt);
             if (typeof match.amnt == "number") amount = curr[match.amnt];
             else amount = curr[match.amnt[0]] * curr[match.amnt[1]];
             
+            console.log(typeof match.name);
+
             if (typeof match.name == "number") name = curr[match.name];
             else name = curr[match.name[0]] + " " + curr[match.name[1]];
-
             ingr = {
                     amount: convert_amount(amount), 
                     unit: make_singular(curr[match.unit]), 
                     name: trim_name(name.trim()),
                     original: [in_lines[0]]
             };
+            console.log({ingr});
         }
         curr = false;
         cnt++;
@@ -79,7 +84,7 @@ const process_recipe_old = function(in_lines) {
     }
 
     if (!ingr && in_lines[0]) ingr = {amount: false, unit: false, name: in_lines[0], original:[in_lines[0]]};
-
+    console.log({ingr});
     if (in_lines.slice(1).length) return [ingr].concat(process_recipe(in_lines.slice(1)));
     else return ingr;
 }
@@ -105,6 +110,7 @@ function convert_amount(in_amount) {
 function trim_name(in_name) {
     let out = in_name.replace(/\(([^\)]+)\)/, "");
     out = in_name.replace(/^[ .]+/, "");
+    console.log(3);
     out = out.trim();
     // if (out.indexOf("s") == out.length - 1) out = out.substring(0, out.length - 1);
     return out

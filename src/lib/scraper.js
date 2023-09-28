@@ -263,7 +263,7 @@ async function get_ba_data(page){
             tags: tags
         };
     });
-    console.log({result});
+    // console.log({result});
     return result;
 }
 
@@ -336,6 +336,6 @@ export const scrape = async function(url) {
         results.got_to_time = `${(go_to_time-selector_time)/1000}s`;
         results.set_view_time = `${(set_view_time-go_to_time)/1000}s`;
         results.compare_time = `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`;
-        console.log("results", results);
+        console.log("scrape time", results.execution_time);
         return results;
 };

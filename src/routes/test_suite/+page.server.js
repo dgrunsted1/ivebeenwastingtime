@@ -152,6 +152,7 @@ function array_test(scrape, test, in_type){
 /** @type {import('./$types').Actions} */
 export const actions = {
     scrape: async ({ request }) => {
+        console.log("in scrape");
         let result = [];
         let i = 0;
         for (const [key, value] of Object.entries(tests)) {
@@ -179,13 +180,13 @@ export const actions = {
         }
     return result;
     },
-
     scrape_ingr:  async ({ request }) => {
-        let result = [];
-        let i = 0;
-        let test_result = await scrape(curr.url);
-        console.log({test_result});
-        result.push(test_result.expand.ingr_list);
-        return result;
+        console.log("scrape_ingr");
+        let data = await request.formData();
+        let url = await data.get('url');
+        console.log(url);
+        let test_result = await scrape(url);
+        console.log("scraped ingredient list", test_result.expand.ingr_list);
+        return test_result.expand.ingr_list;
     }
 };

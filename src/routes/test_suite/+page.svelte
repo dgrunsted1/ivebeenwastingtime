@@ -3,8 +3,7 @@ import { deserialize } from '$app/forms';
 import { invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
 import { currentUser, pb } from '/src/lib/pocketbase.js';
-import { process_recipe } from '/src/lib/process_recipe.js';
-import { parse } from 'recipe-ingredient-parser-v3';
+import { process_recipe, process_recipe_old } from '/src/lib/process_recipe.js';
 
 
 
@@ -144,7 +143,7 @@ async function fetch_recipe(e){
     const response = await fetch(this.action, {
         method: 'POST',
         body: data
-    });ewf
+    });
 
     /** @type {import('@sveltejs/kit').ActionResult} */
     const result = deserialize(await response.text());
@@ -159,11 +158,12 @@ async function fetch_recipe(e){
 }
 
 async function process_recipe_test(e){
-    const recipe_links = await pb.collection('recipes').getList(1, 1, {field:`url`});
+    const recipe_links = await pb.collection('recipes').getList(1, 1, {fields:`url`});
     process_recipe_results = [];
     console.log({recipe_links});
     for (let i = 0; i < recipe_links.items.length; i++){
         const data = new FormData(this);
+        data.append("url", recipe_links.items[i].url);
         let scraped_ingr = [];
         const response = await fetch(this.action, {
             method: 'POST',
@@ -178,13 +178,12 @@ async function process_recipe_test(e){
             alert(result.data.err);
         } else if (result.type === 'success') {
             let scraped_ingrs = result.data;
-            console.log({scraped_ingr});
-            let my_result = process_recipe(scraped_ingrs);
-            let npm_result = [];
-            for (let i = 0; i < scraped_ingrs.length; i++){
-                let tmp = parse(scraped_ingrs[i], 'eng');
-                npm_result.push(tmp);
-            }
+            console.log({scraped_ingrs});
+            let my_result = process_recipe_old(scraped_ingrs);
+            console.log({my_result});
+            let npm_result = process_recipe(scraped_ingrs);
+            console.log({npm_result});
+            return;
             // test for differenes
             let compare = {};
             compare.lengths = {val: `npm: ${npm_result.length} - mine: ${my_result.length}`, pass: npm_result.length == my_result.length};
@@ -196,6 +195,7 @@ async function process_recipe_test(e){
                 let ingredient = {val: `npm: ${npm_result[i].ingredient} - mine: ${my_result[i].name}`, pass: (npm_result.ingredient == my_result.name) || (npm_result.ingredient == "" && my_result.name == "")};
                 compare.ingr.push({quantity, unit, ingredient});
             }
+            console.log({compare});
             process_recipe_results.push(compare);
             process_recipe_results = process_recipe_results;        
         }
@@ -209,9 +209,6 @@ function reupload_recipes(){
     // 
 }
 
-function compare_process_recipe(){
-
-}
 
 </script>
 
@@ -276,9 +273,9 @@ function compare_process_recipe(){
          <div class="flex w-full m-5">
             <div class="w-fit justify-center">
                 <div class="flex justify-center space-x-10 content-center">
-                    <form method="post"action="?/scrape_ingr">
-                        <button class="btn btn-primary" on:click|preventDefault={process_recipe_test}>
-                            test process recipe
+                    <form method="POST" action="?/scrape_ingr"  on:click|preventDefault={process_recipe_test}>
+                        <button class="btn btn-primary">
+                            compare parsers
                         </button>
                     </form>
                         
@@ -288,7 +285,7 @@ function compare_process_recipe(){
                 <div class="flex flex-col w-full space-y-2 m-5 justify-center">
                     {#if process_recipe_results}
                         {#each process_recipe_results as curr}
-                            {#if curr.length.pass}
+                            {#if curr.lengths.pass}
                                 <p class="bg-success">{curr.length.val}</p>
                             {:else}
                                 <p class="bg-error">{curr.length.val}</p>
