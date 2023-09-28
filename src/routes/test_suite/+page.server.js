@@ -178,5 +178,14 @@ export const actions = {
             };          
         }
     return result;
+    },
+
+    scrape_ingr:  async ({ request }) => {
+        let result = [];
+        let i = 0;
+        let test_result = await scrape(curr.url);
+        console.log({test_result});
+        result.push(test_result.expand.ingr_list);
+        return result;
     }
 };
