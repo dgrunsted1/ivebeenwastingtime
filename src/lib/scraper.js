@@ -230,7 +230,7 @@ async function get_ba_data(page){
         let ingr_list = body.querySelector("[data-testid='IngredientList']");
         let servings = ingr_list.querySelector("p").textContent;
         let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
-        if (ingredient_list.length <= 1) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
+        if (ingredient_list.length <= 2) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
         // return ingredient_list;
         let ingredients = [];
         for (let i = 0; i < ingredient_list.length; i++){

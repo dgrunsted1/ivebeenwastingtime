@@ -129,6 +129,7 @@ const process_recipe_tests = {
 }
 $: scraper_test_result = [];
 $: process_recipe_results = [];
+// $: process_recipe_results = [{"lengths":{"val":"npm: 15 - mine: 15","pass":true},"ingr":[{"quantity":{"npm":500,"mine":500,"pass":true},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"bread flour (17.5 ounces;  3 1/2 cups)","mine":"bread flour (17.5 ounces;  3 1/2 cups)","pass":true},"original":["500 g bread flour (17.5 ounces;  3 1/2 cups)"]},{"quantity":{"npm":0,"mine":14,"pass":true},"unit":{"npm":"q.b.","mine":"g","pass":true},"ingredient":{"npm":"kosher salt","mine":"kosher salt (0.5 ounce;  1 tablespoon); for table salt use same weight or half as much by volume","pass":false},"original":["14 g kosher salt (0.5 ounce;  1 tablespoon); for table salt use same weight or half as much by volume"]},{"quantity":{"npm":6,"mine":6,"pass":true},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"instant or rapid-rise yeast (0.25 ounce; about 1 1/2 teaspoons)","mine":"instant or rapid-rise yeast (0.25 ounce;  1 1/2 teaspoons)","pass":false},"original":["6 g instant or rapid-rise yeast (0.25 ounce;  1 1/2 teaspoons)"]},{"quantity":{"npm":20,"mine":60,"pass":false},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"extra-virgin olive oil (0.70 ounce; about 2 tablespoons)","mine":"extra-virgin olive oil (2.1 ounces), divided","pass":false},"original":["60 g extra-virgin olive oil (2.1 ounces), divided"]},{"quantity":{"npm":325,"mine":325,"pass":true},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"room-temperature water (11.5 ounces; about 1 cup plus 7 tablespoons)","mine":"room-temperature water (11.5 ounces;  1 cup plus 7 tablespoons)","pass":false},"original":["325 g room-temperature water (11.5 ounces;  1 cup plus 7 tablespoons)"]},{"quantity":{"npm":60,"mine":20,"pass":false},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"extra-virgin olive oil , divided (2.1 ounces)","mine":"extra-virgin olive oil (0.70 ounce;  2 tablespoons)","pass":false},"original":["20 g extra-virgin olive oil (0.70 ounce;  2 tablespoons)"]},{"quantity":{"npm":20,"mine":20,"pass":true},"unit":{"npm":"gram","mine":"g","pass":false},"ingredient":{"npm":"extra-virgin olive oil (0.70 ounce; about 2 tablespoons)","mine":"extra-virgin olive oil (0.70 ounce;  2 tablespoons)","pass":false},"original":["20 g extra-virgin olive oil (0.70 ounce;  2 tablespoons)"]},{"quantity":{"npm":"none","mine":9,"pass":true},"unit":{"npm":"none","mine":"medium","pass":true},"ingredient":{"npm":"none","mine":"cloves garlic (45g), roughly chopped","pass":true},"original":["9 medium cloves garlic (45g), roughly chopped"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"tablespoon","mine":"tablespoon","pass":true},"ingredient":{"npm":"dried oregano","mine":"dried oregano","pass":true},"original":["1 tablespoon dried oregano"]},{"quantity":{"npm":"none","mine":2,"pass":true},"unit":{"npm":"none","mine":"teaspoon","pass":true},"ingredient":{"npm":"none","mine":"red pepper flakes, or more to taste","pass":true},"original":["2 teaspoons red pepper flakes, or more to taste"]},{"quantity":{"npm":"none","mine":false,"pass":false},"unit":{"npm":"none","mine":false,"pass":false},"ingredient":{"npm":"none","mine":"One 28-ounce (800g) can whole peeled tomatoes","pass":true},"original":["One 28-ounce (800g) can whole peeled tomatoes"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"teaspoon","mine":"teaspoon","pass":true},"ingredient":{"npm":"sugar","mine":"sugar","pass":true},"original":["1 teaspoon sugar"]},{"quantity":{"npm":"none","mine":false,"pass":false},"unit":{"npm":"none","mine":false,"pass":false},"ingredient":{"npm":"none","mine":"Kosher salt","pass":true},"original":["Kosher salt"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"pound","mine":"pound","pass":true},"ingredient":{"npm":"sliced deli-style mozzarella cheese (450g)","mine":"sliced deli-style mozzarella cheese","pass":false},"original":["1 pound (450g) sliced deli-style mozzarella cheese"]},{"quantity":{"npm":"none","mine":12,"pass":true},"unit":{"npm":"none","mine":"ounce","pass":true},"ingredient":{"npm":"none","mine":"(325g) natural-casing pepperoni, cut into 1/8-inch-thick slices","pass":true},"original":["12 ounces (325g) natural-casing pepperoni, cut into 1/8-inch-thick slices"]},{"quantity":{"npm":"none","mine":4,"pass":true},"unit":{"npm":"none","mine":"ounce","pass":true},"ingredient":{"npm":"none","mine":"ground Pecorino Romano cheese","pass":true},"original":["4 ounces (115g) ground Pecorino Romano cheese"]}]},{"lengths":{"val":"npm: 10 - mine: 10","pass":true},"ingr":[{"quantity":{"npm":10,"mine":10,"pass":true},"unit":{"npm":"ounce","mine":"ounce","pass":true},"ingredient":{"npm":"all-purpose flour ( 2 cups)","mine":"( 2 cups) all-purpose flour","pass":false},"original":["10 ounces ( 2 cups) all-purpose flour"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"teaspoon","mine":"teaspoon","pass":true},"ingredient":{"npm":"baking powder","mine":"baking powder","pass":true},"original":["1 teaspoon baking powder"]},{"quantity":{"npm":0.5,"mine":0.5,"pass":true},"unit":{"npm":"teaspoon","mine":"teaspoon","pass":true},"ingredient":{"npm":"baking soda","mine":"baking soda","pass":true},"original":["1/2 teaspoon baking soda"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"teaspoon","mine":"teaspoon","pass":true},"ingredient":{"npm":"kosher salt","mine":"kosher salt","pass":true},"original":["1 teaspoon kosher salt"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"tablespoon","mine":"tablespoon","pass":true},"ingredient":{"npm":"sugar","mine":"sugar","pass":true},"original":["1 tablespoon sugar"]},{"quantity":{"npm":2,"mine":2,"pass":true},"unit":{"npm":"large","mine":"large","pass":true},"ingredient":{"npm":"eggs, separated","mine":"eggs, separated","pass":true},"original":["2 large eggs, separated"]},{"quantity":{"npm":1.5,"mine":1.5,"pass":true},"unit":{"npm":"cup","mine":"cup","pass":true},"ingredient":{"npm":"buttermilk (about 12 ounces)","mine":"( 12 ounces) buttermilk","pass":false},"original":["1 1/2 cups ( 12 ounces) buttermilk"]},{"quantity":{"npm":1,"mine":1,"pass":true},"unit":{"npm":"cup","mine":"cup","pass":true},"ingredient":{"npm":"sour cream (see notes) (about 8 ounces)","mine":"( 8 ounces) sour cream (see notes)","pass":false},"original":["1 cup ( 8 ounces) sour cream (see notes)"]},{"quantity":{"npm":4,"mine":4,"pass":true},"unit":{"npm":"tablespoon","mine":"tablespoon","pass":true},"ingredient":{"npm":"unsalted butter, melted, plus more for serving","mine":"unsalted butter, melted, plus more for serving","pass":true},"original":["4 tablespoons unsalted butter, melted, plus more for serving"]},{"quantity":{"npm":"none","mine":false,"pass":false},"unit":{"npm":"none","mine":false,"pass":false},"ingredient":{"npm":"none","mine":"Warm maple syrup","pass":true},"original":["Warm maple syrup"]}]}];
 $: compare_result = [];
 
 
@@ -158,7 +159,10 @@ async function fetch_recipe(e){
 }
 
 async function process_recipe_test(e){
-    const recipe_links = await pb.collection('recipes').getList(1, 1, {fields:`url`});
+    let num_tests = 5;
+    e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="0" max="100"></progress>`;
+    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {fields:`url`, filter:`url~'seriouseats'`});
+    e.srcElement.firstChild.value = `5`;
     process_recipe_results = [];
     console.log({recipe_links});
     for (let i = 0; i < recipe_links.items.length; i++){
@@ -173,34 +177,57 @@ async function process_recipe_test(e){
 
         /** @type {import('@sveltejs/kit').ActionResult} */
         const result = deserialize(await response.text());
-        console.log(result.data);
         if (result.data.err) {
             alert(result.data.err);
         } else if (result.type === 'success') {
             let scraped_ingrs = result.data;
-            console.log({scraped_ingrs});
             let my_result = process_recipe_old(scraped_ingrs);
-            console.log({my_result});
             let npm_result = process_recipe(scraped_ingrs);
-            console.log({npm_result});
-            return;
-            // test for differenes
-            let compare = {};
-            compare.lengths = {val: `npm: ${npm_result.length} - mine: ${my_result.length}`, pass: npm_result.length == my_result.length};
-            let loops = (npm_result.length > my_result.length) ? npm_result.length : my_result.length;
-            compare.ingr = [];
-            for (let i = 0; i < loops; i++){
-                let quantity = {val: `npm: ${npm_result[i].quantity} - mine: ${my_result[i].amount}`, pass: (npm_result.quantity == my_result.amount) || (npm_result.quantity == "" && my_result.amount == "")};
-                let unit = {val: `npm: ${npm_result[i].unit} - mine: ${my_result[i].unit}`, pass: (npm_result.unit == my_result.unit) || (npm_result.unit == "" && my_result.unit == "")};
-                let ingredient = {val: `npm: ${npm_result[i].ingredient} - mine: ${my_result[i].name}`, pass: (npm_result.ingredient == my_result.name) || (npm_result.ingredient == "" && my_result.name == "")};
-                compare.ingr.push({quantity, unit, ingredient});
-            }
-            console.log({compare});
-            process_recipe_results.push(compare);
-            process_recipe_results = process_recipe_results;        
+            process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);        
         }
+        let progress = ((i+1)/num_tests)*100;
+        e.srcElement.firstChild.value = `${progress}`;
+    }
+    e.srcElement.innerHTML = `Compare Parsers`;
+    // console.log(JSON.stringify(process_recipe_results));
+}
+
+function compare(my_result, npm_result){
+    let compare = {};
+    compare.lengths = {val: `npm: ${npm_result.length} - mine: ${my_result.length}`, pass: npm_result.length == my_result.length};
+    compare.ingr = [];
+    for (let i = 0; i < my_result.length; i++){
+        // console.log("my result i", my_result[i]);
+        let npm_match = null
+        for (let j = 0; j < npm_result.length; j++){
+            if (my_result[i].name && (npm_result[j].ingredient.toLowerCase().includes(my_result[i].name.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || 
+                my_result[i].name.toLowerCase().includes(npm_result[j].ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()))){
+                npm_match = npm_result[j];
+            }
+        }
+        if (!npm_match){
+            npm_match = npm_result[i];
+        }
+        let quantity = {
+            npm: npm_match.quantity,
+            mine: my_result[i].amount,
+            pass: (npm_match.quantity == my_result[i].amount || (my_result[i].amount && (!npm_match.quantity)) || (!my_result[i].amount && !npm_match.quantity))
+        }
+        let unit = {
+            npm: npm_match.unit,
+            mine: my_result[i].unit,
+            pass: (npm_match.unit == my_result[i].unit || (my_result[i].unit && (!npm_match.unit || npm_match.unit == "q.b.")) || (!my_result[i].unit && !npm_match.unit) || ((my_result[i].unit == "g" || my_result[i].unit == "gram") && (npm_match.unit == "g" || npm_match.unit == "gram")))
+        }
+        let ingredient = {
+            npm: npm_match.ingredient,
+            mine: my_result[i].name,
+            pass: (npm_match.ingredient == my_result[i].name || (npm_match.ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim() == my_result[i].name.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || (my_result[i].name && !npm_match.ingredient))
+        }
+        compare.ingr.push({quantity, unit, ingredient, original: my_result[i].original});
         
     }
+    console.log({compare});
+    return compare;
 }
 
 function reupload_recipes(){
@@ -270,52 +297,60 @@ function reupload_recipes(){
          </div>
     
          <!-- process recipe vs npm ingredient parser-->
-         <div class="flex w-full m-5">
-            <div class="w-fit justify-center">
+         <div class="flex w-full m-5 w-1/2">
+            <div class="w-full justify-center">
                 <div class="flex justify-center space-x-10 content-center">
                     <form method="POST" action="?/scrape_ingr"  on:click|preventDefault={process_recipe_test}>
-                        <button class="btn btn-primary">
+                        <button class="btn btn-primary w-56">
                             compare parsers
                         </button>
                     </form>
-                        
-                    <div class="w-5 content-center"><span id="scrape_loading" class="loading loading-ring loading-lg hidden text-primary"></span></div>
                 </div>
                 
-                <div class="flex flex-col w-full space-y-2 m-5 justify-center">
+                <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
                     {#if process_recipe_results}
+                    <h3 class="text-center">NPM : MINE</h3>
                         {#each process_recipe_results as curr}
-                            {#if curr.lengths.pass}
-                                <p class="bg-success">{curr.length.val}</p>
-                            {:else}
-                                <p class="bg-error">{curr.length.val}</p>
-                            {/if}
-                            {#each curr.ingr as ingr}
-                                {#if ingr.quantity.pass}
-                                    <p class="bg-success">{ingr.quantity.val}</p>
+                        <div class="grid grid-cols-1">
+                                {#if curr.lengths.pass}
+                                    <p class="bg-success-content text-success rounded text-center col-span-3 m-3">{curr.lengths.val}</p>
                                 {:else}
-                                    <p class="bg-error">{ingr.quantity.val}</p>
+                                    <p class="bg-error-content text-error rounded text-center col-span-3">{curr.lengths.val}</p>
                                 {/if}
+                            
+                            <div class="grid grid-cols-1 gap-2 content-start">
+                                {#each curr.ingr as ingr}
+                                    <div>{ingr.original}</div>
+                                    <div class="flex justify-start space-x-2">
+                                        {#if ingr.quantity.pass}
+                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-success-content text-success w-24"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                        {:else}
+                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-error-content text-error w-24"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                        {/if}
 
-                                {#if ingr.unit.pass}
-                                    <p class="bg-success">{ingr.unit.val}</p>
-                                {:else}
-                                    <p class="bg-error">{ingr.unit.val}</p>
-                                {/if}
+                                        {#if ingr.unit.pass}
+                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-success-content text-succes w-52"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                        {:else}
+                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-error-content text-error w-52"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                        {/if}
 
-                                {#if ingr.ingredient.pass}
-                                    <p class="bg-success">{ingr.ingredient.val}</p>
-                                {:else}
-                                    <p class="bg-error">{ingr.ingredient.val}</p>
-                                {/if}
-                            {/each}
+                                        {#if ingr.ingredient.pass}
+                                            <div class="flex justify-center px-1 rounded text-left bg-success-content text-success w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                        {:else}
+                                            <div class="flex justify-center px-1 rounded text-left bg-error-content text-error w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                        {/if}
+                                    </div>
+                                {/each}
+                            </div>
+                        </div>
+                            
                         {/each}
                     {/if}
                 </div>
             </div>
          </div>
          <!-- pull old recipes and upload with new format -->
-         <div class="flex w-full m-5">
+         <!-- <div class="flex w-full m-5">
             <div class="w-fit justify-center">
                 <div class="flex justify-center space-x-10 content-center">
                         <button class="btn btn-primary" on:click|preventDefault={reupload_recipes}>
@@ -324,15 +359,15 @@ function reupload_recipes(){
                     <div class="w-5 content-center"><span id="scrape_loading" class="loading loading-ring loading-lg hidden text-primary"></span></div>
                 </div>
                 
-                <div class="flex flex-col w-full space-y-2 m-5 justify-center">
-                    {#if process_recipe_results}
+                <div class="flex flex-col w-full space-y-2 m-5 justify-center"> -->
+                    <!-- {#if process_recipe_results}
                         {#each process_recipe_results as curr}
                             {curr}<br><br>
                         {/each}
-                    {/if}
-                </div>
+                    {/if} -->
+                <!-- </div>
             </div>
-         </div>
+         </div> -->
      </div>
      <div class="flex">
         {#each compare_result as curr}
