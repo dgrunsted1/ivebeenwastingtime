@@ -161,7 +161,7 @@ async function fetch_recipe(e){
 async function process_recipe_test(e){
     let num_tests = 5;
     e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="5" max="100"></progress>`;
-    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {fields:`url`, filter:`url~'seriouseats'`});
+    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {fields:`url`});
     e.srcElement.firstChild.value = `10`;
     process_recipe_results = [];
     console.log({recipe_links});
@@ -200,8 +200,8 @@ function compare(my_result, npm_result){
         // console.log("my result i", my_result[i]);
         let npm_match = null
         for (let j = 0; j < npm_result.length; j++){
-            if (my_result[i].name && (npm_result[j].ingredient.toLowerCase().includes(my_result[i].name.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || 
-                my_result[i].name.toLowerCase().includes(npm_result[j].ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()))){
+            if (my_result[i].ingredient && (npm_result[j].ingredient.toLowerCase().includes(my_result[i].ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || 
+                my_result[i].ingredient.toLowerCase().includes(npm_result[j].ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()))){
                 npm_match = npm_result[j];
             }
         }
@@ -210,8 +210,8 @@ function compare(my_result, npm_result){
         }
         let quantity = {
             npm: npm_match.quantity,
-            mine: my_result[i].amount,
-            pass: (npm_match.quantity == my_result[i].amount || (my_result[i].amount && (!npm_match.quantity)) || (!my_result[i].amount && !npm_match.quantity))
+            mine: my_result[i].quantity,
+            pass: (npm_match.quantity == my_result[i].quantity || (my_result[i].quantity && (!npm_match.quantity)) || (!my_result[i].quantity && !npm_match.quantity))
         }
         let unit = {
             npm: npm_match.unit,
@@ -220,8 +220,8 @@ function compare(my_result, npm_result){
         }
         let ingredient = {
             npm: npm_match.ingredient,
-            mine: my_result[i].name,
-            pass: (npm_match.ingredient == my_result[i].name || (npm_match.ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim() == my_result[i].name.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || (my_result[i].name && !npm_match.ingredient))
+            mine: my_result[i].ingredient,
+            pass: (npm_match.ingredient == my_result[i].ingredient || (npm_match.ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim() == my_result[i].ingredient.toLowerCase().replace(/ *\([^)]*\) */g, "").trim()) || (my_result[i].ingredient && !npm_match.ingredient))
         }
         compare.ingr.push({quantity, unit, ingredient, original: my_result[i].original});
         
