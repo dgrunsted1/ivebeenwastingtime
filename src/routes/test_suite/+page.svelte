@@ -160,9 +160,9 @@ async function fetch_recipe(e){
 
 async function process_recipe_test(e){
     let num_tests = 5;
-    e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="0" max="100"></progress>`;
+    e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="5" max="100"></progress>`;
     const recipe_links = await pb.collection('recipes').getList(1, num_tests, {fields:`url`, filter:`url~'seriouseats'`});
-    e.srcElement.firstChild.value = `5`;
+    e.srcElement.firstChild.value = `10`;
     process_recipe_results = [];
     console.log({recipe_links});
     for (let i = 0; i < recipe_links.items.length; i++){
@@ -320,24 +320,24 @@ function reupload_recipes(){
                             
                             <div class="grid grid-cols-1 gap-2 content-start">
                                 {#each curr.ingr as ingr}
-                                    <div>{ingr.original}</div>
+                                    <div class="text-center">{ingr.original}</div>
                                     <div class="flex justify-start space-x-2">
                                         {#if ingr.quantity.pass}
-                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-success-content text-success w-24"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                            <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
                                         {:else}
-                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-error-content text-error w-24"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                            <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
                                         {/if}
 
                                         {#if ingr.unit.pass}
-                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-success-content text-succes w-52"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                            <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
                                         {:else}
-                                            <div class="flex justify-center shrink-0 whitespace-nowrap px-1 rounded text-center bg-error-content text-error w-52"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                            <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
                                         {/if}
 
                                         {#if ingr.ingredient.pass}
-                                            <div class="flex justify-center px-1 rounded text-left bg-success-content text-success w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                            <div class="flex px-1 rounded text-left bg-success-content text-success items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
                                         {:else}
-                                            <div class="flex justify-center px-1 rounded text-left bg-error-content text-error w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                            <div class="flex px-1 rounded text-left bg-error-content text-error items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
                                         {/if}
                                     </div>
                                 {/each}
