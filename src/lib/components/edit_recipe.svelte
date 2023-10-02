@@ -3,6 +3,7 @@
     import { createEventDispatcher,afterUpdate } from 'svelte';
     import { page } from '$app/stores';
     import { parse } from 'recipe-ingredient-parser-v3';
+    import { process_recipe_old } from '/src/lib/process_recipe.js'
 
     export let recipe;
     export let index;
@@ -107,7 +108,7 @@
                         db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
                         db_ingr.unit != recipe.expand.ingr_list[i].unit){
                         const ingr_string = recipe.expand.ingr_list[i].quantity+ " " + recipe.expand.ingr_list[i].unit+ " " + recipe.expand.ingr_list[i].ingredient;
-                        const ingr_obj = parse(ingr_string, 'eng');
+                        const ingr_obj = process_recipe_old(ingr_string, 'eng');
                         recipe.expand.ingr_list[i].quantity = ingr_obj.quantity;
                         recipe.expand.ingr_list[i].ingredient = ingr_obj.ingredient;
                         recipe.expand.ingr_list[i].unit = ingr_obj.unit;

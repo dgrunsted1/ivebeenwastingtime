@@ -77,7 +77,15 @@ export const process_recipe_old = function(in_lines) {
         ingr.unit = "whole";
     }
 
-    if (!ingr && in_lines[0]) ingr = {amount: false, unit: false, name: in_lines[0], original:[in_lines[0]]};
+    if (in_lines[0]) {
+        let temp_ingr = parse(in_lines[0], 'eng');
+        if (ingr.amount) temp_ingr.quantity = ingr.amount;
+        if (ingr.unit) temp_ingr.unit = ingr.unit;
+        if (ingr.name && ingr.name != in_lines[0]) temp_ingr.ingredient = ingr.name;
+        temp_ingr.original = in_lines[0];
+        ingr = temp_ingr;
+    }
+    
     if (in_lines.slice(1).length) return [ingr].concat(process_recipe_old(in_lines.slice(1)));
     else return ingr;
 }
