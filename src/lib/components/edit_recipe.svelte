@@ -1,6 +1,6 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase';
-    import { createEventDispatcher,afterUpdate } from 'svelte';
+    import { createEventDispatcher,afterUpdate, onMount } from 'svelte';
     import { page } from '$app/stores';
     import { parse } from 'recipe-ingredient-parser-v3';
     import { process_recipe_old } from '/src/lib/process_recipe.js'
@@ -10,8 +10,46 @@
     export let save = false;
     let dispatch = createEventDispatcher();
     let categories = ["Beverage", "Bread", "Dessert", "Main", "Salad", "Soup", "Side"];
+    $: cuisines = [];
+    $: display_cuisines = []
+    const countries = [
+        "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", 
+        "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", 
+        "Belarus", "Belgium", "Belize", "Benin", "Bhutan", "Bolivia", "Bosnia and Herzegovina", "Botswana", 
+        "Brazil", "Brunei", "Bulgaria", "Burkina Faso", "Burundi", "Côte d'Ivoire", "Cabo Verde", 
+        "Cambodia", "Cameroon", "Canada", "Central African Republic", "Chad", "Chile", "China", 
+        "Colombia", "Comoros", "Congo (Congo-Brazzaville)", "Costa Rica", "Croatia", "Cuba", "Cyprus", 
+        "Czechia", "Democratic Republic of the Congo", "Denmark", "Djibouti", "Dominica", "Dominican Republic", 
+        "Ecuador", "Egypt", "El Salvador", "Equatorial Guinea", "Eritrea", "Estonia", "Eswatini (fmr. Swaziland)", 
+        "Ethiopia", "Fiji", "Finland", "France", "Gabon", "Gambia", "Georgia", "Germany", "Ghana", "Greece", 
+        "Grenada", "Guatemala", "Guinea", "Guinea-Bissau", "Guyana", "Haiti", "Holy See", "Honduras", "Hungary", 
+        "Iceland", "India", "Indonesia", "Iran", "Iraq", "Ireland", "Israel", "Italy", "Jamaica", "Japan", 
+        "Jordan", "Kazakhstan", "Kenya", "Kiribati", "Kuwait", "Kyrgyzstan", "Laos", "Latvia", "Lebanon", 
+        "Lesotho", "Liberia", "Libya", "Liechtenstein", "Lithuania", "Luxembourg", "Madagascar", "Malawi", 
+        "Malaysia", "Maldives", "Mali", "Malta", "Marshall Islands", "Mauritania", "Mauritius", "Mexico", 
+        "Micronesia", "Moldova", "Monaco", "Mongolia", "Montenegro", "Morocco", "Mozambique", "Myanmar (formerly Burma)", 
+        "Namibia", "Nauru", "Nepal", "Netherlands", "New Zealand", "Nicaragua", "Niger", "Nigeria", "North Korea", 
+        "North Macedonia (formerly Macedonia)", "Norway", "Oman", "Pakistan", "Palau", "Palestine State", 
+        "Panama", "Papua New Guinea", "Paraguay", "Peru", "Philippines", "Poland", "Portugal", "Qatar", 
+        "Romania", "Russia", "Rwanda", "Saint Kitts and Nevis", "Saint Lucia", "Saint Vincent and the Grenadines", 
+        "Samoa", "San Marino", "Sao Tome and Principe", "Saudi Arabia", "Senegal", "Serbia", "Seychelles", 
+        "Sierra Leone", "Singapore", "Slovakia", "Slovenia", "Solomon Islands", "Somalia", "South Africa", 
+        "South Korea", "South Sudan", "Spain", "Sri Lanka", "Sudan", "Suriname", "Sweden", "Switzerland", 
+        "Syria", "Tajikistan", "Tanzania", "Thailand", "Timor-Leste", "Togo", "Tonga", "Trinidad and Tobago", 
+        "Tunisia", "Turkey", "Turkmenistan", "Tuvalu", "Uganda", "Ukraine", "United Arab Emirates", "United Kingdom", 
+        "United States of America", "Uruguay", "Uzbekistan", "Vanuatu", "Venezuela", "Vietnam", "Yemen", "Zambia", 
+        "Zimbabwe"
+    ];
+    $: display_countries = countries;
 
-    afterUpdate( () => {
+    onMount(async () => {
+        let cuisines_result = await pb.collection('recipes').getList(1, 1000, {field: `cuisine`});
+        for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine)) cuisines.push(cuisines_result.items[i].cuisine);
+        cuisines = cuisines;
+        display_cuisines = cuisines;
+    })
+
+    afterUpdate(async () => {
         if (!recipe.category) recipe.category = "Category";
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
@@ -319,6 +357,28 @@
         let cols = ($page.url.pathname == "/add_recipe") ? element.cols * 10 : element.cols * 2.8;
         element.rows = Math.ceil( str.length / cols ) + 1;
     };
+
+    function filter_cuisines(e){
+        console.log(recipe.cuisine);
+        display_cuisines = [];
+        for (let i = 0; i < cuisines.length; i++){
+            if (!display_cuisines.includes(cuisines[i]) && cuisines[i].toLowerCase().includes(recipe.cuisine.toLowerCase())){
+                display_cuisines.push(cuisines[i]);
+            }
+        }
+        display_cuisines = display_cuisines;
+    }
+
+    function filter_countries(e){
+        console.log(recipe.cuisine);
+        display_countries = [];
+        for (let i = 0; i < countries.length; i++){
+            if (!display_countries.includes(countries[i]) && countries[i].toLowerCase().includes(recipe.country.toLowerCase())){
+                display_countries.push(countries[i]);
+            }
+        }
+        display_countries = display_countries;
+    }
 </script>
 
 <div id="recipe" class="flex flex-col w-full">
@@ -371,14 +431,27 @@
                             </div>
                         {/if}
                     </div>
-                    <div class="flex justify-evenly content-center w-full space-x-1 flex-wrap">
-                        <div class="form-control w-3/7">
-                            <label for="cuisine" class="mx-1 label p-0"><span class="label-text-alt p-0">cuisine</span></label>
-                            <input type="text" name="cuisine"class="input input-bordered p-1 input-xs" bind:value={recipe.cuisine} on:input|preventDefault={enable_save}>
+                    <div class="flex justify-evenly content-center w-full my-1 space-x-1 flex-wrap">
+                        <div class="flex w-full space-x-2">
+                            <div class="dropdown w-1/2">
+                                <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
+                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
+                                    {#each display_cuisines as cuisine}
+                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine}}>{cuisine}</li>
+                                    {/each}
+                                </ul>
+                            </div>
+                            <div class="dropdown w-1/2">
+                                <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
+                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    {#each display_countries as country}
+                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country}}>{country}</li>
+                                    {/each}
+                                </ul>
+                            </div>
                         </div>
-                        <div class="form-control w-3/7">
-                            <label for="country" class="mx-1 label p-0"><span class="label-text-alt p-0">country</span></label>
-                            <input type="text" name="country"class="input input-bordered p-1 input-xs" bind:value={recipe.country} on:input|preventDefault={enable_save}>
+                        <div class="">
+                            
                         </div>
                         <div class="dropdown w-full flex justify-center">
                             <label tabindex="0" class="btn btn-xs m-1" bind:innerHTML={recipe.category} contenteditable="true"></label>
