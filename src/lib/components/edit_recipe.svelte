@@ -50,6 +50,7 @@
         display_cuisines = cuisines;
 
         let categories_result = await pb.collection('recipes').getList(1, 1000, {field: `category`});
+        console.log({categories_result});
         for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category)) categories.push(categories_result.items[i].category);
         categories = categories;
         display_categories = categories;
@@ -283,16 +284,6 @@
         });
     }
 
-    function select_category(e){
-        recipe.category = e.srcElement.innerHTML;
-        e.srcElement.parentElement.parentElement.parentElement.firstChild.innerHTML = e.srcElement.innerHTML;
-        const elem = document.activeElement;
-        if(elem){
-        elem?.blur();
-        }
-        enable_save();
-    }
-
     function add_ingr(){
         recipe.expand.ingr_list[recipe.expand.ingr_list.length] = {amount: 1, unit: "", name: "", original:[""]};
     }
@@ -372,6 +363,7 @@
             }
         }
         display_cuisines = display_cuisines;
+        enable_save();
     }
 
     function filter_countries(e){
@@ -382,6 +374,7 @@
             }
         }
         display_countries = display_countries;
+        enable_save();
     }
 
     async function filter_categories(e){
@@ -392,6 +385,7 @@
             }
         }
         display_categories = display_categories;
+        enable_save();
     }
 </script>
 
@@ -451,7 +445,7 @@
                                 <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
                                     {#each display_cuisines as cuisine}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine}}>{cuisine}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; enable_save();}}>{cuisine}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -459,7 +453,7 @@
                                 <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                     {#each display_countries as country}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country}}>{country}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country; enable_save();}}>{country}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -468,7 +462,7 @@
                             <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 {#each display_categories as category}
-                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category}}>{category}</li>
+                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; enable_save();}}>{category}</li>
                                 {/each}
                             </ul>
                         </div>
