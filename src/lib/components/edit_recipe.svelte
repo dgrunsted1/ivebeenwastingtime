@@ -9,9 +9,10 @@
     export let index;
     export let save = false;
     let dispatch = createEventDispatcher();
-    let categories = ["Beverage", "Bread", "Dessert", "Main", "Salad", "Soup", "Side"];
+    $: categories = [];
+    $: display_categories = [];
     $: cuisines = [];
-    $: display_cuisines = []
+    $: display_cuisines = [];
     const countries = [
         "Afghanistan", "Albania", "Algeria", "Andorra", "Angola", "Antigua and Barbuda", "Argentina", 
         "Armenia", "Australia", "Austria", "Azerbaijan", "Bahamas", "Bahrain", "Bangladesh", "Barbados", 
@@ -47,10 +48,15 @@
         for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine)) cuisines.push(cuisines_result.items[i].cuisine);
         cuisines = cuisines;
         display_cuisines = cuisines;
+
+        let categories_result = await pb.collection('recipes').getList(1, 1000, {field: `category`});
+        for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category)) categories.push(categories_result.items[i].category);
+        categories = categories;
+        display_categories = categories;
     })
 
-    afterUpdate(async () => {
-        if (!recipe.category) recipe.category = "Category";
+    afterUpdate(() => {
+        // if (!recipe.category) recipe.category = "Category";
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
@@ -359,7 +365,6 @@
     };
 
     function filter_cuisines(e){
-        console.log(recipe.cuisine);
         display_cuisines = [];
         for (let i = 0; i < cuisines.length; i++){
             if (!display_cuisines.includes(cuisines[i]) && cuisines[i].toLowerCase().includes(recipe.cuisine.toLowerCase())){
@@ -370,7 +375,6 @@
     }
 
     function filter_countries(e){
-        console.log(recipe.cuisine);
         display_countries = [];
         for (let i = 0; i < countries.length; i++){
             if (!display_countries.includes(countries[i]) && countries[i].toLowerCase().includes(recipe.country.toLowerCase())){
@@ -378,6 +382,16 @@
             }
         }
         display_countries = display_countries;
+    }
+
+    async function filter_categories(e){
+        display_categories = [];
+        for (let i = 0; i < categories.length; i++){
+            if (!display_categories.includes(categories[i]) && categories[i].toLowerCase().includes(recipe.category.toLowerCase())){
+                display_categories.push(categories[i]);
+            }
+        }
+        display_categories = display_categories;
     }
 </script>
 
@@ -450,14 +464,11 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="">
-                            
-                        </div>
-                        <div class="dropdown w-full flex justify-center">
-                            <label tabindex="0" class="btn btn-xs m-1" bind:innerHTML={recipe.category} contenteditable="true"></label>
+                        <div class="dropdown w-1/2">
+                            <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                {#each categories as cat}
-                                <li on:click={select_category}><a>{cat}</a></li>
+                                {#each display_categories as category}
+                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category}}>{category}</li>
                                 {/each}
                             </ul>
                         </div>
