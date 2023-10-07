@@ -20,7 +20,8 @@
         if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('recipes').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
-            expand: `notes, ingr_list`
+            expand: `notes, ingr_list`,
+            sort: `-created`
         });
         user_recipes = result_list;
     });

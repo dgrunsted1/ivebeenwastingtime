@@ -16,7 +16,8 @@
         if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}"`,
-            expand: `recipes,recipes.ingr_list`
+            expand: `recipes,recipes.ingr_list`,
+            sort: `-created`
         });
         user_menus = result_list.items;
         console.log({user_menus});
