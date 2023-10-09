@@ -13,7 +13,7 @@
     let user_menus = [];
     $: modal_menu = [];
     $: sort_val = null;
-    let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time"];
+    let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -65,10 +65,11 @@
                 mins += parseInt(hr_result[1]) * 60;
             }
         }
+        let total_mins = mins;
         let hours = parseInt(mins/60);
         mins = mins % 60;
         total_time = hours + " hrs " + mins + " mins";
-        return total_time;
+        return {display: total_time, val: total_mins};
     }
 
     async function delete_menu(e){
@@ -144,8 +145,8 @@
         });
         user_menus = result_menu.items;
     }
+
     function sort_menus(e){
-        console.log(e.srcElement.innerHTML);
         sort_val = e.srcElement.innerHTML;
         switch (e.srcElement.innerHTML) {
             case "Least Recipes":
@@ -154,10 +155,10 @@
             case "Most Recipes":
                 user_menus = user_menus.sort(compare_recipe_amounts_dsc);
                 break;
-            case "Least ingredients":
+            case "Least Ingredients":
                 user_menus = user_menus.sort(compare_ingr_amounts_asc);
                 break;
-            case "Most ingredients":
+            case "Most Ingredients":
                 user_menus = user_menus.sort(compare_ingr_amounts_dsc);
                 break;
             case "Least Time":
@@ -172,6 +173,12 @@
             case "Most Servings":
                 user_menus = user_menus.sort(compare_serving_amounts_dsc);
                 break;
+            case "Least Recent":
+                user_menus = user_menus.sort(compare_recent_asc);
+                break;
+            case "Most Recent":
+                user_menus = user_menus.sort(compare_recent_dsc);
+                break;
             default:
                 break;
         }
@@ -179,7 +186,7 @@
 
     }
 
-    function compare_recipe_amounts_asc(a, b,){
+    function compare_recipe_amounts_asc(a, b){
         if ( a.expand.recipes.length < b.expand.recipes.length ){
             return -1;
         }
@@ -189,7 +196,7 @@
         return 0;
     }
 
-    function compare_recipe_amounts_dsc(a, b,){
+    function compare_recipe_amounts_dsc(a, b){
         if ( a.expand.recipes.length > b.expand.recipes.length ){
             return -1;
         }
@@ -199,7 +206,7 @@
         return 0;
     }
 
-    function compare_ingr_amounts_asc(a, b,){
+    function compare_ingr_amounts_asc(a, b){
         if ( merge(a.expand.recipes).grocery_list.length < merge(b.expand.recipes).grocery_list.length ){
             return -1;
         }
@@ -209,7 +216,7 @@
         return 0;
     }
 
-    function compare_ingr_amounts_dsc(a, b,){
+    function compare_ingr_amounts_dsc(a, b){
         if ( merge(a.expand.recipes).grocery_list.length > merge(b.expand.recipes).grocery_list.length ){
             return -1;
         }
@@ -219,7 +226,7 @@
         return 0;
     }
 
-    function compare_serving_amounts_asc(a, b,){
+    function compare_serving_amounts_asc(a, b){
         if ( get_servings(a.expand.recipes) < get_servings(b.expand.recipes) ){
             return -1;
         }
@@ -229,7 +236,7 @@
         return 0;
     }
 
-    function compare_serving_amounts_dsc(a, b,){
+    function compare_serving_amounts_dsc(a, b){
         if ( get_servings(a.expand.recipes) > get_servings(b.expand.recipes) ){
             return -1;
         }
@@ -239,41 +246,44 @@
         return 0;
     }
 
-    function compare_time_amounts_asc(a, b,){
-        if ( get_total_time_value(a.expand.recipes) < get_total_time_value(b.expand.recipes) ){
+    function compare_time_amounts_asc(a, b){
+        if ( get_total_time(a.expand.recipes).val < get_total_time(b.expand.recipes).val ){
             return -1;
         }
-        if ( get_total_time_value(a.expand.recipes) > get_total_time_value(b.expand.recipes) ){
+        if ( get_total_time(a.expand.recipes).val > get_total_time(b.expand.recipes).val ){
             return 1;
         }
         return 0;
     }
 
-    function compare_time_amounts_dsc(a, b,){
-        if ( get_total_time_value(a.expand.recipes) > get_total_time_value(b.expand.recipes) ){
+    function compare_time_amounts_dsc(a, b){
+        if ( get_total_time(a.expand.recipes).val > get_total_time(b.expand.recipes).val ){
             return -1;
         }
-        if ( get_total_time_value(a.expand.recipes) < get_total_time_value(b.expand.recipes) ){
+        if ( get_total_time(a.expand.recipes).val < get_total_time(b.expand.recipes).val ){
             return 1;
         }
         return 0;
     }
 
-    function get_total_time_value(recipes){
-        let total_time = 0;
-        let mins = 0;
-        for (let i = 0; i < recipes.length; i++){
-            let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
-            if (min_result){
-                mins += parseInt(min_result[1]);
-            }
-
-            let hr_result = recipes[i].time.match(/(\d+) [hrs|hours|hour|hr]/);
-            if (hr_result){
-                mins += parseInt(hr_result[1]) * 60;
-            }
+    function compare_recent_asc(a, b){
+        if ( a.created < b.created ){
+            return -1;
         }
-        return mins;
+        if ( a.created > b.created ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_recent_dsc(a, b){
+        if ( a.created > b.created ){
+            return -1;
+        }
+        if ( a.created < b.created ){
+            return 1;
+        }
+        return 0;
     }
 </script>
 
@@ -316,7 +326,7 @@
                     </div>
                     <div class="flex flex-col justify-center">
                         <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
-                        <p class="text-center">{get_total_time(user_menus[i].expand.recipes)}</p>
+                        <p class="text-center">{get_total_time(user_menus[i].expand.recipes).display}</p>
                     </div>
                     <div class="flex conten-center items-center">
                             <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
