@@ -310,7 +310,7 @@
     </div>
 </div>
 
-<div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
+<div id="menus" class="max-h-[calc(100vh-170px)] overflow-y-auto">
     
     {#each user_menus as curr, i}
             <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>

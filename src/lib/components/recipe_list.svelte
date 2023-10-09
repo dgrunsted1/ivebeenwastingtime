@@ -394,7 +394,7 @@
     </div>
 </div>
 
-<div id="recipes" class="max-h-[calc(100vh-130px)] overflow-y-auto">
+<div id="recipes" class="max-h-[calc(100vh-200px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>

@@ -106,9 +106,9 @@
                     on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
             {/if}
         </div>
-        <div id="right_column" class="w-1/2 m-2 max-h-[calc(100vh-90px)] overflow-y-auto">
+        <div id="right_column" class="w-1/2 m-2 max-h-[calc(100vh-120px)] overflow-y-auto">
             {#if menu_recipes && mode == "menu"}
-                <Menu menu={menu_recipes} {mults}/>
+                <Menu menu={menu_recipes} {mults} {page}/>
             {:else if view_recipe && mode == "view"}
                 <DisplayRecipe recipe={view_recipe}/>
             {:else if edit_recipe && mode == "edit"}

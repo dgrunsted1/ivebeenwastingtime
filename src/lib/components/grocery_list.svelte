@@ -2,10 +2,12 @@
     import { each } from "svelte/internal";
     import { afterUpdate } from 'svelte';
     import { merge } from '/src/lib/merge_ingredients.js'
+    import { page } from '$app/stores';
 
     export let recipes;
     let grocery_list = [];
     let skipped = [];
+    let scroll_size = ($page.url.pathname == "/today") ? 200 : 270;
 
     afterUpdate(async () => {
         let result = merge(recipes);
@@ -50,7 +52,7 @@
             <div id="count">{grocery_list.length} Items</div><button id="copy" class="btn btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
         {/if}
     </div>
-    <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+    <div class="max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto">
         <div class="grocery_list">
             {#each grocery_list as item}
                     <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">
