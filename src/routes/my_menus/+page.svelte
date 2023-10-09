@@ -289,9 +289,13 @@
 
 <NavBtns page={$page.url.pathname}/>
 <div class="flex justify-between mx-4">
-    <div class="form-control w-full max-w-xs">
-        <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" on:change|preventDefault={search}/>
+    <div class="flex w-fit space-x-6 items-center">
+        <div class="form-control w-full max-w-xs">
+            <input type="text" placeholder="Search" class="input input-bordered w-52 max-w-xs" on:change|preventDefault={search}/>
+        </div>
+        <div class="w-full">{`${user_menus.length} Menus`}</div>
     </div>
+    
     <div class="dropdown dropdown-end">
         <label tabindex="0" class="btn m-1 btn-primary">Sort</label>
         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
