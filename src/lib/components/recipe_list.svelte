@@ -11,6 +11,8 @@
     let curr_recipe_id = -1;
     let categories = {cuisines:[], countries:[], cats:[]};
     let display_cats = {cuisines:[], countries:[], cats:[]};
+    let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
+    $: sort_val = null;
 
     onMount(async () => {
         for (let i = 0; i < recipes.length; i++){
@@ -229,6 +231,138 @@
         }
         return recipes_with_ingr;
     }
+
+    function sort_recipes(e){
+        sort_val = e.srcElement.innerHTML;
+        switch (e.srcElement.innerHTML) {
+            case "Least Ingredients":
+                display_recipes = display_recipes.sort(compare_ingr_amounts_asc);
+                break;
+            case "Most Ingredients":
+                display_recipes = display_recipes.sort(compare_ingr_amounts_dsc);
+                break;
+            case "Least Time":
+                display_recipes = display_recipes.sort(compare_time_amounts_asc);        
+                break;
+            case "Most Time":
+                display_recipes = display_recipes.sort(compare_time_amounts_dsc);
+                break;
+            case "Least Servings":
+                display_recipes = display_recipes.sort(compare_serving_amounts_asc);
+                break;
+            case "Most Servings":
+                display_recipes = display_recipes.sort(compare_serving_amounts_dsc);
+                break;
+            case "Least Recent":
+                display_recipes = display_recipes.sort(compare_recent_asc);
+                break;
+            case "Most Recent":
+                display_recipes = display_recipes.sort(compare_recent_dsc);
+                break;
+            default:
+                break;
+        }
+        document.activeElement.blur();
+    }
+
+    function compare_ingr_amounts_asc(a, b){
+        if ( a.expand.ingr_list.length < b.expand.ingr_list.length ){
+            return -1;
+        }
+        if ( a.expand.ingr_list.length > b.expand.ingr_list.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_ingr_amounts_dsc(a, b){
+        if ( a.expand.ingr_list.length > b.expand.ingr_list.length ){
+            return -1;
+        }
+        if ( a.expand.ingr_list.length < b.expand.ingr_list.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_time_amounts_asc(a, b){
+        if ( get_total_time(a).val < get_total_time(b).val ){
+            return -1;
+        }
+        if ( get_total_time(a).val > get_total_time(b).val ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_time_amounts_dsc(a, b){
+        if ( get_total_time(a).val > get_total_time(b).val ){
+            return -1;
+        }
+        if ( get_total_time(a).val < get_total_time(b).val ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function get_total_time(recipe){
+        let total_time = 0;
+        let mins = 0;
+        let min_result = recipe.time.match(/(\d+) [mins|minutes]/);
+        if (min_result){
+            mins += parseInt(min_result[1]);
+        }
+
+        let hr_result = recipe.time.match(/(\d+) [hrs|hours|hour|hr]/);
+        if (hr_result){
+            mins += parseInt(hr_result[1]) * 60;
+        }
+        let total_mins = mins;
+        let hours = parseInt(mins/60);
+        mins = mins % 60;
+        total_time = hours + " hrs " + mins + " mins";
+        return {display: total_time, val: total_mins};
+    }
+
+    function compare_serving_amounts_asc(a, b){
+        if ( parseInt(a.servings) < parseInt(b.servings) ){
+            return -1;
+        }
+        if ( parseInt(a.servings) > parseInt(b.servings) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_serving_amounts_dsc(a, b){
+        if ( parseInt(a.servings) > parseInt(b.servings) ){
+            return -1;
+        }
+        if ( parseInt(a.servings) < parseInt(b.servings) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_recent_asc(a, b){
+        if ( a.created < b.created ){
+            return -1;
+        }
+        if ( a.created > b.created ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_recent_dsc(a, b){
+        if ( a.created > b.created ){
+            return -1;
+        }
+        if ( a.created < b.created ){
+            return 1;
+        }
+        return 0;
+    }
 </script>
 <div class="flex flex-col space-y-1">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
@@ -242,9 +376,21 @@
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
     </div>
-    <div class="form-control flex flex-row justify-around w-full items-center">
+    <div class="form-control flex flex-row justify-between w-full items-center">
         <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs" on:change={select_cat}/>
-        <p class="mx-5">{display_recipes.length}</p>
+        <p class="mx-5">{display_recipes.length} Recipes</p>
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn m-1 btn-primary">Sort</label>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                {#each sort_opts as opt}
+                    {#if opt == sort_val}
+                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes}>{opt}</a></li>
+                    {:else}
+                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes}>{opt}</a></li>
+                    {/if}
+                {/each}
+            </ul>
+        </div>
     </div>
 </div>
 
