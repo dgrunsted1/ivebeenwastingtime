@@ -9,8 +9,11 @@
     import { invalidateAll } from '$app/navigation';
   import { debug } from 'svelte/internal';
 
-    let user_menus = []
+    
+    let user_menus = [];
     $: modal_menu = [];
+    $: sort_val = null;
+    let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time"];
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -141,12 +144,158 @@
         });
         user_menus = result_menu.items;
     }
+    function sort_menus(e){
+        console.log(e.srcElement.innerHTML);
+        sort_val = e.srcElement.innerHTML;
+        switch (e.srcElement.innerHTML) {
+            case "Least Recipes":
+                user_menus = user_menus.sort(compare_recipe_amounts_asc);
+                break;
+            case "Most Recipes":
+                user_menus = user_menus.sort(compare_recipe_amounts_dsc);
+                break;
+            case "Least ingredients":
+                user_menus = user_menus.sort(compare_ingr_amounts_asc);
+                break;
+            case "Most ingredients":
+                user_menus = user_menus.sort(compare_ingr_amounts_dsc);
+                break;
+            case "Least Time":
+                user_menus = user_menus.sort(compare_time_amounts_asc);        
+                break;
+            case "Most Time":
+                user_menus = user_menus.sort(compare_time_amounts_dsc);
+                break;
+            case "Least Servings":
+                user_menus = user_menus.sort(compare_serving_amounts_asc);
+                break;
+            case "Most Servings":
+                user_menus = user_menus.sort(compare_serving_amounts_dsc);
+                break;
+            default:
+                break;
+        }
+        document.activeElement.blur();
+
+    }
+
+    function compare_recipe_amounts_asc(a, b,){
+        if ( a.expand.recipes.length < b.expand.recipes.length ){
+            return -1;
+        }
+        if ( a.expand.recipes.length > b.expand.recipes.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_recipe_amounts_dsc(a, b,){
+        if ( a.expand.recipes.length > b.expand.recipes.length ){
+            return -1;
+        }
+        if ( a.expand.recipes.length < b.expand.recipes.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_ingr_amounts_asc(a, b,){
+        if ( merge(a.expand.recipes).grocery_list.length < merge(b.expand.recipes).grocery_list.length ){
+            return -1;
+        }
+        if ( merge(a.expand.recipes).grocery_list.length > merge(b.expand.recipes).grocery_list.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_ingr_amounts_dsc(a, b,){
+        if ( merge(a.expand.recipes).grocery_list.length > merge(b.expand.recipes).grocery_list.length ){
+            return -1;
+        }
+        if ( merge(a.expand.recipes).grocery_list.length < merge(b.expand.recipes).grocery_list.length ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_serving_amounts_asc(a, b,){
+        if ( get_servings(a.expand.recipes) < get_servings(b.expand.recipes) ){
+            return -1;
+        }
+        if ( get_servings(a.expand.recipes) > get_servings(b.expand.recipes) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_serving_amounts_dsc(a, b,){
+        if ( get_servings(a.expand.recipes) > get_servings(b.expand.recipes) ){
+            return -1;
+        }
+        if ( get_servings(a.expand.recipes) < get_servings(b.expand.recipes) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_time_amounts_asc(a, b,){
+        if ( get_total_time_value(a.expand.recipes) < get_total_time_value(b.expand.recipes) ){
+            return -1;
+        }
+        if ( get_total_time_value(a.expand.recipes) > get_total_time_value(b.expand.recipes) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function compare_time_amounts_dsc(a, b,){
+        if ( get_total_time_value(a.expand.recipes) > get_total_time_value(b.expand.recipes) ){
+            return -1;
+        }
+        if ( get_total_time_value(a.expand.recipes) < get_total_time_value(b.expand.recipes) ){
+            return 1;
+        }
+        return 0;
+    }
+
+    function get_total_time_value(recipes){
+        let total_time = 0;
+        let mins = 0;
+        for (let i = 0; i < recipes.length; i++){
+            let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
+            if (min_result){
+                mins += parseInt(min_result[1]);
+            }
+
+            let hr_result = recipes[i].time.match(/(\d+) [hrs|hours|hour|hr]/);
+            if (hr_result){
+                mins += parseInt(hr_result[1]) * 60;
+            }
+        }
+        return mins;
+    }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
-<div class="form-control w-full max-w-xs">
-    <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" on:change|preventDefault={search}/>
+<div class="flex justify-between mx-4">
+    <div class="form-control w-full max-w-xs">
+        <input type="text" placeholder="Search" class="input input-bordered w-full max-w-xs" on:change|preventDefault={search}/>
+    </div>
+    <div class="dropdown dropdown-end">
+        <label tabindex="0" class="btn m-1 btn-primary">Sort</label>
+        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+            {#each sort_opts as opt}
+                {#if opt == sort_val}
+                <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                {:else}
+                <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                {/if}
+            {/each}
+        </ul>
+    </div>
 </div>
+
 <div id="menus" class="max-h-[calc(100vh-130px)] overflow-y-auto">
     
     {#each user_menus as curr, i}
