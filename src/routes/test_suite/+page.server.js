@@ -183,10 +183,10 @@ export const actions = {
     scrape_ingr:  async ({ request }) => {
         console.log("scrape_ingr");
         let data = await request.formData();
-        let url = await data.get('url');
-        console.log(url);
-        let test_result = await scrape(url);
-        console.log("scraped ingredient list", test_result.expand.ingr_list);
-        return test_result.expand.ingr_list;
+        let recipe = JSON.parse(await data.get('recipe'));
+        console.log({recipe});
+        let test_result = await scrape(recipe.url);
+        console.log("scraped ingredient list", test_result);
+        return test_result;
     }
 };

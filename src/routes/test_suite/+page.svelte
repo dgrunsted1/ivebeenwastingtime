@@ -4,6 +4,7 @@ import { invalidateAll } from '$app/navigation';
   import { onMount } from 'svelte';
 import { currentUser, pb } from '/src/lib/pocketbase.js';
 import { process_recipe, process_recipe_old } from '/src/lib/process_recipe.js';
+  import { json } from '@sveltejs/kit';
 
 
 
@@ -164,18 +165,18 @@ async function fetch_recipe(e){
 async function process_recipe_test(e){
     let num_tests = 5;
     e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="5" max="100"></progress>`;
-    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {fields:`url`});
+    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {expand:`ingr_list`});
     e.srcElement.firstChild.value = `10`;
     process_recipe_results = [];
     console.log({recipe_links});
     for (let i = 0; i < recipe_links.items.length; i++){
         const data = new FormData(this);
-        data.append("url", recipe_links.items[i].url);
+        data.append("recipe", JSON.stringify(recipe_links.items[i]));
         let scraped_ingr = [];
         const response = await fetch(this.action, {
             method: 'POST',
             body: data,
-            url: recipe_links.items[i].url
+            recipe: recipe_links.items[i]
         });
 
         /** @type {import('@sveltejs/kit').ActionResult} */
@@ -183,16 +184,57 @@ async function process_recipe_test(e){
         if (result.data.err) {
             alert(result.data.err);
         } else if (result.type === 'success') {
-            let scraped_ingrs = result.data;
-            let my_result = process_recipe_old(scraped_ingrs);
-            let npm_result = process_recipe(scraped_ingrs);
-            process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);        
+            let scraped_recipe = result.data;
+            scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
+            // let npm_result = process_recipe(scraped_ingrs);
+            // process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);  
+            let test_result = test_recipe(scraped_recipe, recipe_links.items[i]);    
         }
         let progress = ((i+1)/num_tests)*100;
         e.srcElement.firstChild.value = `${progress}`;
+        return;
     }
     e.srcElement.innerHTML = `Compare Parsers`;
     // console.log(JSON.stringify(process_recipe_results));
+}
+
+function test_attr(truth, attr_in){
+    console.log({attr_in});
+    if (!truth || !attr_in) return false;
+    console.log({truth});
+    console.log(typeof attr_in);
+    if (typeof truth == "number" || typeof attr_in == "number"){
+        return (parseInt(truth) == parseInt(attr_in));
+    } else if (typeof truth == "object" || typeof attr_in == "object"){
+        for (let [key, value] of Object.entries(attr_in)){
+            if (truth[key] != attr_in[key]) return false;
+        }
+        return true;
+    } else {
+        return (truth.toLowerCase().trim() == attr_in.toLowerCase().trim())
+    }
+}
+
+function test_ingr(truth, ingr_in){
+    console.log({ingr_in});
+    console.log({truth});
+    return true;
+}
+
+function test_recipe(my_result, truth){
+    console.log({my_result});
+    for (let [key, value] of Object.entries(my_result)) {
+        console.log(key, value);
+        if (key == "expand"){
+            for (let j = 0; j < value.ingr_list.length; j++){
+                my_result.expand.ingr_list[j] = test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j]);
+            }
+        }else {
+            my_result[key] = {val: value, test: test_attr(truth[key], value)};
+        }
+        console.log(my_result[key]);
+    } 
+    return my_result;
 }
 
 function compare(my_result, npm_result){

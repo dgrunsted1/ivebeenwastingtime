@@ -222,7 +222,7 @@ async function get_ba_data(page){
     let result = await page.evaluate(() => {
         let article = document.querySelector("#main-content > article");
         let header = article.querySelector("header");
-        let img = header.querySelector("img").src;
+        let img = header.querySelector("img").src ? header.querySelector("img").src : document.querySelector("img").data('src');
         let title = header.querySelector("h1").textContent;
         let author = header.querySelector("span > a").textContent;
         let body = article.querySelector(".recipe__main-content");
@@ -268,6 +268,7 @@ async function get_ba_data(page){
 }
 
 export const scrape = async function(url) {
+        
         const start = Date.now();
         const browser = await puppeteer.launch({headless: "new"});
         const page = await browser.newPage();
