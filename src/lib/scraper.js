@@ -329,14 +329,17 @@ export const scrape = async function(url) {
         results.servings = format_servings(results.servings);
         await browser.close();
         const end = Date.now();
-        results.execution_time = `${(end-start)/1000}s`;
-        results.logic_time = `${(end-set_view_time)/1000}s`;
-        results.init_time = `${(init_time-start)/1000}s`;
-        results.await_data_time = `${(await_data-init_time)/1000}s`;
-        results.selector_time = `${(selector_time-await_data)/1000}s`;
-        results.got_to_time = `${(go_to_time-selector_time)/1000}s`;
-        results.set_view_time = `${(set_view_time-go_to_time)/1000}s`;
-        results.compare_time = `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`;
-        console.log("scrape time", results.execution_time);
+        results.timing = {
+            execution_time: `${(end-start)/1000}s`,
+            logic_time: `${(end-set_view_time)/1000}s`,
+            init_time: `${(init_time-start)/1000}s`,
+            await_data_time: `${(await_data-init_time)/1000}s`,
+            selector_time: `${(selector_time-await_data)/1000}s`,
+            got_to_time: `${(go_to_time-selector_time)/1000}s`,
+            set_view_time: `${(set_view_time-go_to_time)/1000}s`,
+            compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
+        };
+        
+        // console.log("scrape time", results.execution_time);
         return results;
 };

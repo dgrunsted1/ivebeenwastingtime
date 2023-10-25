@@ -163,9 +163,9 @@ async function fetch_recipe(e){
 }
 
 async function process_recipe_test(e){
-    let num_tests = 5;
+    let num_tests = 1;
     e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="5" max="100"></progress>`;
-    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {expand:`ingr_list`});
+    const recipe_links = await pb.collection('recipes').getList(1, num_tests, {filter: `id='33rj2czbus9beu9'`, expand:`ingr_list`});
     e.srcElement.firstChild.value = `10`;
     process_recipe_results = [];
     console.log({recipe_links});
@@ -188,7 +188,8 @@ async function process_recipe_test(e){
             scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
             // let npm_result = process_recipe(scraped_ingrs);
             // process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);  
-            let test_result = test_recipe(scraped_recipe, recipe_links.items[i]);    
+            process_recipe_results  = test_recipe(scraped_recipe, recipe_links.items[i]);    
+            console.log(process_recipe_results);
         }
         let progress = ((i+1)/num_tests)*100;
         e.srcElement.firstChild.value = `${progress}`;
@@ -199,10 +200,7 @@ async function process_recipe_test(e){
 }
 
 function test_attr(truth, attr_in){
-    console.log({attr_in});
     if (!truth || !attr_in) return false;
-    console.log({truth});
-    console.log(typeof attr_in);
     if (typeof truth == "number" || typeof attr_in == "number"){
         return (parseInt(truth) == parseInt(attr_in));
     } else if (typeof truth == "object" || typeof attr_in == "object"){
@@ -216,25 +214,58 @@ function test_attr(truth, attr_in){
 }
 
 function test_ingr(truth, ingr_in){
-    console.log({ingr_in});
-    console.log({truth});
-    return true;
+    // console.log("test_ingr", ingr_in, truth);
+    let output = "";
+    if (truth.ingredient != ingr_in.ingredient) output += `Ingredient mismatch: ${truth.ingredient} vs ${ingr_in.ingredient}\n`;
+    if (truth.quantity != ingr_in.quantity) output += `Quantity mismatch: ${truth.quantity} vs ${ingr_in.quantity}\n`;
+    if (truth.unit != ingr_in.unit) output += `Unit mismatch: ${truth.unit} vs ${ingr_in.unit}\n`;
+
+    if (output) console.log("errors", output);
+    return (output == "") ? true : false;
 }
 
 function test_recipe(my_result, truth){
-    console.log({my_result});
+    // console.log({my_result});
+    let output = [];
     for (let [key, value] of Object.entries(my_result)) {
-        console.log(key, value);
+        // console.log(key, value);
+        if (!value && !truth[key]) continue;
         if (key == "expand"){
             for (let j = 0; j < value.ingr_list.length; j++){
-                my_result.expand.ingr_list[j] = test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j]);
+                if (!value.ingr_list[j]) continue;
+                // console.log(value.ingr_list[j]);
+                for (let i = 0; i < truth.expand.ingr_list.length; i++){
+                    // console.log(truth.expand.ingr_list[i].ingredient, value.ingr_list[j].ingredient);
+                    if (truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient)){
+                        // console.log(truth.expand.ingr_list[i].ingredient, value.ingr_list[j].ingredient);
+                        output.push({key: key, val: value.ingr_list[j], test: test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j])});
+                        break;
+                    }
+                }
             }
-        }else {
-            my_result[key] = {val: value, test: test_attr(truth[key], value)};
+        }else if (key != "tags" && key != "timing"){
+            output.push({key: key, val: value, test: test_attr(truth[key], value)});
         }
-        console.log(my_result[key]);
+        // console.log(my_result[key]);
     } 
-    return my_result;
+    return {
+        passed: passed(output),
+        data: output
+    };
+}
+
+function passed(data){
+    for (let [key, value] of Object.entries(data)) {
+        if (!value && !truth[key]) continue;
+        if (key == "expand"){
+            for (let j = 0; j < value.ingr_list.length; j++){
+               if (!data.expand.ingr_list[j].test) return false;
+            }
+        }else if (key != "tags" && key != "timing"){
+            if (!value.test) return false;
+        }
+    }  
+    return true;
 }
 
 function compare(my_result, npm_result){
@@ -271,7 +302,6 @@ function compare(my_result, npm_result){
         compare.ingr.push({quantity, unit, ingredient, original: my_result[i].original});
         
     }
-    console.log({compare});
     return compare;
 }
 
@@ -355,15 +385,15 @@ function reupload_recipes(){
                 <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
                     {#if process_recipe_results}
                     <h3 class="text-center">NPM : MINE</h3>
-                        {#each process_recipe_results as curr}
-                        <div class="grid grid-cols-1">
-                                {#if curr.lengths.pass}
-                                    <p class="bg-success-content text-success rounded text-center col-span-3 m-3">{curr.lengths.val}</p>
+                        {#each process_recipe_results.data as [key, val, test]}
+                        <!-- <div class="grid grid-cols-1">
+                                {#if test}
+                                    <p class="bg-success-content text-success rounded text-center col-span-3 m-3">passed</p>
                                 {:else}
-                                    <p class="bg-error-content text-error rounded text-center col-span-3">{curr.lengths.val}</p>
+                                    <p class="bg-error-content text-error rounded text-center col-span-3">failed</p>
                                 {/if}
                             
-                            <div class="grid grid-cols-1 gap-2 content-start">
+                             <div class="grid grid-cols-1 gap-2 content-start">
                                 {#each curr.ingr as ingr}
                                     <div class="text-center">{ingr.original}</div>
                                     <div class="flex justify-start space-x-2">
@@ -387,7 +417,7 @@ function reupload_recipes(){
                                     </div>
                                 {/each}
                             </div>
-                        </div>
+                        </div> -->
                             
                         {/each}
                     {/if}
