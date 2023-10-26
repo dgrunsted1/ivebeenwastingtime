@@ -163,16 +163,17 @@ async function fetch_recipe(e){
 }
 
 async function process_recipe_test(e){
-    let num_tests = 5;
+    let num_tests = 2;
     e.srcElement.innerHTML = `<progress id="progress" class="progress progress-secondary w-56" value="5" max="100"></progress>`;
     const recipe_links = await pb.collection('recipes').getList(1, num_tests, {expand:`ingr_list`});
     e.srcElement.firstChild.value = `10`;
     process_recipe_results = [];
     console.log({recipe_links});
     for (let i = 0; i < recipe_links.items.length; i++){
+        console.log(i, recipe_links.items[i]);
         const data = new FormData(this);
         data.append("recipe", JSON.stringify(recipe_links.items[i]));
-        console.log()
+        console.log("recipe data", data);
         let scraped_ingr = [];
         const response = await fetch(this.action, {
             method: 'POST',
@@ -189,12 +190,11 @@ async function process_recipe_test(e){
             scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
             // let npm_result = process_recipe(scraped_ingrs);
             // process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);  
-            process_recipe_results  = test_recipe(scraped_recipe, recipe_links.items[i]);    
-            // console.log("data", process_recipe_results.data);
+            process_recipe_results  = [test_recipe(scraped_recipe, recipe_links.items[i])].concat(process_recipe_results);    
+            console.log("data", process_recipe_results);
         }
         let progress = ((i+1)/num_tests)*100;
         e.srcElement.firstChild.value = `${progress}`;
-        return;
     }
     e.srcElement.innerHTML = `Compare Parsers`;
     // console.log(JSON.stringify(process_recipe_results));
@@ -215,9 +215,9 @@ function test_attr(truth, attr_in){
 }
 
 function test_ingr(truth, ingr_in){
-    console.log("test_ingr", ingr_in, truth);
+    // console.log("test_ingr", ingr_in, truth);
     let output = "";
-    console.log(!truth ^ !ingr_in);
+    // console.log(!truth ^ !ingr_in);
     if (!truth ^ !ingr_in) return false;
     if (truth.ingredient != ingr_in.ingredient) output += `Ingredient mismatch: ${truth?.ingredient} vs ${ingr_in.ingredient}\n`;
     if (truth.quantity != ingr_in.quantity) output += `Quantity mismatch: ${truth?.quantity} vs ${ingr_in.quantity}\n`;
@@ -253,6 +253,8 @@ function test_recipe(my_result, truth){
     } 
     return {
         passed: passed(output),
+        title:truth.title,
+        url:truth.url,
         data: output
     };
 }
@@ -386,42 +388,51 @@ function reupload_recipes(){
                 </div>
                 
                 <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
-                    {#if process_recipe_results.data}
-                    <h3 class="text-center">NPM : MINE</h3>
-                        {#each process_recipe_results.data as curr}
-                            <div class="grid grid-cols-1">
-                                {#if curr.test == true}
-                                    <p class="bg-success-content text-success rounded text-center col-span-3 m-3">{curr.key} passed</p>
-                                {:else}
-                                    <p class="bg-error-content text-error rounded text-center col-span-3">{curr.key} failed</p>
-                                {/if}
-                                
-                                <!-- <div class="grid grid-cols-1 gap-2 content-start">
-                                    {#each curr.ingr as ingr}
-                                        <div class="text-center">{ingr.original}</div>
-                                        <div class="flex justify-start space-x-2">
-                                            {#if ingr.quantity.pass}
-                                                <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
-                                            {:else}
-                                                <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
-                                            {/if}
-
-                                            {#if ingr.unit.pass}
-                                                <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
-                                            {:else}
-                                                <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
-                                            {/if}
-
-                                            {#if ingr.ingredient.pass}
-                                                <div class="flex px-1 rounded text-left bg-success-content text-success items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
-                                            {:else}
-                                                <div class="flex px-1 rounded text-left bg-error-content text-error items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
-                                            {/if}
-                                        </div>
-                                    {/each}
-                                </div> -->
-                            </div>
+                    {#if process_recipe_results}
+                    <!-- <h3 class="text-center">NPM : MINE</h3> -->
+                        {#each process_recipe_results as recipe}
                             
+                            {#each recipe.data as curr}
+                                <div class="grid grid-cols-1">
+                                    {#if recipe.passed}
+                                        <div class="bg-error-content text-success rounded text-center col-span-3"><p>{recipe.title}</p><a href={recipe.url}>{recipe.url}</a></div>
+                                    {:else}
+                                        <div class="bg-error-content text-error rounded text-center col-span-3"><p>{recipe.title}</p><a href={recipe.url}>{recipe.url}</a></div>
+                                    {/if}
+                                    {#if curr.test == true}
+                                        <!-- <p class="bg-success-content text-success rounded text-center col-span-3 m-3">{curr.key} passed</p> -->
+                                    {:else}
+                                    
+                                        <p class="bg-error-content text-error rounded text-center col-span-3">{curr.key} failed</p>
+                                    {/if}
+                                    
+                                    <!-- <div class="grid grid-cols-1 gap-2 content-start">
+                                        {#each curr.ingr as ingr}
+                                            <div class="text-center">{ingr.original}</div>
+                                            <div class="flex justify-start space-x-2">
+                                                {#if ingr.quantity.pass}
+                                                    <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                                {:else}
+                                                    <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-24 items-center"><div class="w-1/2">{ingr.quantity.npm}</div> : <div class="w-1/2">{ingr.quantity.mine}</div></div>
+                                                {/if}
+
+                                                {#if ingr.unit.pass}
+                                                    <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-success-content text-success w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                                {:else}
+                                                    <div class="flex shrink-0 whitespace-nowrap p-1 rounded text-center bg-error-content text-error w-52 items-center"><div class="w-1/2">{ingr.unit.npm}</div> : <div class="w-1/2">{ingr.unit.mine}</div></div>
+                                                {/if}
+
+                                                {#if ingr.ingredient.pass}
+                                                    <div class="flex px-1 rounded text-left bg-success-content text-success items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                                {:else}
+                                                    <div class="flex px-1 rounded text-left bg-error-content text-error items-center w-full"><div class="w-1/2 text-center">{ingr.ingredient.npm}</div> : <div class="w-1/2 text-center">{ingr.ingredient.mine}</div></div>
+                                                {/if}
+                                            </div>
+                                        {/each}
+                                    </div> -->
+                                </div>
+                                
+                            {/each}
                         {/each}
                     {/if}
                 </div>
