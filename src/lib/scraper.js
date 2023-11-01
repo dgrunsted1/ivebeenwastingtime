@@ -214,7 +214,7 @@ async function get_nyt_data(page){
             tags: tags
         };
     });
-    console.log({result});
+    // console.log({result});
     return result;
 }
 
@@ -315,6 +315,7 @@ export const scrape = async function(url) {
                         results[k] = await get_element(page, site_selectors[k]);
                     }
                 }catch (e){
+                    await browser.close();
                     let data = {
                         data: JSON.stringify({message: e.message, url: url, step: k, result: results[k]}),
                         function: "prep scrape"
@@ -327,7 +328,8 @@ export const scrape = async function(url) {
         
         results.description = (results.description) ? results.description.split(".")[0] : results.description;
         results.servings = format_servings(results.servings);
-        await browser.close();
+        let close = await browser.close();
+        // console.log("\n\n\n\nclose*******************\n\n", close);
         const end = Date.now();
         results.timing = {
             execution_time: `${(end-start)/1000}s`,
