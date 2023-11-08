@@ -10,7 +10,8 @@ $: process_recipe_results = [];
 $: test_recipe_link = {"id":"svlip4jyw44kwv8","title":"Basil and Tomato Fried Rice","url":"https://cooking.nytimes.com/recipes/1023380-basil-and-tomato-fried-rice?campaign_id=90&emc=edit_fwd_20230808&instance_id=99470&nl=five-weeknight-dishes&regi_id=81124074&segment_id=141442&te=1&user_id=97d6d099b969b9a859ee6b77eb61839a","img":"https://static01.nyt.com/images/2023/08/01/dining/HM-tomato-and-basil-fried-rice/merlin_210026700_8232a93f-3b37-4eba-b072-7a544beaedfc-articleLarge.jpg?w=1280&q=75"};
 $: recipe_links = [];
 $: num_tests = 10;
-
+$: test_site = null;
+$: test_sites = ['www.seriouseats.com', 'cooking.nytimes.com', 'www.bonappetit.com'];
 
 onMount(async () => {
     if (!$currentUser) window.location.href = "/login";
@@ -55,14 +56,32 @@ function shuffle(array) {
 }
 
 function get_recipes(){
-    if (!test_recipe_link){
-        return shuffle(recipe_links).slice(0, num_tests);
-    } else {
+    if (test_recipe_link){
         for (let i = 0; i < recipe_links.length; i++){
             if (recipe_links[i].id == test_recipe_link.id) return [recipe_links[i]];
         }
+    } else if (test_site){
+        let result = [];
+        for (let i = 0; i < recipe_links.length; i++){
+            if (get_website_name(recipe_links[i].url) == test_site) result.push(recipe_links[i]);
+        }
+        return shuffle(result).slice(0, num_tests);
+    } else {
+        return shuffle(recipe_links).slice(0, num_tests);
     }
     return null;
+}
+
+function get_test_data(error, recipe){
+    return {
+                error: error,
+                id: recipe.id,
+                passed: false,
+                title: recipe.title,
+                url: recipe.url,
+                scrape_time: null, 
+                data: null
+            };
 }
 
 async function process_recipe_test(e){
@@ -83,22 +102,10 @@ async function process_recipe_test(e){
         /** @type {import('@sveltejs/kit').ActionResult} */
         const result = deserialize(await response.text());
         if (result.error && result.error.message) {
-            process_recipe_results  = [
-                                        {
-                                            error: result.error.message,
-                                            id: recipes[i].id,
-                                            passed: false,
-                                            title: recipes[i].title,
-                                            url: recipes[i].url,
-                                            scrape_time: null, 
-                                            data: null
-                                        }
-                                    ].concat(process_recipe_results);
+            process_recipe_results  = [get_test_data(result.error.message, recipes[i])].concat(process_recipe_results);
         } else if (result.type === 'success') {
             let scraped_recipe = result.data;
             scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
-            // let npm_result = process_recipe(scraped_ingrs);
-            // process_recipe_results = [compare(my_result, npm_result)].concat(process_recipe_results);  
             process_recipe_results  = [test_recipe(scraped_recipe, recipes[i])].concat(process_recipe_results);    
         }
         let progress = ((i+1)/recipes.length)*100;
@@ -141,14 +148,18 @@ function test_recipe(my_result, truth){
                 if (!value.ingr_list[j]) continue;
                 for (let i = 0; i < truth.expand.ingr_list.length; i++){
                     // if (truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient)){
-                    if (getFirstWords(value.ingr_list[j].ingredient, 3) == getFirstWords(truth.expand.ingr_list[i].ingredient, 3) || getFirstWords(value.ingr_list[j].ingredient, 3) == getFirstWords(truth.expand.ingr_list[i].ingredient, 4)){
-                        output.push({key: key, val: value.ingr_list[j], test: test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j])});
+                    if (truth.expand.ingr_list[i].ingredient == value.ingr_list[j].ingredient ||
+                        truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || 
+                        value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient) || 
+                        getFirstWords(value.ingr_list[j].ingredient, 3) == getFirstWords(truth.expand.ingr_list[i].ingredient, 3) || 
+                        getFirstWords(truth.expand.ingr_list[i].ingredient, 4).includes(getFirstWords(value.ingr_list[j].ingredient, 3))){
+                        output.push({key: key, val: value.ingr_list[j], test_val: truth.expand.ingr_list[i], test: test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j])});
                         break;
                     }
                 }
             }
         }else if (key != "tags" && key != "timing"){
-            output.push({key: key, val: value, test: test_attr(truth[key], value)});
+            output.push({key: key, val: value, test_val: truth[key], test: test_attr(truth[key], value)});
         }
     } 
     return {
@@ -255,17 +266,13 @@ function set_num_tests(e){
     document.getElementById("num_tests_label").innerHTML = e.srcElement.innerHTML;
     document.activeElement.blur();
 }
+function set_test_site(e){
+    document.getElementById("test_sites_label").innerHTML = e.srcElement.innerHTML;
+    document.activeElement.blur();
+}
 
 function get_website_name(url){
-    if (url.includes("www.seriouseats.com")){
-            return "Serious Eats";
-        }else if(url.includes("cooking.nytimes.com")){
-            return "NYT"
-        }else if(url.includes("www.bonappetit.com")){
-            return "Bon Appetit";
-        }else{
-            return url.match(/(www.\w+.\w+)/)[1];
-        }
+    return url.match(/\w+\.\w+\.\w+/);
 }
 
 
@@ -291,6 +298,14 @@ function get_website_name(url){
                             {/each}
                         </ul>
                     </div>
+                    <div class="dropdown w-52">
+                        <label tabindex="0" class="btn m-1 w-full" id="test_sites_label">site</label>
+                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
+                            {#each test_sites as curr}
+                                <li class="cursor-pointer" on:click={()=>{test_site = curr}} on:click={set_test_site}>{curr}</li>
+                            {/each}
+                        </ul>
+                    </div>
                 </div>
 
                 {#if test_recipe_link}
@@ -304,47 +319,101 @@ function get_website_name(url){
                         </div>
                         <div  class="w-1/3"><img src={test_recipe_link.img}/></div>
                     </div>
-                {/if}
-
-                <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
-                    {#if process_recipe_results}
-                    <!-- <h3 class="text-center">NPM : MINE</h3> -->
-                        {#each process_recipe_results as recipe}
-                            {#if recipe.passed == true}
-                                <div class="bg-success-content text-success rounded text-center col-span-3">
-                                    <div>
-                                        <div>{recipe.title}</div>
-                                        <div>{recipe.scrape_time}</div>
+                    <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
+                        {#if process_recipe_results}
+                        <!-- <h3 class="text-center">NPM : MINE</h3> -->
+                            {#each process_recipe_results as recipe}
+                                {#if recipe.passed == true}
+                                    <div class="bg-success-content text-success rounded text-center col-span-3">
+                                        <div>
+                                            <div>{recipe.title}</div>
+                                            <div>{recipe.scrape_time}</div>
+                                        </div>
+                                        <div class="flex justify-center space-x-3">
+                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-center space-x-3">
-                                        <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
-                                        <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                {:else}
+                                    <div class="bg-error-content text-error rounded text-center col-span-3">
+                                        <div>
+                                            <div>{recipe.title}</div>
+                                            <div>{recipe.scrape_time}</div>
+                                        </div>
+                                        <div class="flex justify-center space-x-3">
+                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                        </div>
                                     </div>
+                                {/if}
+                                <div class="flex flex-col space-x-1 w-full justify-center">
+                                    <div class="bg-content rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>Scraped</div><div>The Truth</div></div>
+                                    {#each recipe.data as curr}
+                                        {#if curr.key == "image"}
+                                            {#if curr.test == true}
+                                                <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><img src={curr.val} alt={curr.val} class="w-1/3"/><img src={curr.test_val} alt={curr.test_val} class="w-1/3"/></div>
+                                            {:else}
+                                                <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><img src={curr.val} alt={curr.val} class="w-1/3"/><img src={curr.test_val} alt={curr.test_val} class="w-1/3"/></div>
+                                            {/if}
+                                        {:else if curr.key == "expand"}
+                                            {#if curr.test == true}
+                                                <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div>{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
+                                            {:else}
+                                                <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div>{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
+                                            {/if}
+                                        {:else}
+                                            {#if curr.test == true}
+                                                <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val}</div><div>{curr.test_val}</div></div>
+                                            {:else}
+                                                <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val}</div><div>{curr.test_val}</div></div>
+                                            {/if}
+                                        {/if}
+                                    {/each}
                                 </div>
-                            {:else}
-                                <div class="bg-error-content text-error rounded text-center col-span-3">
-                                    <div>
-                                        <div>{recipe.title}</div>
-                                        <div>{recipe.scrape_time}</div>
+                            {/each}
+                        {/if}
+                    </div>
+                {:else}
+                    <div class="flex flex-col w-full space-y-2 mt-5 justify-center">
+                        {#if process_recipe_results}
+                        <!-- <h3 class="text-center">NPM : MINE</h3> -->
+                            {#each process_recipe_results as recipe}
+                                {#if recipe.passed == true}
+                                    <div class="bg-success-content text-success rounded text-center col-span-3">
+                                        <div>
+                                            <div>{recipe.title}</div>
+                                            <div>{recipe.scrape_time}</div>
+                                        </div>
+                                        <div class="flex justify-center space-x-3">
+                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                        </div>
                                     </div>
-                                    <div class="flex justify-center space-x-3">
-                                        <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
-                                        <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                {:else}
+                                    <div class="bg-error-content text-error rounded text-center col-span-3">
+                                        <div>
+                                            <div>{recipe.title}</div>
+                                            <div>{recipe.scrape_time}</div>
+                                        </div>
+                                        <div class="flex justify-center space-x-3">
+                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                        </div>
                                     </div>
+                                {/if}
+                                <div class="flex flex-row space-x-1 w-full flex-wrap justify-center">
+                                    {#each recipe.data as curr}
+                                        {#if curr.test == true}
+                                            <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1">{display_key(curr)}</div>
+                                        {:else}
+                                            <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1">{display_key(curr)}</div>
+                                        {/if}
+                                    {/each}
                                 </div>
-                            {/if}
-                            <div class="flex flex-row space-x-1 w-full flex-wrap justify-center">
-                                {#each recipe.data as curr}
-                                    {#if curr.test == true}
-                                        <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1">{display_key(curr)}</div>
-                                    {:else}
-                                        <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1">{display_key(curr)}</div>
-                                    {/if}
-                                {/each}
-                            </div>
-                        {/each}
-                    {/if}
-                </div>
+                            {/each}
+                        {/if}
+                    </div>
+                {/if} 
             </div>
          </div>
      </div>
