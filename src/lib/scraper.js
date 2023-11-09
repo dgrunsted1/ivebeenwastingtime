@@ -270,7 +270,7 @@ async function get_ba_data(page){
 export const scrape = async function(url) {
         
         const start = Date.now();
-        const browser = await puppeteer.launch({headless: "new"});
+        const browser = await puppeteer.launch();
         const page = await browser.newPage();
         const init_time = Date.now();
         const await_data = Date.now();
