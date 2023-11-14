@@ -7,7 +7,7 @@
 $: scraper_test_result = [];
 $: process_recipe_results = [];
 // $: test_recipe_link = null;
-$: test_recipe_link = {"id":"svlip4jyw44kwv8","title":"Basil and Tomato Fried Rice","url":"https://cooking.nytimes.com/recipes/1023380-basil-and-tomato-fried-rice?campaign_id=90&emc=edit_fwd_20230808&instance_id=99470&nl=five-weeknight-dishes&regi_id=81124074&segment_id=141442&te=1&user_id=97d6d099b969b9a859ee6b77eb61839a","img":"https://static01.nyt.com/images/2023/08/01/dining/HM-tomato-and-basil-fried-rice/merlin_210026700_8232a93f-3b37-4eba-b072-7a544beaedfc-articleLarge.jpg?w=1280&q=75"};
+$: test_recipe_link = {"id":"ku2niajzpg866x0","title":"How to Make Crispy Tofu (for Stir Fry)","url":"https://www.seriouseats.com/vegan-experience-crispy-tofu-broccoli-stir-fry","img":"https://www.seriouseats.com/thmb/A7k1_4EBSnaYlrssrMxNwUCzCRI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2015__04__20140205-fried-tofu-vegan-18-159f3b5f32de4f198a78ac89ce2faae3.jpg"};
 $: recipe_links = [];
 $: num_tests = 10;
 $: test_site = null;
@@ -115,6 +115,8 @@ async function process_recipe_test(e){
 }
 
 function test_attr(truth, attr_in){
+    console.log(typeof attr_in);
+    console.log(attr_in);
     if (!truth || !attr_in) return false;
     if (typeof truth == "number" || typeof attr_in == "number"){
         return (parseInt(truth) == parseInt(attr_in));
@@ -253,7 +255,7 @@ function set_test_recipe(e){
                                     url: recipe_links[i].url,
                                     img: recipe_links[i].image
                                 };
-            // console.log(JSON.stringify(test_recipe_link));
+            console.log(JSON.stringify(test_recipe_link));
         }
     }
 }    
@@ -273,6 +275,10 @@ function set_test_site(e){
 
 function get_website_name(url){
     return url.match(/\w+\.\w+\.\w+/);
+}
+
+function update_recipe(e){
+
 }
 
 
@@ -344,6 +350,11 @@ function get_website_name(url){
                                             <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
+                                        <div class="dropdown w-52">
+                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
+                                                update recipe 2
+                                            </button>
+                                        </div>
                                     </div>
                                 {/if}
                                 <div class="flex flex-col space-x-1 w-full justify-center">
@@ -387,6 +398,18 @@ function get_website_name(url){
                                         <div class="flex justify-center space-x-3">
                                             <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
+                                        </div>
+                                        <div class="dropdown w-52">
+                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
+                                                update recipe 1
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="dropdown w-52">
+                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
+                                                update recipe 1
+                                            </button>
                                         </div>
                                     </div>
                                 {:else}

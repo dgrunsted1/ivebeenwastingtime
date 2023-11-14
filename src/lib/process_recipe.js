@@ -3,7 +3,7 @@ import { parse } from 'recipe-ingredient-parser-v3';
 const measurements = [
     "teaspoon", "cup", "tablespoon", "pound", "gram", "g", "large", 
     "medium", "small", "clove", "whole", "ounce", "pint", "inch", "ear",
-    "oz", "tsp", "tbsp", "lb", "sprig", "bunch"
+    "oz", "tsp", "tbsp", "lb", "sprig", "bunch", "quart"
 ];
 
 const conv_frac = {
@@ -44,10 +44,17 @@ export const process_recipe = function(in_lines){
 }
 
 export const process_recipe_old = function(in_lines) {
+    let match = in_lines[0].match(/([^>]+) plus ([^>]+)/);
+    if (match){
+        log_match(match);
+        if (match[1].split(" ").length > 2 && match[2].split(" ").length > 2){
+            in_lines[0] = match[1];
+            in_lines.splice(1, 0, match[2]);
+        }
+    } 
     for (let key in reg_exp.replace){
         in_lines[0] = in_lines[0].replace(reg_exp.replace[key],key).trim();
-    }  
-
+    }
     let ingr = false;
     let cnt = 0
     for (let match of reg_exp.match){

@@ -1,12 +1,12 @@
 import puppeteer from 'puppeteer';
 import { currentUser, pb } from '/src/lib/pocketbase.js';
-
+// #mntl-sc-block-image_1-0
 const selectors = {
         serious_eats: {
             title: 'h1',
             author: '#mntl-bylines__item_4-0 > div > a',
             description: '#heading_1-0 > p',
-            image: '#primary-image_1-0 > div > div > img',
+            image: 'img:nth-child(1)',
             time: '#meta-text_1-0 > span.meta-text__data',
             servings: '#meta-text_6-0 > span.meta-text__data',
             ingredients: [{
@@ -270,7 +270,7 @@ async function get_ba_data(page){
 export const scrape = async function(url) {
         
         const start = Date.now();
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({headless: 'new'});
         const page = await browser.newPage();
         const init_time = Date.now();
         const await_data = Date.now();
