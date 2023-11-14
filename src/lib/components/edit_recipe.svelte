@@ -4,6 +4,7 @@
     import { page } from '$app/stores';
     import { parse } from 'recipe-ingredient-parser-v3';
     import { process_recipe_old } from '/src/lib/process_recipe.js'
+    import { save_recipe } from '/src/lib/save_recipe.js'
 
     export let recipe;
     export let index;
@@ -57,7 +58,6 @@
     })
 
     afterUpdate(() => {
-        // if (!recipe.category) recipe.category = "Category";
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
@@ -70,177 +70,17 @@
         }
     });
 
-    async function save_recipe(e) {
-        e.srcElement.disabled = true;
+    async function save_recipe_v2(e){
         save = false;
-        e.srcElement.innerHTML = "validating";
-
-        let validate_err = validate();
-        if (validate_err){
-            let ans = alert(`${validate_err}`);
-            e.srcElement.disabled = false;
-            e.srcElement.innerHTML = "save recipe";
-            return;
-        }
-        e.srcElement.innerHTML = "uploading ingredients";
-
-        let ingr_ids = await get_ingr_ids();
         reset_checks();
-        e.srcElement.innerHTML = "uploading notes";
-        let note_ids = [];
-        note_ids = await get_note_ids();
-        note_ids = await add_new_note(note_ids);
-        e.srcElement.innerHTML = "uploading recipe";
-        let data = {
-            "title": recipe.title,
-            "description": recipe.description,
-            "author": recipe.author,
-            "time": recipe.time,
-            "directions": JSON.stringify(recipe.directions),
-            "servings": recipe.servings,
-            "image": recipe.image,
-            "category": recipe.category,
-            "cuisine": recipe.cuisine,
-            "country": recipe.country,
-            "ingr_list": ingr_ids
-        };
-        if (note_ids.length) data.notes = note_ids;
-        if (recipe.id){
-            recipe = await pb.collection('recipes').update(recipe.id, data, {expand: "notes,ingr_list"});
-        }else {
-            data.user = $currentUser.id;
-            data.url = recipe.url;
-            recipe = await pb.collection('recipes').create(data, {expand: "notes,ingr_list"});
-            e.srcElement.innerHTML = "updating ingredients";
-            for (let curr_ingr_id of ingr_ids){
-                let update_ingr = await pb.collection('ingredients').update(curr_ingr_id, {"recipe+": recipe.id});
-            }
-        }
-        
-        dispatch("update_recipe", {recipe: recipe});
-        e.srcElement.innerHTML = "saved";
         document.getElementById("new_note").value = "";
-    }
-
-    function validate(){
-        let err = "";
-        if (recipe.category == "Category") err += "Please pick a category.";
-        return err;
+        dispatch("update_recipe", {recipe: save_recipe(e, recipe, $currentUser, document.getElementById("new_note").value)});
     }
 
     function reset_checks(){
         Array.from(document.querySelectorAll(".removed input[type='checkbox']")).forEach(curr => {
             curr.checked = false;
         });
-    }
-
-    async function add_new_note(note_ids){
-        let note_text = document.getElementById("new_note").value;
-        if (note_text){
-            const new_note_record = await pb.collection('notes').create({ content: note_text });
-            note_ids.push(new_note_record.id);
-        }
-        return note_ids;
-    }
-
-    async function get_ingr_ids(){
-        let ingr_ids = [];
-        for (let i = 0; i < recipe.expand.ingr_list.length; i++){
-            if (!recipe.expand.ingr_list[i].removed){
-                if (recipe.expand.ingr_list[i].id){
-                    const db_ingr = await pb.collection('ingredients').getOne(recipe.expand.ingr_list[i].id);
-                    if (db_ingr.quantity != recipe.expand.ingr_list[i].quantity || 
-                        db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
-                        db_ingr.unit != recipe.expand.ingr_list[i].unit){
-                        const ingr_string = recipe.expand.ingr_list[i].quantity+ " " + recipe.expand.ingr_list[i].unit+ " " + recipe.expand.ingr_list[i].ingredient;
-                        const ingr_obj = process_recipe_old(ingr_string, 'eng');
-                        recipe.expand.ingr_list[i].quantity = ingr_obj.quantity;
-                        recipe.expand.ingr_list[i].ingredient = ingr_obj.ingredient;
-                        recipe.expand.ingr_list[i].unit = ingr_obj.unit;
-                        recipe.expand.ingr_list[i].unitPlural = ingr_obj.unitPlural;
-                        recipe.expand.ingr_list[i].symbol = ingr_obj.symbol;
-                        if (recipe.expand.ingr_list[i].recipe.length > 1){
-                            const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.expand.ingr_list[i].id]});
-                            const new_ingr_data = {
-                                "quantity": recipe.expand.ingr_list[i].quantity,
-                                "ingredient": recipe.expand.ingr_list[i].ingredient,
-                                "unit": recipe.expand.ingr_list[i].unit,
-                                "unitPlural": recipe.expand.ingr_list[i].unitPlural,
-                                "symbol": recipe.expand.ingr_list[i].symbol,
-                                "recipe": [
-                                    recipe.id
-                                ]
-                            };
-                            const new_ingr = await pb.collection('ingredients').create(new_ingr_data);
-                            ingr_ids.push(new_ingr.id);
-                        } else {
-                            const update_ingr_data = {
-                                "quantity": recipe.expand.ingr_list[i].quantity,
-                                "ingredient": recipe.expand.ingr_list[i].ingredient,
-                                "unit": recipe.expand.ingr_list[i].unit,
-                                "unitPlural": recipe.expand.ingr_list[i].unitPlural,
-                                "symbol": recipe.expand.ingr_list[i].symbol,
-                                "recipe": [
-                                    recipe.id
-                                ]
-                            };
-                            const update_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, update_ingr_data);
-                            ingr_ids.push(recipe.expand.ingr_list[i].id);
-                        }
-                    } else {
-                        ingr_ids.push(recipe.expand.ingr_list[i].id);
-                    }
-                } else {
-                    const similar_ingr = await pb.collection('ingredients').getList(1, 1, { filter: `quantity='${recipe.expand.ingr_list[i].quantity}' && unit='${recipe.expand.ingr_list[i].unit}' && ingredient='${recipe.expand.ingr_list[i].ingredient}'` });
-                    if (similar_ingr.items.length){
-                        const add_to_ingr = await pb.collection('ingredients').update(similar_ingr.items[0].id, {"recipe+": [recipe.id]});
-                        ingr_ids.push(similar_ingr.items[0].id);
-                    }else {
-                        const new_ingr_data = {
-                            "quantity": recipe.expand.ingr_list[i].quantity,
-                            "ingredient": recipe.expand.ingr_list[i].ingredient,
-                            "unit": recipe.expand.ingr_list[i].unit,
-                            "unitPlural": recipe.expand.ingr_list[i].unitPlural,
-                            "symbol": recipe.expand.ingr_list[i].symbol,
-                            "recipe": [
-                                recipe.id
-                            ]
-                        };
-                        const new_ingr = await pb.collection('ingredients').create(new_ingr_data);
-                        ingr_ids.push(new_ingr.id);
-                    }
-                }
-            } else {
-                if (recipe.expand.ingr_list[i].recipe.length > 1){
-                    const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.id]});
-                } else {
-                    await pb.collection('ingredients').delete(recipe.expand.ingr_list[i].id);
-                }
-            }
-        }
-        return ingr_ids;    
-    }
-    
-    async function get_note_ids(){
-        let note_ids = [];
-        if (recipe.expand && recipe.expand.notes){
-            for (let note of recipe.expand.notes){
-                if (note.id){
-                    const note_record = await pb.collection('notes').update(note.id, { "content": note.content });
-                    note_ids.push(note_record.id);
-                }
-            }
-        }
-
-        return note_ids;
-    }
-
-    function get_ingr(){
-        let temp = [];
-        for (let i = 0; i < recipe.expand.ingr_list.length; i++){
-            if (!recipe.expand.ingr_list[i].removed) temp.push(recipe.expand.ingr_list[i]);
-        }
-        return temp;
     }
 
     function check_item(e){
@@ -391,7 +231,7 @@
 
 <div id="recipe" class="flex flex-col w-full">
     <div class="save_btn_container flex flex-col items-center mb-5">
-        <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe}>
+        <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe_v2}>
             save recipe
         </button>
     </div>
@@ -445,7 +285,7 @@
                                 <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
                                     {#each display_cuisines as cuisine}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; enable_save();}}>{cuisine}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; document.activeElement.blur(); enable_save();}}>{cuisine}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -453,7 +293,7 @@
                                 <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                     {#each display_countries as country}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country; enable_save();}}>{country}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country; document.activeElement.blur(); enable_save();}}>{country}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -462,7 +302,7 @@
                             <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 {#each display_categories as category}
-                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; enable_save();}}>{category}</li>
+                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur(); enable_save();}}>{category}</li>
                                 {/each}
                             </ul>
                         </div>
@@ -519,7 +359,7 @@
             </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">
-            <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe}>
+            <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe_v2}>
                 save recipe
             </button>
         </div>

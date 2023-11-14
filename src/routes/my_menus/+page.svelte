@@ -110,6 +110,7 @@
     }
 
     async function search(e){
+        document.getElementById("user_menus_length").innerHTML = `<span class="loading loading-dots loading-xs"></span>`;
         let search_str = e.srcElement.value;
         let recipe_ids = [];
         if (search_str == ""){
@@ -144,6 +145,7 @@
             expand: `recipes,recipes.ingr_list`
         });
         user_menus = result_menu.items;
+        document.getElementById("user_menus_length").innerHTML = user_menus.length;
     }
 
     function sort_menus(e){
@@ -293,7 +295,7 @@
         <div class="form-control w-full max-w-xs">
             <input type="text" placeholder="Search" class="input input-bordered w-52 max-w-xs" on:change|preventDefault={search}/>
         </div>
-        <div class="w-full">{`${user_menus.length} Menus`}</div>
+        <div class="w-full flex space-x-1"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
     </div>
     
     <div class="dropdown dropdown-end">

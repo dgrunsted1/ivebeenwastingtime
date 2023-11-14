@@ -3,6 +3,8 @@
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
+    import { save_recipe } from '/src/lib/save_recipe.js'
+
 
 $: scraper_test_result = [];
 $: process_recipe_results = [];
@@ -111,7 +113,7 @@ async function process_recipe_test(e){
         let progress = ((i+1)/recipes.length)*100;
         e.srcElement.firstChild.value = `${progress}`;
     }
-    e.srcElement.innerHTML = `Compare Parsers`;
+    e.srcElement.innerHTML = `Test Scraper`;
 }
 
 function test_attr(truth, attr_in){
@@ -171,7 +173,8 @@ function test_recipe(my_result, truth){
         title:truth.title,
         url:truth.url,
         scrape_time: my_result.timing.execution_time, 
-        data: output
+        data: output,
+        scrape_result: my_result
     };
 }
 
@@ -278,7 +281,15 @@ function get_website_name(url){
 }
 
 function update_recipe(e){
-
+    // save_recipe()
+    console.log(e.srcElement.id);
+    for (let i = 0; i < process_recipe_results.length; i++){
+        if (process_recipe_results[i].id = e.srcElement.id){
+            console.log(process_recipe_results[i]);
+            process_recipe_results[i].scrape_result.id = process_recipe_results[i].id;
+            save_recipe(e, process_recipe_results[i].scrape_result, null, null);
+        }
+    }
 }
 
 
@@ -351,8 +362,8 @@ function update_recipe(e){
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
                                         <div class="dropdown w-52">
-                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
-                                                update recipe 2
+                                            <button class="btn btn-primary w-56" id={recipe.id} on:click={update_recipe}>
+                                                update recipe solution
                                             </button>
                                         </div>
                                     </div>
@@ -398,18 +409,6 @@ function update_recipe(e){
                                         <div class="flex justify-center space-x-3">
                                             <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
-                                        </div>
-                                        <div class="dropdown w-52">
-                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
-                                                update recipe 1
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <div class="dropdown w-52">
-                                            <button class="btn btn-primary w-56" on:click={update_recipe}>
-                                                update recipe 1
-                                            </button>
                                         </div>
                                     </div>
                                 {:else}
