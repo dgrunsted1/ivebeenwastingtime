@@ -3,13 +3,15 @@
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
-    import { save_recipe } from '/src/lib/save_recipe.js'
+    import { save_recipe } from '/src/lib/save_recipe.js';
+    import NavBtns from "/src/lib/components/nav_btns.svelte";
+    import { page } from '$app/stores';
 
 
 $: scraper_test_result = [];
 $: process_recipe_results = [];
 // $: test_recipe_link = null;
-$: test_recipe_link = {"id":"ku2niajzpg866x0","title":"How to Make Crispy Tofu (for Stir Fry)","url":"https://www.seriouseats.com/vegan-experience-crispy-tofu-broccoli-stir-fry","img":"https://www.seriouseats.com/thmb/A7k1_4EBSnaYlrssrMxNwUCzCRI=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2015__04__20140205-fried-tofu-vegan-18-159f3b5f32de4f198a78ac89ce2faae3.jpg"};
+$: test_recipe_link = {"id":"yb87vg83b96231w","title":"Classic Baguettes","url":"https://cooking.nytimes.com/recipes/1024403-classic-baguettes","img":"https://static01.nyt.com/images/2023/07/21/multimedia/21baguettesrex-hbkc/21baguettesrex-hbkc-articleLarge.jpg?w=1280&q=75"};
 $: recipe_links = [];
 $: num_tests = 10;
 $: test_site = null;
@@ -107,7 +109,11 @@ async function process_recipe_test(e){
             process_recipe_results  = [get_test_data(result.error.message, recipes[i])].concat(process_recipe_results);
         } else if (result.type === 'success') {
             let scraped_recipe = result.data;
+            // console.log({scraped_data});
+            console.log("pre", scraped_recipe.expand.ingr_list.length);
             scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
+            console.log("post", scraped_recipe.expand.ingr_list.length);
+
             process_recipe_results  = [test_recipe(scraped_recipe, recipes[i])].concat(process_recipe_results);    
         }
         let progress = ((i+1)/recipes.length)*100;
@@ -150,16 +156,21 @@ function test_recipe(my_result, truth){
         if (key == "expand"){
             for (let j = 0; j < value.ingr_list.length; j++){
                 if (!value.ingr_list[j]) continue;
-                for (let i = 0; i < truth.expand.ingr_list.length; i++){
-                    // if (truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient)){
-                    if (truth.expand.ingr_list[i].ingredient == value.ingr_list[j].ingredient ||
+                let list_length = (truth.expand.ingr_list.length >= value.ingr_list.length) ? truth.expand.ingr_list.length : value.ingr_list.length;
+                let found = false;
+                for (let i = 0; i < list_length && !found; i++){
+                    console.log(truth.expand.ingr_list[i]);
+                    if (truth.expand.ingr_list[i] && (truth.expand.ingr_list[i].ingredient == value.ingr_list[j].ingredient ||
                         truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || 
                         value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient) || 
                         getFirstWords(value.ingr_list[j].ingredient, 3) == getFirstWords(truth.expand.ingr_list[i].ingredient, 3) || 
-                        getFirstWords(truth.expand.ingr_list[i].ingredient, 4).includes(getFirstWords(value.ingr_list[j].ingredient, 3))){
+                        getFirstWords(truth.expand.ingr_list[i].ingredient, 4).includes(getFirstWords(value.ingr_list[j].ingredient, 3)))){
                         output.push({key: key, val: value.ingr_list[j], test_val: truth.expand.ingr_list[i], test: test_ingr(truth.expand.ingr_list[j], my_result.expand.ingr_list[j])});
-                        break;
+                        found = true;
                     }
+                }
+                if (!found){
+                    output.push({key: key, val: value.ingr_list[j], test_val: false, test: false});
                 }
             }
         }else if (key != "tags" && key != "timing"){
@@ -296,7 +307,7 @@ function update_recipe(e){
 </script>
 
 
-
+<NavBtns page={$page.url.pathname}/>
 <div class="flex flex-col">
      <div class="flex">
          <div class="flex w-full m-5 w-full">
@@ -379,9 +390,13 @@ function update_recipe(e){
                                             {/if}
                                         {:else if curr.key == "expand"}
                                             {#if curr.test == true}
-                                                <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div>{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
+                                                <div class="bg-success-content text-success rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div class="w-1/2">{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div class="w-1/2">{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
                                             {:else}
-                                                <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div>{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div>{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
+                                                {#if !curr.test_val}
+                                                    <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div class="w-1/2">{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div class="w-1/2">none</div></div>
+                                                {:else}
+                                                    <div class="bg-error-content text-error rounded text-center border-solid border border-black p-1 flex justify-evenly space-x-4"><div class="w-1/2">{curr.val.quantity} | {curr.val.unit} | {curr.val.ingredient}</div><div class="w-1/2">{curr.test_val.quantity} | {curr.test_val.unit} | {curr.test_val.ingredient}</div></div>
+                                                {/if}
                                             {/if}
                                         {:else}
                                             {#if curr.test == true}

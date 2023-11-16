@@ -173,8 +173,6 @@ async function get_element(page, selector){
     return temp;
 }
 
-
-
 function format_servings(input){
     if (input && input.includes('servings')) return parseInt(input.replace("servings", "").trim());
     else return input;
@@ -194,9 +192,20 @@ async function get_nyt_data(page){
         let servings = ingr_list.querySelector("div > div > span:nth-child(2)").textContent;
 
         let ingredient_list = ingr_list.querySelectorAll("div > ul > *");
-        let ingredients = [];
-        for (let i = 0; i < ingredient_list.length; i++) ingredients.push(ingredient_list[i].textContent);
-
+        let ingredients_top = [];
+        let ingredients_sub = [];
+        for (let i = 0; i < ingredient_list.length; i++){
+            if (ingredient_list[i].tagName == "UL"){
+                let sub_ingrs = ingredient_list[i].querySelectorAll("li");
+                for (let j = 0; j < sub_ingrs.length; j++){
+                    ingredients_sub.push(sub_ingrs[j].textContent);
+                }
+            }else {
+                ingredients_top.push(ingredient_list[i].textContent);
+            }
+        }
+        let ingredients = (ingredients_sub.length) ? ingredients_sub : ingredients_top;
+        // ingredients = ingredients_top;
         let dir_list = article.querySelectorAll("div:nth-child(9) > div > ol > *");
         let directions = [];
         let tags = [];
@@ -214,7 +223,7 @@ async function get_nyt_data(page){
             tags: tags
         };
     });
-    // console.log({result});
+    console.log(result.expand.ingr_list);
     return result;
 }
 

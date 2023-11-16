@@ -181,12 +181,12 @@ export const actions = {
     return result;
     },
     scrape_ingr:  async ({ request }) => {
-        console.log("\n\n\n\n\nscrape_ingr start ********************************");
+        // console.log("\n\n\n\n\nscrape_ingr start ********************************");
         let data = await request.formData();
         let recipe = JSON.parse(await data.get('recipe'));
-        console.log({recipe});
+        // console.log({recipe});
         let test_result = await scrape(recipe.url);
-        console.log("\n\n\n\n\nscraped ingredient list**************************\n\n", test_result);
+        // console.log("\n\n\n\n\nscraped ingredient list**************************\n\n", test_result);
         return test_result;
     }
 };

@@ -44,6 +44,7 @@ export const process_recipe = function(in_lines){
 }
 
 export const process_recipe_old = function(in_lines) {
+    console.log(in_lines[0]);
     let match = in_lines[0].match(/([^>]+) plus ([^>]+)/);
     if (match){
         log_match(match);
@@ -92,7 +93,7 @@ export const process_recipe_old = function(in_lines) {
         temp_ingr.original = in_lines[0];
         ingr = temp_ingr;
     }
-    
+    console.log(ingr);
     if (in_lines.slice(1).length) return [ingr].concat(process_recipe_old(in_lines.slice(1)));
     else return ingr;
 }
