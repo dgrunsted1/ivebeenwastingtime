@@ -16,3 +16,8 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+    #   repository directory ../var/www/ivebeenwastingtime.com/
+    # ORIGIN=https://www.ivebeenwastingtime.com PORT=80 node build
+    # kill all node instances
+    # git pull updated master branch
