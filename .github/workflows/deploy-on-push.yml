@@ -19,6 +19,7 @@ jobs:
             curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
             nvm -v
 
+            
     #   repository directory ../var/www/ivebeenwastingtime.com/
     # ORIGIN=https://www.ivebeenwastingtime.com PORT=80 node build
     # kill all node instances
