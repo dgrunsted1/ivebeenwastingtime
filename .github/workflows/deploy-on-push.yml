@@ -10,13 +10,14 @@ jobs:
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
+          node-version: '20.8.0'
           host: ${{ secrets.HOST }}
           username: ${{ secrets.GIT_ACTIONS_USER }}
           key: ${{ secrets.FE_PRIVATE_KEY }}
           port: 22
           script: |
             cd ~/../../var/www/ivebeenwastingtime/
-            nvm -v
+            node -v
 
 
     #   repository directory ../var/www/ivebeenwastingtime.com/
