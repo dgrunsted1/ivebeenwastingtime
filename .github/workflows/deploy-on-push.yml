@@ -16,7 +16,7 @@ jobs:
           port: 22
           script: |
             cd ~/../../var/www/ivebeenwastingtime/
-            node -v
+            nvm -v
 
     #   repository directory ../var/www/ivebeenwastingtime.com/
     # ORIGIN=https://www.ivebeenwastingtime.com PORT=80 node build
