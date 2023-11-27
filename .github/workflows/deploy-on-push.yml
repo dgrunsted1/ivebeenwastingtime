@@ -7,10 +7,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '20.8.0'
       - name: Deploy using ssh
         uses: appleboy/ssh-action@master
         with:
-          node-version: '20.8.0'
           host: ${{ secrets.HOST }}
           username: ${{ secrets.GIT_ACTIONS_USER }}
           key: ${{ secrets.FE_PRIVATE_KEY }}
