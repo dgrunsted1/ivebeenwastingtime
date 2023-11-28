@@ -23,4 +23,5 @@ jobs:
             git status
             npm install --only=prod
             npm run build
-            systemctl status ivebeenwastingtime       
+            systemctl status ivebeenwastingtime
+                   
