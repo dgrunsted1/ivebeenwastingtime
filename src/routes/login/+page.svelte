@@ -9,7 +9,6 @@
 
     async function login() {
       const user = await pb.collection('users').authWithPassword(username, password);
-      if (currentUser) history.back();
     }
   
     async function signUp() {
