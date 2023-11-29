@@ -10,7 +10,7 @@ export async function load() {
     let photos = [];
 
     response.forEach(photo => {
-        photos.push(`http://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
+        photos.push(`https://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
     });
     
     let random_photo_index = Math.floor(Math.random() * photos.length);

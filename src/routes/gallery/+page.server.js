@@ -9,7 +9,7 @@ export async function load() {
     }); 
     let output = [];
     for (let photo of photos){
-        output.push(`http://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
+        output.push(`https://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
     }
     if (output){
         return {photos: shuffle(output)};
