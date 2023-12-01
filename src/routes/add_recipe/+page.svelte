@@ -27,13 +27,14 @@
         updated: "",
         url: "",
         user: ""
-    }
+    };
 
     onMount(() => {
         if (!$currentUser) window.location.href = "/login";
     });
 
     async function fetch_recipe(e){
+        document.getElementById('loading').classList.remove('hidden');
         const data = new FormData(this);
 
         const response = await fetch(this.action, {
@@ -52,7 +53,7 @@
             recipe = result.data;
         }
         
-        
+        document.getElementById('loading').classList.add('hidden');
         // applyAction(result);
     }
 
@@ -68,5 +69,8 @@
             <input placeholder="Link to recipe" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent"/>
         </form>
     </div>
-    <EditRecipe {recipe} index=0 on:update_recipe={update_recipe} save={true}/>
+    <div class="h-5 flex justify-center">
+        <span id="loading" class="loading loading-dots loading-lg hidden"></span>
+    </div>
+        <EditRecipe {recipe} index=0 on:update_recipe={update_recipe} save={true}/>
 </div>
