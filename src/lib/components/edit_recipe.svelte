@@ -4,7 +4,7 @@
     import { page } from '$app/stores';
     import { parse } from 'recipe-ingredient-parser-v3';
     import { process_recipe_old } from '/src/lib/process_recipe.js'
-    import { save_recipe } from '/src/lib/save_recipe.js'
+    import { save_recipe } from '/src/lib/save_recipe.js' 
 
     export let recipe;
     export let index;
