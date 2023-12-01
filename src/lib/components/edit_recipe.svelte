@@ -242,7 +242,7 @@
             {:else}
             <div class="w-full flex flex-col space-y-2">
                 <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
-                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.img}/>
+                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image} on:input|preventDefault={enable_save}/>
             </div>
             {/if}
         </div>
