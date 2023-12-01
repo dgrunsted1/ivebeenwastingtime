@@ -17,7 +17,7 @@ jobs:
           script: |
             whoami
             sudo systemctl restart ivebeenwastingtime  
-             systemctl status ivebeenwastingtime 
+            systemctl status ivebeenwastingtime 
 
         
         # cd ~/../../var/www/ivebeenwastingtime/
