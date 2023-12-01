@@ -16,7 +16,8 @@ jobs:
           port: 22
           script: |
             whoami
-
+            sudo systemctl restart ivebeenwastingtime  
+             systemctl status ivebeenwastingtime 
 
         
         # cd ~/../../var/www/ivebeenwastingtime/
