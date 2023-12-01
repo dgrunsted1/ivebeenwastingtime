@@ -15,13 +15,17 @@ jobs:
           key: ${{ secrets.FE_PRIVATE_KEY }}
           port: 22
           script: |
-            cd ~/../../var/www/ivebeenwastingtime/
-            export NVM_DIR="$HOME/.nvm"
-            [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-            [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-            git pull origin master
-            git status
-            npm install
-            npm run build
-            sudo systemctl restart ivebeenwastingtime  
-            systemctl status ivebeenwastingtime       
+            whoami
+
+
+        
+        # cd ~/../../var/www/ivebeenwastingtime/
+        # export NVM_DIR="$HOME/.nvm"
+        # [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+        # [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+        # git pull origin master
+        # git status
+        # npm install
+        # npm run build
+        # sudo systemctl restart ivebeenwastingtime  
+        # systemctl status ivebeenwastingtime       
