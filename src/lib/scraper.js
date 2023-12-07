@@ -69,35 +69,26 @@ const selectors = {
     };
 
 async function get_ingredients(page, selectors){
-    // console.log("get ingredients");
-    // console.log({selectors});
     for (let k = 0; k < selectors.length; k++) {
-        // console.log(selectors[k]);
         let sel_len = selectors[k].group
-        // console.log({sel_len});
         let length = await page.evaluate((selector) => {
                         return Array.from(document.querySelectorAll(selector)).length;
                     }, sel_len);
-        // console.log({length});
         let output = [];
         for (let i = 0; i <= length; i++){
             if (selectors[k].list){
                 let sel = selectors[k].list.replace("LIST_INDEX", i);
-                // console.log({sel});
                 
                 let list_length = await page.evaluate((selector) => {
                                     return Array.from(document.querySelectorAll(selector)).length;
                                 }, sel);
-                // console.log({list_length});
                 for (let j = 0; j <= list_length; j++){
                     let sel_item = selectors[k].item.replace("ITEM_INDEX", j);
                     sel_item = sel_item.replace("LIST_INDEX", i);
-                    // console.log({sel_item});
     
                     let temp = await page.evaluate((sel) => {
                         return document.querySelector(sel)?.textContent;
                     }, sel_item);
-                    // console.log({temp});
                     if (temp) output.push(temp.trim());
                 }
             }else{
@@ -129,11 +120,9 @@ async function get_ingredients(page, selectors){
 }
 
 async function get_directions(page, selector){
-    // console.log("get directions");
     let length = 0;
     let cnt = 0;
     for (let i = 0; i < selector.length; i++){
-        // console.log("group", selector[i].group);
         length = await page.evaluate((selector) => {
             return Array.from(document.querySelectorAll(selector)).length;
         }, selector[i].group);
@@ -141,12 +130,9 @@ async function get_directions(page, selector){
         if (length > 0) break;
     }
     
-    // console.log({selector});
-    // console.log({length});
     let output = [];
     for (let i = 0; i <= length && length > 0; i++){
         let sel = selector[cnt].item.replace("ITEM_INDEX", i);
-        // console.log({sel});
         let temp = await page.evaluate((sel) => {
             return document.querySelector(sel)?.textContent;
         }, sel);
@@ -160,12 +146,10 @@ async function get_img(page, selector){
     let temp = await page.evaluate((sel) => {
         return document.querySelector(sel)?.src;
     }, selector);
-    // console.log("img", temp);
     return temp;
 }
 
 async function get_element(page, selector){
-    // console.log("get element");
 
     let temp = await page.evaluate((sel) => {
         return document.querySelector(sel)?.textContent;
@@ -223,7 +207,6 @@ async function get_nyt_data(page){
             tags: tags
         };
     });
-    console.log(result.expand.ingr_list);
     return result;
 }
 
@@ -240,7 +223,6 @@ async function get_ba_data(page){
         let servings = ingr_list.querySelector("p").textContent;
         let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
         if (ingredient_list.length <= 2) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
-        // return ingredient_list;
         let ingredients = [];
         for (let i = 0; i < ingredient_list.length; i++){
             if (ingredient_list[i].tagName == "DIV" || ingredient_list[i].tagName == "P") {
@@ -272,7 +254,6 @@ async function get_ba_data(page){
             tags: tags
         };
     });
-    // console.log({result});
     return result;
 }
 
@@ -290,9 +271,6 @@ export const scrape = async function(url) {
             site_selectors = selectors.nyt;
         }else if(url.includes("www.bonappetit.com")){
             site_selectors = selectors.ba;
-            // let recipe_data = await get_ba_data(page, site_selectors);
-            // console.log({recipe_data});
-            // return recipe_data;
         }else{
             return {err: "website not supported"};
         }
@@ -338,7 +316,6 @@ export const scrape = async function(url) {
         results.description = (results.description) ? results.description.split(".")[0] : results.description;
         results.servings = format_servings(results.servings);
         let close = await browser.close();
-        // console.log("\n\n\n\nclose*******************\n\n", close);
         const end = Date.now();
         results.timing = {
             execution_time: `${(end-start)/1000}s`,
@@ -351,6 +328,5 @@ export const scrape = async function(url) {
             compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
         };
         
-        // console.log("scrape time", results.execution_time);
         return results;
 };

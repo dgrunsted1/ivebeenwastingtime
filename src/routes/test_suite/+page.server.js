@@ -129,9 +129,6 @@ function array_test(scrape, test, in_type){
     if (typeof scrape == typeof test && scrape.length == test.length){
         for (let j = 0; j < test.length; j++) {
             if (test[j].replace(/\s+/g, "") != scrape[j].replace(/\s+/g, "")){
-                // output.status = false;
-                console.log(`scraped type:${typeof test[j]} != test type:${typeof scrape[j]}`);
-                console.log(`scraped length:${test[j].length} != test length:${scrape[j].length}`);
                 output.message.push(`"${test[j]}" != "${scrape[j]}"`);
             }
         }
@@ -139,20 +136,16 @@ function array_test(scrape, test, in_type){
             output.status = true;
         }
     }else if (typeof scrape == typeof test) {
-        // output.status = false;
         output.message.push(`scraped length:${test.length} != test length:${scrape.length}`);
     }else {
-        // output.status = false;
         output.message.push(`scraped type:${typeof test} != test type:${typeof scrape}`);
     }
-    console.log("array_test output", output);
     return output;
 }
 
 /** @type {import('./$types').Actions} */
 export const actions = {
     scrape: async ({ request }) => {
-        console.log("in scrape");
         let result = [];
         let i = 0;
         for (const [key, value] of Object.entries(tests)) {
@@ -181,12 +174,9 @@ export const actions = {
     return result;
     },
     scrape_ingr:  async ({ request }) => {
-        // console.log("\n\n\n\n\nscrape_ingr start ********************************");
         let data = await request.formData();
         let recipe = JSON.parse(await data.get('recipe'));
-        // console.log({recipe});
         let test_result = await scrape(recipe.url);
-        // console.log("\n\n\n\n\nscraped ingredient list**************************\n\n", test_result);
         return test_result;
     }
 };

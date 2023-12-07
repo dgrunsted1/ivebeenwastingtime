@@ -20,7 +20,6 @@
             if (!categories.countries.includes(recipes[i].country) && recipes[i].country) categories.countries.push(recipes[i].country);
             if (!categories.cats.includes(recipes[i].category) && recipes[i].category) categories.cats.push(recipes[i].category);
         }
-        console.log({categories});
         categories = categories;
     });
 
@@ -135,8 +134,6 @@
                         
                         if (curr_recipe[key] == curr_cat){
                             if (!new_display.includes(curr_recipe)){
-                                console.log({curr_recipe});
-                                console.log({display_cats});
                                 let cat_found = (!display_cats.cats.length) ? true : false;
                                 for (let cat of display_cats.cats){
                                     

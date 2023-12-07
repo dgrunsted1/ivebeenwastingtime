@@ -46,7 +46,6 @@ export const merge = function(recipes) {
                 }
                 grocery_list.splice(grocery_list.indexOf(match), 1);
                 grocery_list.push(tmp);
-                // console.log(`merge${match.quantity} ${match.unit} ${match.ingredient} ${item.quantity} ${item.unit} ${item.ingredient}`, tmp);
             }else {
                 let tmp = { ingredient: item.ingredient,
                             maxQty: item.maxQty,

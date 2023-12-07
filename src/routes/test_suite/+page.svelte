@@ -109,10 +109,7 @@ async function process_recipe_test(e){
             process_recipe_results  = [get_test_data(result.error.message, recipes[i])].concat(process_recipe_results);
         } else if (result.type === 'success') {
             let scraped_recipe = result.data;
-            // console.log({scraped_data});
-            console.log("pre", scraped_recipe.expand.ingr_list.length);
             scraped_recipe.expand.ingr_list = process_recipe_old(scraped_recipe.expand.ingr_list);
-            console.log("post", scraped_recipe.expand.ingr_list.length);
 
             process_recipe_results  = [test_recipe(scraped_recipe, recipes[i])].concat(process_recipe_results);    
         }
@@ -123,8 +120,6 @@ async function process_recipe_test(e){
 }
 
 function test_attr(truth, attr_in){
-    console.log(typeof attr_in);
-    console.log(attr_in);
     if (!truth || !attr_in) return false;
     if (typeof truth == "number" || typeof attr_in == "number"){
         return (parseInt(truth) == parseInt(attr_in));
@@ -159,7 +154,6 @@ function test_recipe(my_result, truth){
                 let list_length = (truth.expand.ingr_list.length >= value.ingr_list.length) ? truth.expand.ingr_list.length : value.ingr_list.length;
                 let found = false;
                 for (let i = 0; i < list_length && !found; i++){
-                    console.log(truth.expand.ingr_list[i]);
                     if (truth.expand.ingr_list[i] && (truth.expand.ingr_list[i].ingredient == value.ingr_list[j].ingredient ||
                         truth.expand.ingr_list[i].ingredient.includes(value.ingr_list[j].ingredient) || 
                         value.ingr_list[j].ingredient.includes(truth.expand.ingr_list[i].ingredient) || 
@@ -292,11 +286,8 @@ function get_website_name(url){
 }
 
 function update_recipe(e){
-    // save_recipe()
-    console.log(e.srcElement.id);
     for (let i = 0; i < process_recipe_results.length; i++){
         if (process_recipe_results[i].id = e.srcElement.id){
-            console.log(process_recipe_results[i]);
             process_recipe_results[i].scrape_result.id = process_recipe_results[i].id;
             save_recipe(e, process_recipe_results[i].scrape_result, null, null);
         }

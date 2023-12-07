@@ -51,7 +51,6 @@
         display_cuisines = cuisines;
 
         let categories_result = await pb.collection('recipes').getList(1, 1000, {field: `category`});
-        console.log({categories_result});
         for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category)) categories.push(categories_result.items[i].category);
         categories = categories;
         display_categories = categories;

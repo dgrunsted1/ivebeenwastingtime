@@ -23,7 +23,6 @@
             sort: `-created`
         });
         user_menus = result_list.items;
-        console.log({user_menus});
     });
 
     function show_menu_modal(e){

@@ -19,7 +19,6 @@
             expand: `recipes,recipes.notes,recipes.ingr_list`
         })
         todays_menu = result_list.items[0];
-        // console.log("servings", todays_menu.servings[recipe.id]);
         todays_menu.expand.recipes.forEach((recipe, i) => {
             grocery_list[i] = {
                 ingredients: recipe.expand.ingr_list,
