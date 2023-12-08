@@ -101,7 +101,7 @@
                         <div>{todays_menu.servings[cook_recipe.id]}</div>
                     </div>
                 </div>
-                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={cook_recipe.url}>original recipe</a></div>
+                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={cook_recipe.url} target="_blank">original recipe</a></div>
     
             </div>
         </div>

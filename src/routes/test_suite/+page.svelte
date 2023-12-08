@@ -333,7 +333,7 @@ function update_recipe(e){
                             <div class="text-center">Testing {test_recipe_link.title}</div>
                             <div  class="flex justify-evenly">
                                 <div class="btn" on:click={remove_test_recipe}>stop testing recipe</div>
-                                <div class="btn" href={test_recipe_link.url}>{get_website_name(test_recipe_link.url)}</div>
+                                <div class="btn" href={test_recipe_link.url} target="_blank">{get_website_name(test_recipe_link.url)}</div>
                             </div>
                         </div>
                         <div  class="w-1/3"><img src={test_recipe_link.img}/></div>
@@ -349,7 +349,7 @@ function update_recipe(e){
                                             <div>{recipe.scrape_time}</div>
                                         </div>
                                         <div class="flex justify-center space-x-3">
-                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn"><a href={recipe.url} target="_blank">{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
                                     </div>
@@ -360,7 +360,7 @@ function update_recipe(e){
                                             <div>{recipe.scrape_time}</div>
                                         </div>
                                         <div class="flex justify-center space-x-3">
-                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn"><a href={recipe.url} target="_blank">{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
                                         <div class="dropdown w-52">
@@ -413,7 +413,7 @@ function update_recipe(e){
                                             <div>{recipe.scrape_time}</div>
                                         </div>
                                         <div class="flex justify-center space-x-3">
-                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn"><a href={recipe.url} target="_blank">{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
                                     </div>
@@ -424,7 +424,7 @@ function update_recipe(e){
                                             <div>{recipe.scrape_time}</div>
                                         </div>
                                         <div class="flex justify-center space-x-3">
-                                            <div class="btn"><a href={recipe.url}>{get_website_name(recipe.url)}</a></div>
+                                            <div class="btn"><a href={recipe.url} target="_blank">{get_website_name(recipe.url)}</a></div>
                                             <div class="btn" on:click={set_test_recipe} id={recipe.id}>test</div>
                                         </div>
                                     </div>
