@@ -11,7 +11,7 @@
 $: scraper_test_result = [];
 $: process_recipe_results = [];
 // $: test_recipe_link = null;
-$: test_recipe_link = {"id":"yb87vg83b96231w","title":"Classic Baguettes","url":"https://cooking.nytimes.com/recipes/1024403-classic-baguettes","img":"https://static01.nyt.com/images/2023/07/21/multimedia/21baguettesrex-hbkc/21baguettesrex-hbkc-articleLarge.jpg?w=1280&q=75"};
+$: test_recipe_link = {"id":"sa36ac8eadgm9zz","title":"Grated Tomato Pasta","url":"https://cooking.nytimes.com/recipes/1024307-grated-tomato-pasta?campaign_id=90&emc=edit_fwd_20230808&instance_id=99470&nl=five-weeknight-dishes&regi_id=81124074&segment_id=141442&te=1&user_id=97d6d099b969b9a859ee6b77eb61839a","img":"https://static01.nyt.com/images/2023/07/14/multimedia/hew-grated-tomato-pasta-kzhw/hew-grated-tomato-pasta-kzhw-articleLarge.jpg?w=1280&q=75"};
 $: recipe_links = [];
 $: num_tests = 10;
 $: test_site = null;
@@ -140,7 +140,7 @@ function test_ingr(truth, ingr_in){
     if (truth.quantity != ingr_in.quantity) output += `Quantity mismatch: ${truth?.quantity} vs ${ingr_in.quantity}\n`;
     if (truth.unit != ingr_in.unit) output += `Unit mismatch: ${truth?.unit} vs ${ingr_in.unit}\n`;
 
-    if (output) console.log("errors", output);
+    // if (output) console.log("errors", output);
     return (output == "") ? true : false;
 }
 
