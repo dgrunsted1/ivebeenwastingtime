@@ -6,7 +6,7 @@ const selectors = {
             title: 'h1',
             author: '#mntl-bylines__item_4-0 > div > a',
             description: '#heading_1-0 > p',
-            image: 'img:nth-child(1)',
+            image: 'img',
             time: '#meta-text_1-0 > span.meta-text__data',
             servings: '#meta-text_6-0 > span.meta-text__data',
             ingredients: [{
@@ -144,7 +144,13 @@ async function get_directions(page, selector){
 
 async function get_img(page, selector){
     let temp = await page.evaluate((sel) => {
-        return document.querySelector(sel)?.src;
+        let imgs = document.querySelectorAll('img');
+        for (let i = 0; i < imgs.length; i++){
+            if (imgs[i].width > 100 && imgs[i].height > 100){
+                return (imgs[i].src) ? imgs[i].src : imgs[i].getAttribute('data-src');
+            }
+        }
+        // return (document.querySelector(sel)?.src) ? document.querySelector(sel)?.src : document.querySelector(sel)?.getAttribute('data-src');
     }, selector);
     return temp;
 }
@@ -286,13 +292,16 @@ export const scrape = async function(url) {
 
         if (url.includes("www.bonappetit.com")){
             results = await get_ba_data(page);
+            results.image = await get_img(page, "none");
         }else if (url.includes("cooking.nytimes.com")) {
             results = await get_nyt_data(page);
+            results.image = await get_img(page, "none");
+
         } else {
             for (const k in site_selectors){
                 try{
                     if(k == "ingredients"){
-                        results.expand = {ingrlist: []};
+                        results.expand = {ingr_list: []};
                         results.expand.ingr_list = await get_ingredients(page, site_selectors[k]);
                     }else if(k == "directions"){
                         results[k] = await get_directions(page, site_selectors[k]);
@@ -327,6 +336,6 @@ export const scrape = async function(url) {
             set_view_time: `${(set_view_time-go_to_time)/1000}s`,
             compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
         };
-        
+        console.log(results);
         return results;
 };
