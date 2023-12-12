@@ -11,7 +11,7 @@
 $: scraper_test_result = [];
 $: process_recipe_results = [];
 // $: test_recipe_link = null;
-$: test_recipe_link = {"id":"p9d4hskhm4p2n87","title":"Classic, Savory Shepherd's Pie (With Beef and/or Lamb)","url":"https://www.seriouseats.com/shepherds-pie-beef-lamb-recipe","img":"https://www.seriouseats.com/thmb/cWyyokLX1T9Jx3pq__8v1wLcUy8=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__recipes__images__2016__10__20161012-shepherds-pie-vicky-wasik-Version-A-21-ceea33d28eb440278d297b2cf60a9f32.jpg"};
+$: test_recipe_link = {"id":"gc48952q9l8ixuw","title":"Moroccan Chicken Brochettes","url":"https://www.bonappetit.com/recipe/moroccan-chicken-brochettes","img":"https://assets.bonappetit.com/photos/57ad3f29f1c801a1038bcadb/master/w_1280%2Cc_limit/moroccan-chicken-brochettes.jpg"};
 $: recipe_links = [];
 $: num_tests = 10;
 $: test_site = null;

@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 import { currentUser, pb } from '/src/lib/pocketbase.js';
-// #mntl-sc-block-image_1-0
+
 const selectors = {
         serious_eats: {
             title: 'h1',
@@ -150,7 +150,6 @@ async function get_img(page, selector){
                 return (imgs[i].src) ? imgs[i].src : imgs[i].getAttribute('data-src');
             }
         }
-        // return (document.querySelector(sel)?.src) ? document.querySelector(sel)?.src : document.querySelector(sel)?.getAttribute('data-src');
     }, selector);
     return temp;
 }
@@ -215,7 +214,6 @@ async function get_nyt_data(page){
     });
     return result;
 }
-
 async function get_ba_data(page){
     let result = await page.evaluate(() => {
         let article = document.querySelector("#main-content > article");
@@ -227,8 +225,8 @@ async function get_ba_data(page){
         let description = body.querySelector(".body").textContent;
         let ingr_list = body.querySelector("[data-testid='IngredientList']");
         let servings = ingr_list.querySelector("p").textContent;
-        let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
-        if (ingredient_list.length <= 2) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
+        let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
+        if (ingredient_list.length <= 2) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
         let ingredients = [];
         for (let i = 0; i < ingredient_list.length; i++){
             if (ingredient_list[i].tagName == "DIV" || ingredient_list[i].tagName == "P") {
