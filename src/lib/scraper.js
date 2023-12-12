@@ -144,7 +144,7 @@ async function get_directions(page, selector){
 
 async function get_img(page, selector){
     let temp = await page.evaluate((sel) => {
-        let imgs = document.querySelectorAll('img');
+        let imgs = document.querySelectorAll('main img');
         for (let i = 0; i < imgs.length; i++){
             if (imgs[i].width > 100 && imgs[i].height > 100){
                 return (imgs[i].src) ? imgs[i].src : imgs[i].getAttribute('data-src');
@@ -292,10 +292,8 @@ export const scrape = async function(url) {
 
         if (url.includes("www.bonappetit.com")){
             results = await get_ba_data(page);
-            results.image = await get_img(page, "none");
         }else if (url.includes("cooking.nytimes.com")) {
             results = await get_nyt_data(page);
-            results.image = await get_img(page, "none");
 
         } else {
             for (const k in site_selectors){
@@ -305,8 +303,6 @@ export const scrape = async function(url) {
                         results.expand.ingr_list = await get_ingredients(page, site_selectors[k]);
                     }else if(k == "directions"){
                         results[k] = await get_directions(page, site_selectors[k]);
-                    }else if(k == "image"){
-                        results[k] = await get_img(page, site_selectors[k]);
                     }else {
                         results[k] = await get_element(page, site_selectors[k]);
                     }
@@ -322,6 +318,8 @@ export const scrape = async function(url) {
             };
         }
         
+        results.image = await get_img(page, "none");
+
         results.description = (results.description) ? results.description.split(".")[0] : results.description;
         results.servings = format_servings(results.servings);
         let close = await browser.close();

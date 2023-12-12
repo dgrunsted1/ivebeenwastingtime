@@ -114,8 +114,8 @@ export const process_recipe_old = function(in_lines) {
         temp_ingr.original = in_lines[0];
         ingr = temp_ingr;
     }
-    if (ingr && plus_match && in_lines[1].includes("more")){
-        in_lines[1] = ingr.ingredient + in_lines[1];
+    if (ingr && plus_match && in_lines[1] && in_lines[1].includes("more")){
+        in_lines[1] = ingr.ingredient + " " + in_lines[1];
     }
     if (in_lines.slice(1).length) return [ingr].concat(process_recipe_old(in_lines.slice(1)));
     else return ingr;
