@@ -4,11 +4,11 @@ import { currentUser, pb } from '/src/lib/pocketbase';
 /** @type {import('./$types').PageLoad} */
 export async function load() {
 
-    let photos = await pb.collection('photos').getFullList({
+    let photos = await pb.collection('photos').getList(1, 10, {
         fields: 'album,id,file'
     }); 
     let output = [];
-    for (let photo of photos){
+    for (let photo of photos.items){
         output.push(`https://db.ivebeenwastingtime.com/api/files/photos/${photo.id}/${photo.file}?thumb=400x0`);
     }
     if (output){
