@@ -4,7 +4,7 @@ import { currentUser, pb } from '/src/lib/pocketbase';
 /** @type {import('./$types').PageLoad} */
 export async function load() {
 
-    let photos = await pb.collection('photos').getList(1, 10, {
+    let photos = await pb.collection('photos').getList(1, 100, {
         fields: 'album,id,file'
     }); 
     let output = [];
