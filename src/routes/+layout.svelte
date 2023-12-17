@@ -17,7 +17,7 @@
 		{#if !is_homepage}
 			<div class="navbar bg-base-100">
 				<div class="navbar-start">
-					{#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea")}
+					{#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea") && $page.url.pathname != "/gallery" && $page.url.pathname != "/test_suite"}
 						<a href="test_suite" class="btn btn-error btn-sm">test suite</a>
 					{/if}
 				</div>
@@ -26,9 +26,9 @@
 				</div>
 				<ul class="menu menu-horizontal navbar-end px-1">
 					<li class="flex flex-row">
-						{#if !$currentUser && $page.url.pathname != "/login"}
+						{#if !$currentUser && $page.url.pathname != "/login" && $page.url.pathname != "/gallery"}
 							<a href="login">login</a>
-						{:else if $currentUser && $page.url.pathname != "/login"}
+						{:else if $currentUser && $page.url.pathname != "/login" && $page.url.pathname != "/gallery"}
 							<div>Hello {$currentUser.name}</div><div on:click={signOut} on:keypress={signOut}>logout</div>
 						{/if}
 					</li>
