@@ -1,5 +1,6 @@
 import puppeteer from 'puppeteer';
 import { currentUser, pb } from '/src/lib/pocketbase.js';
+import { data } from 'autoprefixer';
 
 const selectors = {
         serious_eats: {
@@ -335,3 +336,58 @@ export const scrape = async function(url) {
         console.log(results);
         return results;
 };
+
+export const soda_rank = async function(name) {
+    console.log("soda rank");
+    console.log(name);
+
+    const url = "https://www.camsoda.com";
+    const pagination_string = "/?p=<page_num>";
+    const max_pages_checked = 5;
+    let page_count = 0;
+
+    const start = Date.now();
+    const browser = await puppeteer.launch({headless: 'new'});
+    const page = await browser.newPage();
+    let user_names = [];
+
+    for (let i = 1; i <= max_pages_checked; i++){
+        let curr_url = "";
+        if (i == 1){
+            curr_url = url;
+        }else{
+            curr_url = url + pagination_string.replace("<page_num>", i);
+        } 
+        console.log({curr_url});
+        await page.goto(url);
+        await page.setViewport({width: 1080, height: 1024});
+        const result = await page.evaluate(() => {
+            let user_div_list = document.querySelectorAll('body > div > div:nth-child(3) > div > div > div:nth-child(2) > div:nth-child(3) > div > *');
+            let user_name_list = [];
+            for (let i = 0; user_div_list.length > i; i++){
+                if (user_div_list[i].tagName == "A"){
+                    user_name_list.push(user_div_list[i].href);
+                }
+            }
+
+
+
+            return user_name_list;
+        });
+        for (let i = 0; result.length > i; i++){
+            if (!user_names.includes(result[i])){
+                user_names.push(result[i]);
+            }
+        }
+        console.log({result});
+        page_count++;
+    }
+
+    await browser.close();
+    const end = Date.now();
+    return {
+        data: user_names,
+        pages_checked: page_count,
+        execution_time: `${(end-start)/1000}s`
+    };
+}
