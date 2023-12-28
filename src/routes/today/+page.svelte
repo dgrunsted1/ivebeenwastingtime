@@ -7,8 +7,6 @@
 
 
     let todays_menu = {};
-    let cook_recipe = {};
-    let display_mode = "recipes";
     let grocery_list = []; 
     let mode = "menu";
 
@@ -26,20 +24,6 @@
             };  
         });
     });
-
-    function cook_this_recipe(e){
-        for (let i = 0; i < todays_menu.expand.recipes.length; i++){
-            if (todays_menu.expand.recipes[i].id == e.srcElement.id){
-                cook_recipe = todays_menu.expand.recipes[i];
-            }
-        }
-        document.body.scrollIntoView();
-        display_mode = "cook";
-    }
-
-    function back_to_recipes(e){
-        display_mode = "recipes";
-    }
 </script>
 
 <NavBtns page={$page.url.pathname}/>
