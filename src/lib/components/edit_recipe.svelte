@@ -114,14 +114,19 @@
     }
 
     function update_multiplier(e){
-        let desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
-        let servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
-        multiplier = desired_servings / servings_in_recipe;
+        const servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
+        let desired_servings = servings_in_recipe;
+        if (e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0]){
+            desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
+        }
+        // multiplier = desired_servings / servings_in_recipe;
+        enable_save();
         dispatch("update_multiplier", {
-            multiplier: multiplier,
+            multiplier: desired_servings / servings_in_recipe,
             index: index
         });
     }
+
 
     function add_ingr(){
         recipe.expand.ingr_list[recipe.expand.ingr_list.length] = {amount: 1, unit: "", name: "", original:[""]};
@@ -268,13 +273,13 @@
                 <div>
                     <div id="servings" class="flex flex-row justify-center content-center">
                         <div class="mr-1 form-control w-1/2">
-                            <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">recipe servings</span></label>
-                            <input type="text" name="recipe_servings" id="recipe_servings" class="recipe_servings input input-bordered p-1 input-xs" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1>
+                            <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">servings</span></label>
+                            <input type="text" name="recipe_servings" id="recipe_servings" class="recipe_servings input input-bordered p-1 input-xs" bind:value={recipe.servings} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1>
                         </div>
                         {#if $page.url.pathname == "/prep"}
                             <div class="form-control w-1/2">
                                 <label for="recipe_servings" class="mx-1 label p-0"><span class="label-text-alt p-0">desired servings</span></label>
-                                <input type="text" name="desired_servings" id="desired_servings" class="desired_servings input input-bordered p-1 input-xs" value={recipe ? recipe.servings : 1} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1 >
+                                <input type="text" name="desired_servings" id="desired_servings" class="desired_servings input input-bordered p-1 input-xs" bind:value={recipe.servings} on:input|preventDefault={update_multiplier} on:delete|preventDefault={update_multiplier} min=1 >
                             </div>
                         {/if}
                     </div>
