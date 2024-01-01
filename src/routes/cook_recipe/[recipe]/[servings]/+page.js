@@ -5,7 +5,7 @@ import { currentUser, pb } from '/src/lib/pocketbase.js';
 export async function load({ params }) {
     console.log(params.recipe);
     console.log(params.servings);
-    const result_list = await pb.collection('recipes').getFirstListItem(`title="${params.recipe}"`, {
+    const result_list = await pb.collection('recipes').getFirstListItem(`url_id="${params.recipe}"`, {
         expand: 'notes,ingr_list'
     });
     // const result_list = await pb.collection('recipes').getOne(params.recipe, {

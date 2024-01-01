@@ -41,7 +41,7 @@
                             <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                 <p id={i} class="w-1/3">{curr.title}</p>
                                 <div class="card-actions justify-self-end justify-end">
-                                    <a id={curr.id} class="recipe_btn btn btn-primary btn-xs {i}" href={`/cook_recipe/${encodeURIComponent(curr.title)}/${todays_menu.servings[curr.id]}`}>cook this recipe</a>
+                                    <a id={curr.id} class="recipe_btn btn btn-primary btn-xs {i}" href={`/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>cook this recipe</a>
                                 </div>
                             </div>
                         </div>

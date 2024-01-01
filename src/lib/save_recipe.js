@@ -31,7 +31,8 @@ export async function save_recipe(e, recipe, user, new_note) {
         "category": recipe.category,
         "cuisine": recipe.cuisine,
         "country": recipe.country,
-        "ingr_list": ingr_ids
+        "ingr_list": ingr_ids,
+        "url_id": get_url_id(recipe)
     };
     if (note_ids.length) data.notes = note_ids;
     if (recipe.id){
@@ -155,4 +156,22 @@ async function add_new_note(note_ids, note_text){
         note_ids.push(new_note_record.id);
     }
     return note_ids;
+}
+
+const get_url_id = async function (recipe){
+    let url_id = recipe.title.trim();
+    url_id = url_id.replaceAll(" ", "_");
+    let new_url_id = "";
+    try {
+        new_url_id = url_id;
+        let same_url_id = await pb.collection('recipes').getFirstListItem(`url_id="${new_url_id}"`);
+        let cnt = 1;
+        while (true){
+            new_url_id = url_id+`_${cnt}`;
+            same_url_id = await pb.collection('recipes').getFirstListItem(`url_id="${new_url_id}"`);
+            cnt++;
+        }
+    } catch (e){
+        return new_url_id;
+    }
 }
