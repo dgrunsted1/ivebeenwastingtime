@@ -73,7 +73,7 @@
 
         let btns = document.getElementsByClassName(`recipe_btn ${new_index}`);
         let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
-        if (old_index != -1){
+        if (old_btns && old_index != -1){
                 old_btns[1].classList.remove("bg-secondary");
                 old_btns[1].classList.add("bg-base-200");
                 old_btns[0].classList.remove("bg-secondary");
@@ -283,10 +283,10 @@
     }
 
     function compare_time_amounts_asc(a, b){
-        if ( get_total_time(a).val < get_total_time(b).val ){
+        if ( get_total_time(a).val > 0 && get_total_time(a).val < get_total_time(b).val ){
             return -1;
         }
-        if ( get_total_time(a).val > get_total_time(b).val ){
+        if ( get_total_time(a).val > get_total_time(b).val && get_total_time(b).val > 0 ){
             return 1;
         }
         return 0;
