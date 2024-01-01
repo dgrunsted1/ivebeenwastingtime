@@ -32,7 +32,7 @@ export async function save_recipe(e, recipe, user, new_note) {
         "cuisine": recipe.cuisine,
         "country": recipe.country,
         "ingr_list": ingr_ids,
-        "url_id": get_url_id(recipe)
+        "url_id": await get_url_id(recipe)
     };
     if (note_ids.length) data.notes = note_ids;
     if (recipe.id){
