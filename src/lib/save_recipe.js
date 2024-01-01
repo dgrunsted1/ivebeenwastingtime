@@ -62,7 +62,7 @@ async function get_ingr_ids(recipe){
                     db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
                     db_ingr.unit != recipe.expand.ingr_list[i].unit){
                     const ingr_string = recipe.expand.ingr_list[i].quantity+ " " + recipe.expand.ingr_list[i].unit+ " " + recipe.expand.ingr_list[i].ingredient;
-                    const ingr_obj = process_recipe_old(ingr_string, 'eng');
+                    const ingr_obj = process_recipe_old([ingr_string]);
                     recipe.expand.ingr_list[i].quantity = ingr_obj.quantity;
                     recipe.expand.ingr_list[i].ingredient = ingr_obj.ingredient;
                     recipe.expand.ingr_list[i].unit = ingr_obj.unit;
