@@ -7,11 +7,6 @@
     /** @type {import('./$types').PageData} */
     export let data;
 
-
-    onMount(async () => {
-        if (!$currentUser) window.location.href = "/login";
-    });
-
 </script>
 
 <NavBtns page={$page.url.pathname}/>
