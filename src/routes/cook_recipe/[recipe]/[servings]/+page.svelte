@@ -7,6 +7,15 @@
     /** @type {import('./$types').PageData} */
     export let data;
 
+    const get_quantity = function(quantity){
+        if (quantity){
+            let output = quantity * (parseFloat(data.post.servings) / parseFloat(data.post.recipe.servings));
+            return output.toFixed(2);
+        } else {
+            return "";
+        }
+    }
+
 </script>
 
 <NavBtns page={$page.url.pathname}/>
@@ -45,7 +54,7 @@
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center m-2 gap-x-2">
-                            <div class="ingr_amount text-sm text-center">{ingr.quantity ? ingr.quantity * (parseFloat(data.post.servings) / parseFloat(data.post.recipe.servings)) : ""}</div>
+                            <div class="ingr_amount text-sm text-center">{get_quantity(ingr.quantity)}</div>
                             <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
                         </div>
