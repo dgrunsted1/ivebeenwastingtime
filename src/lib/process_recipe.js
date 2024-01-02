@@ -33,6 +33,8 @@ const reg_exp = {
         //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
         //  1 (1-inch) knob ginger, peeled, roughly chopped
         {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [5,6]},
+        //  1 1-lb. bag frozen spinach
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) (\d+)-(\w+)[.] ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [4,5]}
     ]
 };
 
@@ -84,7 +86,6 @@ export const process_recipe_old = function(in_lines) {
                 unit = curr[match.unit];
             }else{
                 for (let i = 0; i < match.unit.length; i++){
-                    console.log(curr[match.unit[i]]);
                     if (curr[match.unit[i]]) {
                         unit += " "+curr[match.unit[i]];
                     }
@@ -107,12 +108,16 @@ export const process_recipe_old = function(in_lines) {
     }
 
     if (in_lines[0]) {
-        let temp_ingr = parse(in_lines[0], 'eng');
-        if (ingr.amount) temp_ingr.quantity = ingr.amount;
-        if (ingr.unit) temp_ingr.unit = ingr.unit;
-        if (ingr.name && ingr.name != in_lines[0]) temp_ingr.ingredient = ingr.name;
-        temp_ingr.original = in_lines[0];
-        ingr = temp_ingr;
+        ingr = {
+                quantity: ingr.amount,
+                unit: ingr.unit,
+                unitPlural: null,
+                symbol: null,
+                ingredient: ingr.name,
+                minQty: null,
+                maxQty: null,
+                original: [in_lines[0]]
+            };
     }
     if (ingr && plus_match && in_lines[1] && in_lines[1].includes("more")){
         in_lines[1] = ingr.ingredient + " " + in_lines[1];

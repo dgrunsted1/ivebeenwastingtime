@@ -3,7 +3,7 @@
     import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import { process_recipe } from '/src/lib/process_recipe.js';
+    import { process_recipe_old } from '/src/lib/process_recipe.js';
     import { deserialize } from '$app/forms';
     import { onMount } from "svelte";
 
@@ -48,7 +48,7 @@
             alert(result.data.err);
             e.srcElement.value = "";
         } else if (result.type === 'success') {
-            result.data.expand.ingr_list = process_recipe(result.data.expand.ingr_list);
+            result.data.expand.ingr_list = process_recipe_old(result.data.expand.ingr_list);
             result.data.url = e.srcElement.value;
             recipe = result.data;
         }

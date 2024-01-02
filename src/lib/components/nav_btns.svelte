@@ -1,7 +1,6 @@
 <script>
     export let page;
     let page_links = [{href:"/menu", display: "Create Menu"},
-        {href:"/prep", display: "Prep"},
         {href:"/my_menus", display: "My Menus"},
         {href:"/today", display: "Today"},
         {href:"/add_recipe", display: "Add Recipe"}
