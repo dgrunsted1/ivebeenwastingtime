@@ -2,7 +2,8 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate, onMount } from 'svelte';
     import { page } from '$app/stores';
-    import { save_recipe } from '/src/lib/save_recipe.js' 
+    import { save_recipe } from '/src/lib/save_recipe.js';
+    import { process_recipe_old } from '/src/lib/process_recipe.js';
 
     export let recipe;
     export let index;
@@ -44,25 +45,32 @@
 
     onMount(async () => {
         let cuisines_result = await pb.collection('recipes').getList(1, 1000, {field: `cuisine`});
-        for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine)) cuisines.push(cuisines_result.items[i].cuisine);
+        for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine) && cuisines_result.items[i].cuisine) cuisines.push(cuisines_result.items[i].cuisine);
         cuisines = cuisines;
         display_cuisines = cuisines;
 
         let categories_result = await pb.collection('recipes').getList(1, 1000, {field: `category`});
-        for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category)) categories.push(categories_result.items[i].category);
+        for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category) && categories_result.items[i].category) categories.push(categories_result.items[i].category);
         categories = categories;
         display_categories = categories;
     })
 
     afterUpdate(() => {
+        console.log("after update");
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
         }
-        if (save && recipe.title){
+        if ( recipe.title && recipe.expand.ingr_list.length && recipe.directions.length){
             let save_btns = document.getElementsByClassName("save_btn");
             for (let i = 0; i < save_btns.length; i++) {
                 save_btns[i].disabled = false;
+                save_btns[i].innerHTML = "save recipe";
+            }
+        }else {
+            let save_btns = document.getElementsByClassName("save_btn");
+            for (let i = 0; i < save_btns.length; i++) {
+                save_btns[i].disabled = true;
             }
         }
     });
@@ -81,7 +89,6 @@
     }
 
     function check_item(e){
-        enable_save();
         let id;
         let is_removed = false;
         if (e.srcElement.type != "checkbox"){
@@ -104,13 +111,6 @@
         }
     }
 
-    function enable_save(){
-        if (!index) index = 0;
-        document.getElementsByClassName("save_btn")[index].disabled = false;
-        document.getElementsByClassName("save_btn")[index].innerHTML = "save recipe";
-        save = true;
-    }
-
     function update_multiplier(e){
         const servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
         let desired_servings = servings_in_recipe;
@@ -118,7 +118,6 @@
             desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
         }
         // multiplier = desired_servings / servings_in_recipe;
-        enable_save();
         dispatch("update_multiplier", {
             multiplier: desired_servings / servings_in_recipe,
             index: index
@@ -205,7 +204,6 @@
             }
         }
         display_cuisines = display_cuisines;
-        enable_save();
     }
 
     function filter_countries(e){
@@ -216,7 +214,6 @@
             }
         }
         display_countries = display_countries;
-        enable_save();
     }
 
     async function filter_categories(e){
@@ -228,6 +225,15 @@
         }
         display_categories = display_categories;
         enable_save();
+    }
+
+    const parse_ingredients = function(e) {
+        let ingr_list = process_recipe_old(e.data.split("\n"));
+        recipe.expand.ingr_list = ingr_list;
+    }
+
+    const parse_directions = function(e){
+        recipe.directions = e.data.split("\n");
     }
 </script>
 
@@ -317,16 +323,22 @@
     <div class="ingr_directions_container">
         <div class="badge badge-primary ml-14 mt-3">Ingredients</div>
         <div id="ingredient_list">
-            {#each recipe.expand.ingr_list as ingr, i}
-                {#if ingr}
-                    <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
-                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
-                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
-                    </div>
-                {/if}
-            {/each}
+            {#if recipe.expand.ingr_list.length}
+                {#each recipe.expand.ingr_list as ingr, i}
+                    {#if ingr}
+                        <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
+                            <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
+                            <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
+                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
+                            <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
+                        </div>
+                    {/if}
+                {/each}
+            {:else}
+                <div class="flex justify-center w-4/5 m-auto h-52">
+                    <textarea class="w-full textarea textarea-bordered" on:input|preventDefault={parse_ingredients}/>
+                </div>
+            {/if}
             <div class="flex justify-center mt-2">
                 <button class="btn btn-secondary btn-xs" on:click={add_ingr}>add ingredient</button>
             </div>
@@ -334,12 +346,19 @@
 
         <div class="directions_list w-full flex flex-col items-center">
             <div class="badge badge-primary mt-3 self-start">Directions</div>
-            {#each recipe.directions as curr, i}
-                <div class="step w-4/5">
-                    <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
-                    <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]} on:input|preventDefault={enable_save}/>
+            {#if recipe.directions.length}
+                {#each recipe.directions as curr, i}
+                    <div class="step w-4/5">
+                        <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
+                        <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]} on:input|preventDefault={enable_save}/>
+                    </div>
+                {/each}
+            {:else}
+                <div class="flex justify-center w-4/5 m-auto h-52">
+                    <textarea class="w-full textarea textarea-bordered" on:input|preventDefault={parse_directions}/>
                 </div>
-            {/each}
+            {/if}
+            
             <div class="flex justify-center mt-2">
                 <button class="btn btn-secondary btn-xs" on:click={add_dir}>add direction</button>
             </div>

@@ -109,11 +109,11 @@ export const process_recipe_old = function(in_lines) {
 
     if (in_lines[0]) {
         ingr = {
-                quantity: ingr.amount,
-                unit: ingr.unit,
+                quantity: ingr.amount ?? null,
+                unit: ingr.unit ?? null,
                 unitPlural: null,
                 symbol: null,
-                ingredient: ingr.name,
+                ingredient: ingr.name ?? in_lines[0],
                 minQty: null,
                 maxQty: null,
                 original: [in_lines[0]]
