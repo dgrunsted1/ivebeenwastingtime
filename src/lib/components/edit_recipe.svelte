@@ -2,7 +2,8 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate, onMount } from 'svelte';
     import { page } from '$app/stores';
-    import { save_recipe } from '/src/lib/save_recipe.js' 
+    import { save_recipe } from '/src/lib/save_recipe.js';
+    import { process_recipe_old } from '/src/lib/process_recipe.js';
 
     export let recipe;
     export let index;
@@ -44,25 +45,32 @@
 
     onMount(async () => {
         let cuisines_result = await pb.collection('recipes').getList(1, 1000, {field: `cuisine`});
-        for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine)) cuisines.push(cuisines_result.items[i].cuisine);
+        for (let i = 0; i < cuisines_result.items.length; i++) if (!cuisines.includes(cuisines_result.items[i].cuisine) && cuisines_result.items[i].cuisine) cuisines.push(cuisines_result.items[i].cuisine);
         cuisines = cuisines;
         display_cuisines = cuisines;
 
         let categories_result = await pb.collection('recipes').getList(1, 1000, {field: `category`});
-        for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category)) categories.push(categories_result.items[i].category);
+        for (let i = 0; i < categories_result.items.length; i++) if (!categories.includes(categories_result.items[i].category) && categories_result.items[i].category) categories.push(categories_result.items[i].category);
         categories = categories;
         display_categories = categories;
     })
 
     afterUpdate(() => {
+        console.log("after update");
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
         }
-        if (save && recipe.title){
+        if ( recipe.title && recipe.expand.ingr_list.length && recipe.directions.length){
             let save_btns = document.getElementsByClassName("save_btn");
             for (let i = 0; i < save_btns.length; i++) {
                 save_btns[i].disabled = false;
+                save_btns[i].innerHTML = "save recipe";
+            }
+        }else {
+            let save_btns = document.getElementsByClassName("save_btn");
+            for (let i = 0; i < save_btns.length; i++) {
+                save_btns[i].disabled = true;
             }
         }
     });
@@ -81,7 +89,6 @@
     }
 
     function check_item(e){
-        enable_save();
         let id;
         let is_removed = false;
         if (e.srcElement.type != "checkbox"){
@@ -104,13 +111,6 @@
         }
     }
 
-    function enable_save(){
-        if (!index) index = 0;
-        document.getElementsByClassName("save_btn")[index].disabled = false;
-        document.getElementsByClassName("save_btn")[index].innerHTML = "save recipe";
-        save = true;
-    }
-
     function update_multiplier(e){
         const servings_in_recipe = e.srcElement.parentElement.parentElement.getElementsByClassName("recipe_servings")[0].value;
         let desired_servings = servings_in_recipe;
@@ -118,7 +118,6 @@
             desired_servings = e.srcElement.parentElement.parentElement.getElementsByClassName("desired_servings")[0].value;
         }
         // multiplier = desired_servings / servings_in_recipe;
-        enable_save();
         dispatch("update_multiplier", {
             multiplier: desired_servings / servings_in_recipe,
             index: index
@@ -205,7 +204,6 @@
             }
         }
         display_cuisines = display_cuisines;
-        enable_save();
     }
 
     function filter_countries(e){
@@ -216,7 +214,6 @@
             }
         }
         display_countries = display_countries;
-        enable_save();
     }
 
     async function filter_categories(e){
@@ -227,7 +224,15 @@
             }
         }
         display_categories = display_categories;
-        enable_save();
+    }
+
+    const parse_ingredients = function(e) {
+        let ingr_list = process_recipe_old(e.data.split("\n"));
+        recipe.expand.ingr_list = ingr_list;
+    }
+
+    const parse_directions = function(e){
+        recipe.directions = e.data.split("\n");
     }
 </script>
 
@@ -244,28 +249,28 @@
             {:else}
             <div class="w-full flex flex-col space-y-2">
                 <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
-                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent"  on:input|preventDefault={enable_save} bind:value={recipe.image}/>
+                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
             </div>
             {/if}
         </div>
         <div class="info_container w-1/2 mx-1">
             <div class="title_container form-control">
                 <label for="title" class="label p-0"><span class="label-text-alt p-0">Title</span></label>
-                <input type="text" class="title input input-bordered input-xs" bind:value={recipe.title} on:input|preventDefault={enable_save}/>
+                <input type="text" class="title input input-bordered input-xs" bind:value={recipe.title}/>
             </div>
             <div class="decription_container form-control w-full">
                 <label for="desc" class="label p-0"><span class="label-text-alt p-0">Description</span></label>
-                <textarea class="desc textarea textarea-bordered" type="text" bind:value={recipe.description} on:input|preventDefault={enable_save}></textarea>
+                <textarea class="desc textarea textarea-bordered" type="text" bind:value={recipe.description}></textarea>
             </div>
             <div class="misc w-full">
                 <div class="flex flex-row">
                     <div class="author_container form-control w-1/2">
                         <label for="auth" class="label p-0"><span class="label-text-alt p-0">Author</span></label>
-                        <input class="auth input input-bordered input-xs px-1 mr-1" type="text" bind:value={recipe.author} on:input|preventDefault={enable_save}>
+                        <input class="auth input input-bordered input-xs px-1 mr-1" type="text" bind:value={recipe.author}>
                     </div>
                     <div class="time_container form-control w-1/2">
                         <label for="time" class="label p-0"><span class="label-text-alt p-0">Time</span></label>
-                        <input class="time input input-bordered input-xs px-1" type="text" bind:value={recipe.time} on:input|preventDefault={enable_save}>
+                        <input class="time input input-bordered input-xs px-1" type="text" bind:value={recipe.time}>
                     </div>
                 </div>
                 <div>
@@ -287,7 +292,7 @@
                                 <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
                                     {#each display_cuisines as cuisine}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; document.activeElement.blur(); enable_save();}}>{cuisine}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; document.activeElement.blur();}}>{cuisine}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -295,7 +300,7 @@
                                 <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                     {#each display_countries as country}
-                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country; document.activeElement.blur(); enable_save();}}>{country}</li>
+                                        <li class="cursor-pointer" on:click={()=>{recipe.country = country; document.activeElement.blur();}}>{country}</li>
                                     {/each}
                                 </ul>
                             </div>
@@ -304,7 +309,7 @@
                             <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 {#each display_categories as category}
-                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur(); enable_save();}}>{category}</li>
+                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur();}}>{category}</li>
                                 {/each}
                             </ul>
                         </div>
@@ -317,16 +322,22 @@
     <div class="ingr_directions_container">
         <div class="badge badge-primary ml-14 mt-3">Ingredients</div>
         <div id="ingredient_list">
-            {#each recipe.expand.ingr_list as ingr, i}
-                {#if ingr}
-                    <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
-                        <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit} on:input|preventDefault={enable_save}>
-                        <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient} on:input|preventDefault={enable_save}>
-                        <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
-                    </div>
-                {/if}
-            {/each}
+            {#if recipe.expand.ingr_list.length}
+                {#each recipe.expand.ingr_list as ingr, i}
+                    {#if ingr}
+                        <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
+                            <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity}>
+                            <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit}>
+                            <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient}>
+                            <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
+                        </div>
+                    {/if}
+                {/each}
+            {:else}
+                <div class="flex justify-center w-4/5 m-auto h-52">
+                    <textarea class="w-full textarea textarea-bordered" on:input|preventDefault={parse_ingredients}/>
+                </div>
+            {/if}
             <div class="flex justify-center mt-2">
                 <button class="btn btn-secondary btn-xs" on:click={add_ingr}>add ingredient</button>
             </div>
@@ -334,12 +345,19 @@
 
         <div class="directions_list w-full flex flex-col items-center">
             <div class="badge badge-primary mt-3 self-start">Directions</div>
-            {#each recipe.directions as curr, i}
-                <div class="step w-4/5">
-                    <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
-                    <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]} on:input|preventDefault={enable_save}/>
+            {#if recipe.directions.length}
+                {#each recipe.directions as curr, i}
+                    <div class="step w-4/5">
+                        <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
+                        <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]}/>
+                    </div>
+                {/each}
+            {:else}
+                <div class="flex justify-center w-4/5 m-auto h-52">
+                    <textarea class="w-full textarea textarea-bordered" on:input|preventDefault={parse_directions}/>
                 </div>
-            {/each}
+            {/if}
+            
             <div class="flex justify-center mt-2">
                 <button class="btn btn-secondary btn-xs" on:click={add_dir}>add direction</button>
             </div>
@@ -351,13 +369,13 @@
                 {#each recipe.expand.notes as note, i}
                     <div class="w-4/5">
                         <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">{get_local_time(recipe.expand.notes[i].updated)}</span><button id={recipe.expand.notes[i].id} class="btn btn-xs my-1" on:click={remove_note}>remove</button></label>
-                        <textarea class="notes textarea w-full textarea-bordered" bind:value={recipe.expand.notes[i].content} on:input|preventDefault={enable_save}/>
+                        <textarea class="notes textarea w-full textarea-bordered" bind:value={recipe.expand.notes[i].content}/>
                     </div>
                 {/each}
             {/if}
             <div class="w-4/5">
                 <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">New</span></label>
-                <textarea id="new_note" class="notes textarea w-full textarea-bordered" on:input|preventDefault={enable_save}></textarea>
+                <textarea id="new_note" class="notes textarea w-full textarea-bordered"></textarea>
             </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">
