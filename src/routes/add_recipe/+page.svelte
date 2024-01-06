@@ -1,6 +1,5 @@
 <script>
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
@@ -61,7 +60,6 @@
 
     }
 </script>
-<NavBtns page={$page.url.pathname}/>
 <div class="flex flex-col max-w-5xl m-auto space-y-5 mb-5">
     
     <div class="link">

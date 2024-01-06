@@ -2,7 +2,6 @@
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
 
 
@@ -26,7 +25,6 @@
     });
 </script>
 
-<NavBtns page={$page.url.pathname}/>
 {#if todays_menu.id}
     <div id="main">
         <div class="flex justify-center p-1">

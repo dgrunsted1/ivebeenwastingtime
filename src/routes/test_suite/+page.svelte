@@ -4,7 +4,6 @@
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
     import { save_recipe } from '/src/lib/save_recipe.js';
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
 
 
@@ -298,7 +297,6 @@ function update_recipe(e){
 </script>
 
 
-<NavBtns page={$page.url.pathname}/>
 <div class="flex flex-col">
      <div class="flex">
          <div class="flex w-full m-5 w-full">

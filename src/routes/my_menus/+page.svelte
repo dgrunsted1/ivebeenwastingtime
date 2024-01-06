@@ -3,7 +3,6 @@
     import { onMount } from 'svelte';
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { invalidateAll } from '$app/navigation';
@@ -288,7 +287,6 @@
     }
 </script>
 
-<NavBtns page={$page.url.pathname}/>
 <div class="flex justify-between mx-4">
     <div class="flex w-fit space-x-6 items-center">
         <div class="form-control w-full max-w-xs">

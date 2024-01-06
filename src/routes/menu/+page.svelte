@@ -5,7 +5,6 @@
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
     import RecipeList from "/src/lib/components/recipe_list.svelte";
     import Menu from "/src/lib/components/menu.svelte";
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
 
     let user_recipes;
@@ -95,7 +94,6 @@
         edit_recipe = null;
     }
 </script>
-<NavBtns page={$page.url.pathname}/>
 <div id="main">
     <div id="content" class="flex flex-row m-2 mt-0">
         <div id="left_column" class="w-1/2">

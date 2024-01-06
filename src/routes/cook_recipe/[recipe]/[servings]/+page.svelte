@@ -1,7 +1,6 @@
 <script>
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import NavBtns from "/src/lib/components/nav_btns.svelte";
     import { page } from '$app/stores';
     
     /** @type {import('./$types').PageData} */
@@ -18,7 +17,6 @@
 
 </script>
 
-<NavBtns page={$page.url.pathname}/>
     <div id="cook_recipe" class="flex flex-col m-2 pb-10">
         <div class="img_info_container flex items-center justify-center">
             <div class="img_container w-1/4">
