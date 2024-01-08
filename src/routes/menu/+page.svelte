@@ -7,6 +7,7 @@
     import Menu from "/src/lib/components/menu.svelte";
     import { page } from '$app/stores';
 
+
     let user_recipes;
     let menu_recipes = [];
     let mults = {};
@@ -95,8 +96,8 @@
     }
 </script>
 <div id="main">
-    <div id="content" class="flex flex-row m-2 mt-0">
-        <div id="left_column" class="w-1/2">
+    <div id="content" class="flex flex-col md:flex-row m-2 mt-0">
+        <div id="left_column" class="md:w-1/2">
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 
                     on:update_view={update_view} on:update_edit={update_edit}
@@ -104,7 +105,7 @@
                     on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
             {/if}
         </div>
-        <div id="right_column" class="w-1/2 m-2 max-h-[calc(100vh-120px)] overflow-y-auto">
+        <div id="right_column" class="md:w-1/2 m-2">
             {#if menu_recipes && mode == "menu"}
                 <Menu menu={menu_recipes} {mults} {page}/>
             {:else if view_recipe && mode == "view"}

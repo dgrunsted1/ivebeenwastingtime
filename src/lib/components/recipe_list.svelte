@@ -374,10 +374,10 @@
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs" on:change={select_cat}/>
-        <p class="mx-5">{display_recipes.length} Recipes</p>
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:change={select_cat}/>
+        <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
         <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn m-1 btn-primary">Sort</label>
+            <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
                     {#if opt == sort_val}
@@ -391,14 +391,14 @@
     </div>
 </div>
 
-<div id="recipes" class="max-h-[calc(100vh-200px)] overflow-y-auto">
+<div id="recipes" class="max-h-[calc(100vh-160px)] md:max-h-[calc(100vh-180px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
-            <figure class="w-2/5"><img src={curr.image} alt={curr.title}/></figure>
-            <div class="card-body max-h-full flex flex-row p-2 items-center w-3/5">
+        <div class="flex flex-row card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
+            <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
+            <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <p id={curr.id} class="w-3/4">{curr.title}</p>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
