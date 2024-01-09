@@ -118,7 +118,7 @@
         {#if $page.url.pathname == "/menu"}
             <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
         {:else if $page.url.pathname == "/my_menus"}
-            <button class="btn btn-secondary self-end btn-sm" id="today_btn" on:click={set_todays_menu}>make todays menu</button>
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>make<br>todays menu</button>
         {/if}
     </div>
     <div class="flex justify-around mt-2">

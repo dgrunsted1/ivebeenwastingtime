@@ -290,13 +290,13 @@
 <div class="flex justify-between mx-4">
     <div class="flex w-fit space-x-6 items-center">
         <div class="form-control w-full max-w-xs">
-            <input type="text" placeholder="Search" class="input input-bordered w-52 max-w-xs" on:change|preventDefault={search}/>
+            <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:change|preventDefault={search}/>
         </div>
-        <div class="w-full flex space-x-1"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
+        <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
     </div>
     
     <div class="dropdown dropdown-end">
-        <label tabindex="0" class="btn m-1 btn-primary">Sort</label>
+        <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-md">Sort</label>
         <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
             {#each sort_opts as opt}
                 {#if opt == sort_val}
@@ -309,25 +309,25 @@
     </div>
 </div>
 
-<div id="menus" class="max-h-[calc(100vh-170px)] overflow-y-auto">
+<div id="menus" class="max-h-[calc(100vh-120px)] overflow-y-auto">
     
     {#each user_menus as curr, i}
             <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
-                <figure class="w-2/3">
+                <figure class="w-1/4 md:w-2/3">
                     {#each user_menus[i].expand.recipes as recipe, j}
                             <img class="w-44" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
                     {/each}
                 </figure>
-                <div class="card-body flex flex-row justify-evenly content-center p-2">
-                    <div class="flex flex-col justify-center">
+                <div class="card-body flex flex-row justify-evenly content-center p-2 w-3/4">
+                    <div class="flex flex-col justify-center text-xs md:text-md">
                         <p class="text-center">{user_menus[i].title}</p>
-                        <p class="text-center w-20">{format_date(user_menus[i].created)}</p>
+                        <p class="text-center md:w-20">{format_date(user_menus[i].created)}</p>
                     </div>
-                    <div class="flex flex-col justify-center">
+                    <div class="flex flex-col justify-center text-xs md:text-md">
                         <p class="text-center">{user_menus[i].expand.recipes.length} recipes</p>
                         <p class="text-center">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
                     </div>
-                    <div class="flex flex-col justify-center">
+                    <div class="flex flex-col justify-center text-xs md:text-md">
                         <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
                         <p class="text-center">{get_total_time(user_menus[i].expand.recipes).display}</p>
                     </div>
@@ -340,7 +340,7 @@
 </div>
     <dialog id="my_modal_2" class="modal">
         {#if modal_menu.id}
-            <form method="dialog" class="modal-box max-w-full w-2/3 p-1">
+            <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
                 <Menu menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
             </form>
             <form method="dialog" class="modal-backdrop">
