@@ -312,13 +312,13 @@
 <div id="menus" class="max-h-[calc(100vh-120px)] overflow-y-auto">
     
     {#each user_menus as curr, i}
-            <div id={user_menus[i].id} class="card card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
-                <figure class="w-1/4 md:w-2/3">
+            <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
+                <figure class="md:w-2/3">
                     {#each user_menus[i].expand.recipes as recipe, j}
-                            <img class="w-44" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
+                            <img class="w-16 md:w-20" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
                     {/each}
                 </figure>
-                <div class="card-body flex flex-row justify-evenly content-center p-2 w-3/4">
+                <div class="card-body flex flex-row justify-evenly content-center p-2 md:w-3/4">
                     <div class="flex flex-col justify-center text-xs md:text-md">
                         <p class="text-center">{user_menus[i].title}</p>
                         <p class="text-center md:w-20">{format_date(user_menus[i].created)}</p>
