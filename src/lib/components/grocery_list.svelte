@@ -7,7 +7,16 @@
     export let recipes;
     let grocery_list = [];
     let skipped = [];
-    let scroll_size = ($page.url.pathname == "/today") ? 200 : 270;
+    let scroll_size = 0;
+    if ($page.url.pathname == "/today"){
+        scroll_size = 130;
+    } else if ($page.url.pathname == "/prep") {
+        scroll_size = 270;
+    } else if ($page.url.pathname == "/menu"){
+        scroll_size = 150;
+    } else if ($page.url.pathname == "/my_menus"){
+        scroll_size = 250;
+    }
 
     afterUpdate(async () => {
         let result = merge(recipes);
@@ -49,16 +58,16 @@
 <div id="list" class="flex flex-col w-full">
     <div id="header" class="flex justify-evenly items-center m-2.5 mt-0">
         {#if grocery_list.length > 0}
-            <div id="count">{grocery_list.length} Items</div><button id="copy" class="btn btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
+            <div id="count" class="text-xs">{grocery_list.length} Items</div><button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
         {/if}
     </div>
-    <div class="max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto">
-        <div class="grocery_list">
+    <div class="">
+        <div class="grocery_list max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto">
             {#each grocery_list as item}
                     <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">
-                        <input type="checkbox" class="checkbox checkbox-sm" id="{item.ingredient}">
-                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center" value={item.quantity}>
-                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center" value={item.unit}>
+                        <input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}">
+                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" value={item.quantity}>
+                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" value={item.unit}>
                         <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" value={item.ingredient}> 
                     </div>                        
             {/each}

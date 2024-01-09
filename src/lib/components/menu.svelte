@@ -111,36 +111,36 @@
         <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={menu.title}/>
     </div>
     <div class="flex content-center">
-        <div class="tabs tabs-boxed w-fit mx-auto">
-            <a id="recipe_list" class="tab tab-active" on:click={switch_tab}>Recipes</a> 
-            <a id="grocery_list" class="tab" on:click={switch_tab}>Grocery List</a>
+        <div class="tabs tabs-boxed w-fit mx-auto flex items-center">
+            <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
+            <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
         {#if $page.url.pathname == "/menu"}
-            <button class="btn btn-secondary self-end btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
         {:else if $page.url.pathname == "/my_menus"}
-            <button class="btn btn-secondary self-end btn-sm" id="today_btn" on:click={set_todays_menu}>make todays menu</button>
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>make<br>todays menu</button>
         {/if}
     </div>
-    <div class="flex justify-around">
-        <p>{menu.length} recipes</p>
-        <p>{num_servings} servings</p>
-        <p>{total_time}</p>
+    <div class="flex justify-around mt-2">
+        <p class="text-xs">{menu.length} recipes</p>
+        <p class="text-xs">{num_servings} servings</p>
+        <p class="text-xs">{total_time}</p>
     </div>
     
     {#if tab == "recipe_list"}
-        <div class="max-h-[calc(100vh-130px)] overflow-y-auto">
+        <div class="max-h-[calc(100vh-170px)] md:max-h-[calc(100vh-210px)] overflow-y-auto">
                 {#each menu as recipe}
                     <div class="img_serv_container card card-bordered sm:card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl">
                         <figure class="image w-1/3">
                             <img class="" src={recipe.image} alt={recipe.title}/>
                         </figure>
                         <div class="servings_time_container w-2/3 ml-2.5">
-                            <p class="title text-xl">{recipe.title}</p>
-                            <p class="time">{recipe.time}</p>
-                            <div class="servings_container">
+                            <p class="title text-xs bold md:text-xl">{recipe.title}</p>
+                            <p class="time text-xs">{recipe.time}</p>
+                            <div class="servings_container text-xs">
                                 servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" id={recipe.id} bind:value={mults[recipe.id]}>
                             </div>
-                            <p class="description">{recipe.description}</p>
+                            <p class="description text-xs">{recipe.description}</p>
                         </div>
                     </div>
                 {/each}
