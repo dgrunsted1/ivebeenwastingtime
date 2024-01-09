@@ -128,7 +128,7 @@
     </div>
     
     {#if tab == "recipe_list"}
-        <div class="max-h-[calc(100vh-170px)] md:max-h-[calc(100vh-210px)] overflow-y-auto">
+        <div class="max-h-[calc(100vh-230px)] md:max-h-[calc(100vh-210px)] overflow-y-auto">
                 {#each menu as recipe}
                     <div class="img_serv_container card card-bordered sm:card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl">
                         <figure class="image w-1/3">
