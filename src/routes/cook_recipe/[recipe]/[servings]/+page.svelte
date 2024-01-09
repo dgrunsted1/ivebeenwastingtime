@@ -5,6 +5,7 @@
     
     /** @type {import('./$types').PageData} */
     export let data;
+    const scroll_size = 425;
 
     const get_quantity = function(quantity){
         if (quantity){
@@ -17,28 +18,28 @@
 
 </script>
 
-    <div id="cook_recipe" class="flex flex-col m-2 pb-10">
-        <div class="img_info_container flex items-center justify-center">
-            <div class="img_container w-1/4">
+    <div id="cook_recipe" class="flex flex-col md:m-2 pb-3 md:pb-10">
+        <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
+            <div class="img_container w-full md:w-1/4">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
             </div>
-            <div class="info_container w-1/2 flex flex-col m-1">
+            <div class="info_container w-full md:w-1/2 flex flex-col m-1">
                 <div class="title_container flex justify-around">
-                    <div class="title w-4/5 text-xl">{data.post.recipe.title}</div>
+                    <div class="title w-4/5 text-sm md:text-xl">{data.post.recipe.title}</div>
                 </div>
                 <div class="description_container">
-                    <div class="desc text-sm" >{data.post.recipe.description}</div>
+                    <div class="desc text-xs md:text-sm" >{data.post.recipe.description}</div>
                 </div>
                 <div class="misc flex justify-evenly">
-                    <div class="author_container text-center w-1/3">
+                    <div class="author_container text-center w-1/3 text-xs md:text-sm">
                         <label for="auth">Author</label>
                         <div class="auth">{data.post.recipe.author}</div>
                     </div>
-                    <div class="time_container text-center w-1/3">
+                    <div class="time_container text-center w-1/3 text-xs md:text-sm">
                         <label for="time">Time</label>
                         <div class="time">{data.post.recipe.time}</div>
                     </div>
-                    <div class="servings text-center w-1/3">
+                    <div class="servings text-center w-1/3 text-xs md:text-sm">
                         servings
                         <div>{data.post.servings}</div>
                     </div>
@@ -47,14 +48,14 @@
     
             </div>
         </div>
-        <div class="ingr_directions_container flex m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-2/5 m-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md py-4">
+        <div class="ingr_directions_container flex flex-col md:flex-row md:m-2 items-center">
+            <div id="ingredient_list" class="flex flex-col h-fit md:w-2/5 m-2 max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto border-2 border-accent rounded-md py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center m-2 gap-x-2">
-                            <div class="ingr_amount text-sm text-center">{get_quantity(ingr.quantity)}</div>
-                            <div class="ingr_unit text-center text-sm">{ingr.unit ? ingr.unit : ""}</div>
-                            <div class="ingr_name text-center text-sm">{ingr.ingredient}</div>
+                            <div class="ingr_amount text-xs md:text-sm text-center">{get_quantity(ingr.quantity)}</div>
+                            <div class="ingr_unit text-center text-xs md:text-sm">{ingr.unit ? ingr.unit : ""}</div>
+                            <div class="ingr_name text-center text-xs md:text-sm">{ingr.ingredient}</div>
                         </div>
                         {#if data.post.recipe.expand.ingr_list[data.post.recipe.expand.ingr_list.length-1] != ingr}
                             <div class="divider my-1 "></div>
@@ -63,11 +64,11 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list w-3/5 h-fit gap-y-8 m-2 p-2 max-h-[calc(100vh-250px)] overflow-y-auto border-2 border-accent rounded-md">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit gap-y-8 m-2 md:p-2 max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto border-2 border-accent rounded-md">
                 {#each data.post.recipe.directions as curr, i}
-                    <div class="step flex items-center justify-center gap-x-3 mx-2">
-                        <label for="directions" class="flex text-right">Step {i+1}</label>
-                        <p class="directions flex grow m-1 w-4/5 h-fit text-sm">{curr}</p>
+                    <div class="step flex items-center justify-center gap-x-3 md:mx-2">
+                        <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
+                        <p class="directions flex grow m-1 md:w-4/5 h-fit text-xs md:text-sm">{curr}</p>
                     </div>
                 {/each}
             </div>
