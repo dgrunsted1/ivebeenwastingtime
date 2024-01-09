@@ -121,10 +121,10 @@
             <button class="btn btn-secondary self-end btn-sm" id="today_btn" on:click={set_todays_menu}>make todays menu</button>
         {/if}
     </div>
-    <div class="flex justify-around">
-        <p>{menu.length} recipes</p>
-        <p>{num_servings} servings</p>
-        <p>{total_time}</p>
+    <div class="flex justify-around mt-2">
+        <p class="text-xs">{menu.length} recipes</p>
+        <p class="text-xs">{num_servings} servings</p>
+        <p class="text-xs">{total_time}</p>
     </div>
     
     {#if tab == "recipe_list"}
@@ -135,7 +135,7 @@
                             <img class="" src={recipe.image} alt={recipe.title}/>
                         </figure>
                         <div class="servings_time_container w-2/3 ml-2.5">
-                            <p class="title text:sm md:text-xl">{recipe.title}</p>
+                            <p class="title text-xs bold md:text-xl">{recipe.title}</p>
                             <p class="time text-xs">{recipe.time}</p>
                             <div class="servings_container text-xs">
                                 servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" id={recipe.id} bind:value={mults[recipe.id]}>

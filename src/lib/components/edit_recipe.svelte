@@ -238,22 +238,22 @@
 
 <div id="recipe" class="flex flex-col w-full">
     <div class="save_btn_container flex flex-col items-center mb-5">
-        <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe_v2}>
+        <button class="save_btn btn btn-secondary btn-xs md:btn-md w-1/3" disabled="true" on:click={save_recipe_v2}>
             save recipe
         </button>
     </div>
-    <div class="img_info_container flex flex-row w-full content-center justify-around">
-        <div class="img_container mr-3 flex w-1/2 content-center">
+    <div class="img_info_container flex flex-col md:flex-row w-full content-center justify-around">
+        <div class="img_container mr-3 flex md:w-1/2 content-center">
             {#if recipe.image}
                 <img src={recipe.image} alt={recipe.title} class="self-center"/>
             {:else}
-            <div class="w-full flex flex-col space-y-2">
-                <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
-                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
-            </div>
+                <div class="w-full flex flex-col space-y-2">
+                    <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
+                    <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
+                </div>
             {/if}
         </div>
-        <div class="info_container w-1/2 mx-1">
+        <div class="info_container md:w-1/2 mx-1">
             <div class="title_container form-control">
                 <label for="title" class="label p-0"><span class="label-text-alt p-0">Title</span></label>
                 <input type="text" class="title input input-bordered input-xs" bind:value={recipe.title}/>
@@ -289,7 +289,7 @@
                     <div class="flex justify-evenly content-center w-full my-1 space-x-1 flex-wrap">
                         <div class="flex w-full space-x-2">
                             <div class="dropdown w-1/2">
-                                <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
+                                <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered input-xs m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
                                     {#each display_cuisines as cuisine}
                                         <li class="cursor-pointer" on:click={()=>{recipe.cuisine = cuisine; document.activeElement.blur();}}>{cuisine}</li>
@@ -297,7 +297,7 @@
                                 </ul>
                             </div>
                             <div class="dropdown w-1/2">
-                                <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
+                                <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered input-xs m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                     {#each display_countries as country}
                                         <li class="cursor-pointer" on:click={()=>{recipe.country = country; document.activeElement.blur();}}>{country}</li>
@@ -306,7 +306,7 @@
                             </div>
                         </div>
                         <div class="dropdown w-1/2">
-                            <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
+                            <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered input-xs m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
                             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                 {#each display_categories as category}
                                     <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur();}}>{category}</li>
@@ -315,19 +315,19 @@
                         </div>
                     </div>
                 </div>
-                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url} target="_blank">original recipe</a></div>
+                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-xs md:btn-sm" href={recipe.url} target="_blank">original recipe</a></div>
             </div>
         </div>
     </div>
     <div class="ingr_directions_container">
-        <div class="badge badge-primary ml-14 mt-3">Ingredients</div>
+        <div class="badge badge-primary md:ml-14 mt-3">Ingredients</div>
         <div id="ingredient_list">
             {#if recipe.expand.ingr_list.length}
                 {#each recipe.expand.ingr_list as ingr, i}
                     {#if ingr}
                         <div class="ingr_row flex flex-row justify-center items-center mt-1 " class:removed={ingr.removed}>
-                            <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center" bind:value={recipe.expand.ingr_list[i].quantity}>
-                            <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit}>
+                            <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center h-fit" bind:value={recipe.expand.ingr_list[i].quantity}>
+                            <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center h-fit" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit}>
                             <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient}>
                             <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
                         </div>
@@ -347,7 +347,7 @@
             <div class="badge badge-primary mt-3 self-start">Directions</div>
             {#if recipe.directions.length}
                 {#each recipe.directions as curr, i}
-                    <div class="step w-4/5">
+                    <div class="step w-full md:w-4/5">
                         <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
                         <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]}/>
                     </div>
@@ -373,13 +373,13 @@
                     </div>
                 {/each}
             {/if}
-            <div class="w-4/5">
+            <div class="w-full md:w-4/5">
                 <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">New</span></label>
                 <textarea id="new_note" class="notes textarea w-full textarea-bordered"></textarea>
             </div>
         </div>
         <div class="save_btn_container flex flex-col items-center">
-            <button class="save_btn btn btn-secondary w-1/3" disabled="true" on:click={save_recipe_v2}>
+            <button class="save_btn btn btn-secondary btn-xs md:btn-md w-1/3" disabled="true" on:click={save_recipe_v2}>
                 save recipe
             </button>
         </div>

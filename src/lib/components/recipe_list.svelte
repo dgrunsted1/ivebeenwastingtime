@@ -399,14 +399,14 @@
         <div class="flex flex-row card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
             <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
-                <p id={curr.id} class="w-3/4">{curr.title}</p>
+                <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view" on:click={view}><ViewIcon/></button>
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit" on:click={view}><EditIcon/></button>
                     </div>
                     <div class="flex space-x-1">
-                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent" id={curr.id} bind:checked={curr.checked}>
+                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
                         <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
                     </div>
                 </div>
@@ -414,6 +414,6 @@
         </div>
     {/each}
     <div class="flex justify-center m-5">
-        <a class="btn btn-primary" href="/add_recipe">Add New Recipes</a>
+        <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
     </div>
 </div>
