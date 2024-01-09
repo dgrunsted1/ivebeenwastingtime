@@ -96,7 +96,7 @@
     }
 </script>
 <div id="main">
-    <div id="content" class="flex flex-col md:flex-row m-2 mt-0">
+    <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0">
         <div id="left_column" class="md:w-1/2">
             {#if user_recipes}
                 <RecipeList recipes={user_recipes.items} 
