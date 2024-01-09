@@ -7,7 +7,16 @@
     export let recipes;
     let grocery_list = [];
     let skipped = [];
-    let scroll_size = ($page.url.pathname == "/today") ? 200 : 270;
+    let scroll_size = 0;
+    if ($page.url.pathname == "/today"){
+        scroll_size = 130;
+    } else if ($page.url.pathname == "/prep") {
+        scroll_size = 270;
+    } else if ($page.url.pathname == "/menu"){
+        scroll_size = 150;
+    } else if ($page.url.pathname == "/my_menus"){
+        scroll_size = 250;
+    }
 
     afterUpdate(async () => {
         let result = merge(recipes);
