@@ -105,17 +105,23 @@
                     on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
             {/if}
         </div>
-        <div id="right_column" class="md:w-1/2 m-2">
-            {#if menu_recipes && mode == "menu"}
-                <Menu menu={menu_recipes} {mults} {page}/>
-            {:else if view_recipe && mode == "view"}
-                <DisplayRecipe recipe={view_recipe}/>
-            {:else if edit_recipe && mode == "edit"}
-                <EditRecipe recipe={edit_recipe}/>
-            {:else}
-                <h2>select recipes to add to your menu</h2>
-            {/if}
-        </div>
+        <div class="collapse md:collapse-open bg-base-200 md:bg-base-100">
+            <input type="checkbox" /> 
+            <div class="collapse-title text-xs text-center">
+              Current Recipe
+            </div>
+            <div id="right_column" class="collapse-content m-2">
+                {#if menu_recipes && mode == "menu"}
+                    <Menu menu={menu_recipes} {mults} {page}/>
+                {:else if view_recipe && mode == "view"}
+                    <DisplayRecipe recipe={view_recipe}/>
+                {:else if edit_recipe && mode == "edit"}
+                    <EditRecipe recipe={edit_recipe}/>
+                {:else}
+                    <h2>select recipes to add to your menu</h2>
+                {/if}
+            </div>
+          </div>
     </div>
 </div>
 
