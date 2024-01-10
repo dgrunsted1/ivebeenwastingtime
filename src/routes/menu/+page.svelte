@@ -105,12 +105,12 @@
                     on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
             {/if}
         </div>
-        <div class="collapse md:collapse-open bg-base-200 md:bg-base-100">
-            <input type="checkbox" /> 
-            <div class="collapse-title text-xs text-center">
-              Current Recipe
+        <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2">
+            <input type="checkbox" class="h-1"/> 
+            <div class="collapse-title text-xs text-center min-h-2">
+              Your Menu
             </div>
-            <div id="right_column" class="collapse-content m-2">
+            <div id="right_column" class="collapse-content md:collapse-open">
                 {#if menu_recipes && mode == "menu"}
                     <Menu menu={menu_recipes} {mults} {page}/>
                 {:else if view_recipe && mode == "view"}
