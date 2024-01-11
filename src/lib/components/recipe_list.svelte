@@ -363,14 +363,14 @@
 </script>
 <div class="flex flex-col space-y-1">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
+        {#each categories.cats as cat}
+            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
+        {/each}
         {#each categories.cuisines as cuisine}
             <button class="btn btn-primary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each categories.countries as country}
             <button class="btn btn-primary btn-xs country" on:click={select_cat}>{country}</button> 
-        {/each}
-        {#each categories.cats as cat}
-            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
