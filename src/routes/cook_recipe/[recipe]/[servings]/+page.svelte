@@ -48,8 +48,8 @@
     
             </div>
         </div>
-        <div class="ingr_directions_container flex flex-col md:flex-row md:m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md py-4">
+        <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
+            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2">
@@ -64,7 +64,7 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 m-2 p-1 md:p-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md">
                 {#each data.post.recipe.directions as curr, i}
                     <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2">
                         <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
