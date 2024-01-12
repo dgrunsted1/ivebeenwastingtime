@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md py-4">
+            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2">
