@@ -11,16 +11,6 @@
         {href:"/add_recipe", display: "Add Recipe"}
     ];
 	</script>
-	
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width, maximum-scale=1" />
-	</head>
-	
-	
-	
-	<body data-sveltekit-preload-data="hover">
 		{#if !is_homepage}
 			<div>
 				<div class="navbar bg-base-100 fixed z-10">
@@ -63,4 +53,3 @@
 			{/if}
 			<slot></slot>
 		</div>
-	</body>
