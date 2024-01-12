@@ -287,7 +287,7 @@
                         {/if}
                     </div>
                     <div class="flex justify-evenly content-center w-full my-1 space-x-1 flex-wrap">
-                        <div class="flex w-full space-x-2">
+                        <div class="flex w-full space-x-2 p-1">
                             <div class="dropdown w-1/2">
                                 <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered input-xs m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
@@ -363,7 +363,7 @@
             </div>
         </div>
 
-        <div class="notes_container m-1 w-full flex flex-col items-center">
+        <div class="notes_container p-1 w-full flex flex-col items-center">
             <div class="badge badge-primary mt-3 self-start">Notes</div>
             {#if recipe.expand && recipe.expand.notes}
                 {#each recipe.expand.notes as note, i}

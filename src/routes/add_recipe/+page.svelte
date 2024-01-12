@@ -60,10 +60,10 @@
 
     }
 </script>
-<div class="flex flex-col max-w-5xl m-auto space-y-5 mb-5">
+<div class="flex flex-col max-w-5xl px-1 space-y-5 mb-5 w-full">
     
     <div class="link">
-        <form method='POST' on:input|preventDefault={fetch_recipe}>
+        <form method='POST' on:input|preventDefault={fetch_recipe} class="text-center w-full">
             <input placeholder="Link to recipe" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent"/>
         </form>
     </div>
