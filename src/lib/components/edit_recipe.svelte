@@ -287,7 +287,7 @@
                         {/if}
                     </div>
                     <div class="flex justify-evenly content-center w-full my-1 space-x-1 flex-wrap">
-                        <div class="flex w-full space-x-2 p-1">
+                        <div class="flex w-full justify-around space-x-2 p-1">
                             <div class="dropdown w-1/2">
                                 <input type="text" id="cuisine" placeholder="cuisine" tabindex="0" class="input input-bordered input-xs m-1 w-full cursor-text" bind:value={recipe.cuisine} on:input={filter_cuisines}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box">
@@ -296,7 +296,7 @@
                                     {/each}
                                 </ul>
                             </div>
-                            <div class="dropdown w-1/2">
+                            <div class="dropdown dropdown-end w-1/2">
                                 <input type="text" id="country" placeholder="country" tabindex="0" class="input input-bordered input-xs m-1 cursor-text w-full" bind:value={recipe.country} on:input={filter_countries}/>
                                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                                     {#each display_countries as country}

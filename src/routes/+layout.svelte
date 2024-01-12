@@ -5,11 +5,11 @@
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
 
     	let page_links = [{href:"/gallery", display: "Gallery"},
-		{href:"/menu", display: "Create Menu"},
-        {href:"/my_menus", display: "My Menus"},
-        {href:"/today", display: "Today"},
-        {href:"/add_recipe", display: "Add Recipe"}
-    ];
+			{href:"/menu", display: "Create Menu"},
+			{href:"/my_menus", display: "My Menus"},
+			{href:"/today", display: "Today"},
+			{href:"/add_recipe", display: "Add Recipe"}
+    	];
 	</script>
 		{#if !is_homepage}
 			<div>
