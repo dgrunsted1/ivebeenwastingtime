@@ -25,7 +25,16 @@
 			<div>
 				<div class="navbar bg-base-100 fixed z-10">
 					<div class="navbar-start">
-						<div class="dropdown">
+						
+						<!-- {#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea") && $page.url.pathname != "/gallery" && $page.url.pathname != "/test_suite"}
+							<a href="test_suite" class="btn btn-error btn-sm">test suite</a>
+						{/if} -->
+					</div>
+					<div class="navbar-center">
+					<a class="btn btn-ghost normal-case md:text-xl py-1 btn-sm md:btn-lg" href="/">www.ivebeenwastingtime.com</a>
+					</div>
+					<div class="navbar-end">
+						<div class="dropdown dropdown-end">
 							<div tabindex="0" role="button" class="btn btn-ghost btn-circle btn-sm">
 							<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
 							</div>
@@ -44,15 +53,7 @@
 							{/if}
 							</ul>
 						</div>
-						<!-- {#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea") && $page.url.pathname != "/gallery" && $page.url.pathname != "/test_suite"}
-							<a href="test_suite" class="btn btn-error btn-sm">test suite</a>
-						{/if} -->
 					</div>
-					<div class="navbar-center">
-					<a class="btn btn-ghost normal-case md:text-xl py-1 btn-sm md:btn-lg" href="/">www.ivebeenwastingtime.com</a>
-					</div>
-					<ul class="menu menu-horizontal navbar-end">
-					</ul>
 				</div>
 			</div>
 		  {/if}
