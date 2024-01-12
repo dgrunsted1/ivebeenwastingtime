@@ -88,6 +88,6 @@
       />
 
       <button class="btn btn-primary m-2.5 w-fit my-1 mx-auto" on:click={login}>Login</button>
-      <button class="btn btn-accent m-2.5 w-fit my-1 mx-auto hidden" on:click={signUp}>Sign Up</button>
+      <button class="btn btn-accent m-2.5 w-fit my-1 mx-auto" on:click={signUp}>Sign Up</button>
     </form>
   {/if}
