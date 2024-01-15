@@ -34,7 +34,7 @@
       } catch (err) {
         for (let key in err.data.data) {
             const element = err.data.data[key];
-            let ans = window.prompt(`Re-enter ${key}: ${element.message}`);
+            let ans = window.prompt(`Re-enter ${key}: ${element.message}`, data[key]);
             data[key] = ans;
         }
         data.passwordConfirm = data.password;
