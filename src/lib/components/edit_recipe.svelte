@@ -243,7 +243,7 @@
         </button>
     </div>
     <div class="img_info_container flex flex-col md:flex-row w-full content-center justify-around">
-        <div class="img_container mr-3 flex md:w-1/2 content-center">
+        <div class="img_container flex md:w-1/2 content-center">
             {#if recipe.image}
                 <img src={recipe.image} alt={recipe.title} class="self-center"/>
             {:else}
