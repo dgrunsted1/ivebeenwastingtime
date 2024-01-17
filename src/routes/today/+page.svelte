@@ -8,6 +8,7 @@
     let todays_menu = {};
     let grocery_list = []; 
     let mode = "menu";
+    $: loading = true;
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -24,6 +25,7 @@
                 };  
             });
         }
+        loading = false;
     });
 </script>
 
@@ -56,6 +58,8 @@
             </div>
         </div>
     </div>
+{:else if loading}
+    <div class="text-center"><span class="loading loading-bars loading-lg"></span></div>
 {:else}
     <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
         <h2>You have no menu selected</h2>

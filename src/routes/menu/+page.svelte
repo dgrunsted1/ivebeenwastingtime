@@ -14,6 +14,7 @@
     let mode = "menu";
     let view_recipe;
     let edit_recipe;
+    $: loading = true;
 
 
     onMount(async () => {
@@ -24,6 +25,7 @@
             sort: `-created`
         });
         user_recipes = result_list;
+        loading = false;
     });
 
     function update_edit(e){
@@ -96,14 +98,16 @@
     }
 </script>
 <div id="main">
-        {#if user_recipes.length > 0}
+        {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
             <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0">
                 <div id="left_column" class="md:w-1/2">
-                    {#if user_recipes}
+                    {#if user_recipes.items}
                         <RecipeList recipes={user_recipes.items} 
                             on:update_view={update_view} on:update_edit={update_edit}
                             on:remove_from_menu={remove_from_menu}
                             on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
+                    {:else}
+                        <div class="text-center"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
                 <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2">
@@ -125,12 +129,12 @@
                 </div>
             </div>
         {:else}
-        <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
-            <h2>You have no recipes yet</h2>
-            <div class="flex flex-row items-center space-x-1">
-                <h3>Click </h3><a href="/add_recipe" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to add a new recipe</h3>
+            <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
+                <h2>You have no recipes yet</h2>
+                <div class="flex flex-row items-center space-x-1">
+                    <h3>Click </h3><a href="/add_recipe" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to add a new recipe</h3>
+                </div>
             </div>
-        </div>
         {/if}
 </div>
 

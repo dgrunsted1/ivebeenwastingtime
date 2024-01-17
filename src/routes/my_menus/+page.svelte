@@ -11,6 +11,7 @@
     
     $: user_menus = [];
     $: modal_menu = [];
+    $: loading = true;
     $: sort_val = null;
     let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
 
@@ -22,6 +23,7 @@
             sort: `-created`
         });
         user_menus = result_list.items;
+        loading = false;
     });
 
     function show_menu_modal(e){
@@ -286,7 +288,7 @@
         return 0;
     }
 </script>
-{#if user_menus.length > 0}
+{#if user_menus.length > 0 || loading}
     <div class="flex justify-between mx-4">
         <div class="flex w-fit space-x-6 items-center">
             <div class="form-control w-full max-w-xs">
@@ -310,8 +312,10 @@
     </div>
 
     <div id="menus" class="max-h-[calc(100vh-120px)] overflow-y-auto">
-        
-        {#each user_menus as curr, i}
+        {#if loading}
+            <div class="text-center"><span class="loading loading-bars loading-lg"></span></div>
+        {:else}
+            {#each user_menus as curr, i}
                 <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
                     <figure class="md:w-2/3">
                         {#each user_menus[i].expand.recipes as recipe, j}
@@ -336,7 +340,9 @@
                         </div>
                     </div>
                 </div>
-        {/each}
+            {/each}
+        {/if}
+        
     </div>
     <dialog id="my_modal_2" class="modal">
         {#if modal_menu.id}
