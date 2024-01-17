@@ -8,7 +8,7 @@
     import { page } from '$app/stores';
 
 
-    let user_recipes;
+    $: user_recipes = {};
     let menu_recipes = [];
     let mults = {};
     let mode = "menu";
@@ -96,33 +96,42 @@
     }
 </script>
 <div id="main">
-    <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0">
-        <div id="left_column" class="md:w-1/2">
-            {#if user_recipes}
-                <RecipeList recipes={user_recipes.items} 
-                    on:update_view={update_view} on:update_edit={update_edit}
-                    on:remove_from_menu={remove_from_menu}
-                    on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
-            {/if}
+        {#if user_recipes.length > 0}
+            <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0">
+                <div id="left_column" class="md:w-1/2">
+                    {#if user_recipes}
+                        <RecipeList recipes={user_recipes.items} 
+                            on:update_view={update_view} on:update_edit={update_edit}
+                            on:remove_from_menu={remove_from_menu}
+                            on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
+                    {/if}
+                </div>
+                <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2">
+                    <input type="checkbox" class="h-1"/> 
+                    <div class="collapse-title text-xs text-center min-h-2">
+                    Your Menu
+                    </div>
+                    <div id="right_column" class="collapse-content md:collapse-open">
+                        {#if menu_recipes && mode == "menu"}
+                            <Menu menu={menu_recipes} {mults} {page}/>
+                        {:else if view_recipe && mode == "view"}
+                            <DisplayRecipe recipe={view_recipe}/>
+                        {:else if edit_recipe && mode == "edit"}
+                            <EditRecipe recipe={edit_recipe}/>
+                        {:else}
+                            <h2>select recipes to add to your menu</h2>
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        {:else}
+        <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
+            <h2>You have no recipes yet</h2>
+            <div class="flex flex-row items-center space-x-1">
+                <h3>Click </h3><a href="/add_recipe" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to add a new recipe</h3>
+            </div>
         </div>
-        <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2">
-            <input type="checkbox" class="h-1"/> 
-            <div class="collapse-title text-xs text-center min-h-2">
-              Your Menu
-            </div>
-            <div id="right_column" class="collapse-content md:collapse-open">
-                {#if menu_recipes && mode == "menu"}
-                    <Menu menu={menu_recipes} {mults} {page}/>
-                {:else if view_recipe && mode == "view"}
-                    <DisplayRecipe recipe={view_recipe}/>
-                {:else if edit_recipe && mode == "edit"}
-                    <EditRecipe recipe={edit_recipe}/>
-                {:else}
-                    <h2>select recipes to add to your menu</h2>
-                {/if}
-            </div>
-          </div>
-    </div>
+        {/if}
 </div>
 
 

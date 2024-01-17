@@ -14,14 +14,16 @@
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
             expand: `recipes,recipes.notes,recipes.ingr_list`
-        })
-        todays_menu = result_list.items[0];
-        todays_menu.expand.recipes.forEach((recipe, i) => {
-            grocery_list[i] = {
-                ingredients: recipe.expand.ingr_list,
-                multiplier: parseFloat(todays_menu.servings[recipe.id]) / parseFloat(recipe.servings)
-            };  
         });
+        if (result_list.items[0]){
+            todays_menu = result_list.items[0];
+            todays_menu.expand.recipes.forEach((recipe, i) => {
+                grocery_list[i] = {
+                    ingredients: recipe.expand.ingr_list,
+                    multiplier: parseFloat(todays_menu.servings[recipe.id]) / parseFloat(recipe.servings)
+                };  
+            });
+        }
     });
 </script>
 
@@ -52,6 +54,13 @@
                     <h2>select recipes to add to your menu</h2>
                 {/if}
             </div>
+        </div>
+    </div>
+{:else}
+    <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
+        <h2>You have no menu selected</h2>
+        <div class="flex flex-row items-center space-x-1">
+            <h3>Click </h3><a href="/my_menus" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3>to add a menu</h3>
         </div>
     </div>
 {/if}

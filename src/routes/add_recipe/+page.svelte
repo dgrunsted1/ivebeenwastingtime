@@ -60,7 +60,7 @@
 
     }
 </script>
-<div class="flex flex-col max-w-5xl px-1 space-y-5 mb-5 w-full">
+<div class="flex flex-col max-w-5xl px-1 space-y-5 mb-5 w-fit m-auto">
     
     <div class="link">
         <form method='POST' on:input|preventDefault={fetch_recipe} class="text-center w-full">
