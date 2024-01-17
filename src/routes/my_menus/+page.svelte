@@ -313,7 +313,7 @@
 
     <div id="menus" class="max-h-[calc(100vh-120px)] overflow-y-auto">
         {#if loading}
-            <div class="text-center"><span class="loading loading-bars loading-lg"></span></div>
+            <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
         {:else}
             {#each user_menus as curr, i}
                 <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-100 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
@@ -355,7 +355,7 @@
         {/if}
     </dialog>
 {:else}
-    <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 w-fit m-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] mx-2">
+    <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
         <h2>You have no menus yet</h2>
         <div class="flex flex-row items-center space-x-1">
             <h3>Click </h3><a href="/menu" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to create a new menu</h3>

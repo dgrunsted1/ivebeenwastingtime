@@ -107,7 +107,7 @@
                             on:remove_from_menu={remove_from_menu}
                             on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
                     {:else}
-                        <div class="text-center"><span class="loading loading-bars loading-lg"></span></div>
+                        <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
                 <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2">
@@ -129,7 +129,7 @@
                 </div>
             </div>
         {:else}
-            <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh]">
+            <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
                 <h2>You have no recipes yet</h2>
                 <div class="flex flex-row items-center space-x-1">
                     <h3>Click </h3><a href="/add_recipe" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to add a new recipe</h3>
