@@ -59,15 +59,8 @@ async function get_ingr_ids(recipe){
             if (recipe.expand.ingr_list[i].id){
                 const db_ingr = await pb.collection('ingredients').getOne(recipe.expand.ingr_list[i].id);
                 if (db_ingr.quantity != recipe.expand.ingr_list[i].quantity || 
-                    db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
-                    db_ingr.unit != recipe.expand.ingr_list[i].unit){
-                    const ingr_string = recipe.expand.ingr_list[i].quantity+ " " + recipe.expand.ingr_list[i].unit+ " " + recipe.expand.ingr_list[i].ingredient;
-                    const ingr_obj = process_recipe_old([ingr_string]);
-                    recipe.expand.ingr_list[i].quantity = ingr_obj.quantity;
-                    recipe.expand.ingr_list[i].ingredient = ingr_obj.ingredient;
-                    recipe.expand.ingr_list[i].unit = ingr_obj.unit;
-                    recipe.expand.ingr_list[i].unitPlural = ingr_obj.unitPlural;
-                    recipe.expand.ingr_list[i].symbol = ingr_obj.symbol;
+                db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
+                db_ingr.unit != recipe.expand.ingr_list[i].unit){
                     if (recipe.expand.ingr_list[i].recipe.length > 1){
                         const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.expand.ingr_list[i].id]});
                         const new_ingr_data = {
