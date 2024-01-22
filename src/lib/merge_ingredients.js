@@ -100,3 +100,53 @@ function round_amount(in_amount, mult){
     }
     return Math.round((result + Number.EPSILON) * 100) / 100;
 }
+
+export const groupBySimilarity = function(strings) {
+
+    // Split each string into words
+
+    const stringWords = strings.map(s => s.ingredient.split(' '));
+    
+    // Initialize a map to hold the groups
+    const groups = new Map();
+  
+    for (let i = 0; i < strings.length; i++) {
+      const str1Words = stringWords[i];
+      
+      // Check if this string belongs in an existing group
+      let maxSimilarity = 0;
+      let maxGroup;
+      groups.forEach((group, key) => {
+        let intersection = 0;
+        const str2Words = key.ingredient.split(' ');
+        str1Words.forEach(word => {
+          if (str2Words.includes(word)) {
+            intersection++;
+          }
+        });
+        console.log({intersection}, "str1Words.length:"+str1Words.length, {str1Words});
+        const similarity = intersection / str1Words.length;
+        console.log({similarity});
+        if (similarity > maxSimilarity) {
+          maxSimilarity = similarity;
+          maxGroup = key;
+        }
+      });
+      
+      // If no suitable group, create a new one
+      if (maxSimilarity === 0) {
+        groups.set(strings[i], [strings[i]]); 
+      } else {
+        groups.get(maxGroup).push(strings[i]);
+      }
+    }
+
+
+    let flattened = [];
+    
+    Array.from(groups.values()).sort((a, b) => b.length - a.length).forEach(subarr => {
+        flattened.push(...subarr);
+    });
+
+    return flattened;
+  }

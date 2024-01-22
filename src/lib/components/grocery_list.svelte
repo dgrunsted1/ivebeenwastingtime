@@ -1,7 +1,7 @@
 <script>
     import { each } from "svelte/internal";
     import { afterUpdate } from 'svelte';
-    import { merge } from '/src/lib/merge_ingredients.js'
+    import { merge, groupBySimilarity } from '/src/lib/merge_ingredients.js'
     import { page } from '$app/stores';
 
     export let recipes;
@@ -19,9 +19,18 @@
     }
 
     afterUpdate(async () => {
-        let result = merge(recipes);
-
-        grocery_list = result.grocery_list;
+        // let result = merge(recipes);
+        let ingr_list = [];
+        recipes.forEach(obj => {
+            console.log({obj});
+            if (obj.ingredients) {
+                ingr_list.push(...obj.ingredients);
+            }
+        });
+        console.log({ingr_list});
+        let result = groupBySimilarity(ingr_list);
+        console.log({result});
+        grocery_list = result;
         skipped = result.skipped;
     });
 
