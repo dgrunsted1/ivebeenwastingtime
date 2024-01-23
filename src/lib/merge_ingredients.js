@@ -105,7 +105,7 @@ export const groupBySimilarity = function(strings) {
 
     // Split each string into words
 
-    const stringWords = strings.map(s => s.ingredient.split(' '));
+    const stringWords = strings.map(s => s.ingredient.split(' ')).sort((a, b) => a.length - b.length);
     
     // Initialize a map to hold the groups
     const groups = new Map();
@@ -124,9 +124,14 @@ export const groupBySimilarity = function(strings) {
             intersection++;
           }
         });
-        console.log({intersection}, "str1Words.length:"+str1Words.length, {str1Words});
-        const similarity = intersection / str1Words.length;
-        console.log({similarity});
+        const min_length = (str1Words.length > str2Words.length) ? str2Words.length : str1Words.length ;
+        const similarity = intersection / min_length;
+        if (intersection > 0) console.log("-----------------------------------------------");   
+        if (intersection > 0) console.log({length});
+        if (intersection > 0) console.log({intersection});
+        if (intersection > 0) console.log({similarity});
+        if (intersection > 0) console.log({str2Words});
+        if (intersection > 0) console.log({str1Words});
         if (similarity > maxSimilarity) {
           maxSimilarity = similarity;
           maxGroup = key;
@@ -134,7 +139,7 @@ export const groupBySimilarity = function(strings) {
       });
       
       // If no suitable group, create a new one
-      if (maxSimilarity === 0) {
+      if (maxSimilarity < .25) {
         groups.set(strings[i], [strings[i]]); 
       } else {
         groups.get(maxGroup).push(strings[i]);
@@ -143,7 +148,7 @@ export const groupBySimilarity = function(strings) {
 
 
     let flattened = [];
-    
+    console.log(Array.from(groups.values()).sort((a, b) => b.length - a.length));
     Array.from(groups.values()).sort((a, b) => b.length - a.length).forEach(subarr => {
         flattened.push(...subarr);
     });
