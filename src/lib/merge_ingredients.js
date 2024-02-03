@@ -105,7 +105,7 @@ export const groupBySimilarity = function(strings) {
 
     // Split each string into words
 
-    const stringWords = strings.map(s => s.ingredient.split(' ')).sort((a, b) => a.length - b.length);
+    let stringWords = strings.map(s => removePunctuationSymbolsParentheses(s.ingredient).split(' ')).sort((a, b) => b.length - a.length);
     
     // Initialize a map to hold the groups
     const groups = new Map();
@@ -118,7 +118,7 @@ export const groupBySimilarity = function(strings) {
       let maxGroup;
       groups.forEach((group, key) => {
         let intersection = 0;
-        const str2Words = key.ingredient.split(' ');
+        const str2Words = removePunctuationSymbolsParentheses(key.ingredient).split(' ');
         str1Words.forEach(word => {
           if (str2Words.includes(word)) {
             intersection++;
@@ -154,4 +154,21 @@ export const groupBySimilarity = function(strings) {
     });
 
     return flattened;
+  }
+  
+  function removePunctuationSymbolsParentheses(text) {
+
+    // Remove punctuation
+    text = text.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g,"");
+  
+    // Remove symbols
+    const symbols = "!@#$%^&*()_+`-={}|[]\:';\"<>,.?/`";
+    for (let i = 0; i < symbols.length; i++) {
+      text = text.replace(new RegExp("\\" + symbols[i], 'g'), ''); 
+    }
+  
+    // Remove parentheses and their contents
+    text = text.replace(/\([^)]*\)/g, '');
+  
+    return text;
   }
