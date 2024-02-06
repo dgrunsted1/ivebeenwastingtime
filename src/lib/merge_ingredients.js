@@ -125,14 +125,10 @@ function round_amount(in_amount, mult){
     // Split each string into words
     strings = strings.sort((a, b) => b.length - a.length);
     let stringWords = strings.map(s => removePunctuationSymbolsParentheses(s.ingredient).split(' '));
-    console.log(stringWords);
-    // Initialize a map to hold the groups
-    // const groups = new Map();
+    
     let groups = [];
     for (let i = 0; i < strings.length; i++) {
-    //   console.log("-----------------------------------------------");
     const str1Words = stringWords[i];
-    //   console.log({str1Words});
     //   // Check if this string belongs in an existing group
       let maxSimilarity = 0;
       let maxGroup;
@@ -148,11 +144,6 @@ function round_amount(in_amount, mult){
                 });
                 // const min_length = (str1Words.length > str2Words.length) ? str2Words.length : str1Words.length ;
                 const similarity = intersection / str1Words.length;
-                if (intersection > 0) console.log({length});
-                if (intersection > 0) console.log({intersection});
-                if (intersection > 0) console.log({similarity});
-                if (intersection > 0) console.log({str2Words});
-                if (intersection > 0) console.log({str1Words});
                 if (similarity > maxSimilarity) {
                 maxSimilarity = similarity;
                 maxGroup = j;
@@ -163,27 +154,17 @@ function round_amount(in_amount, mult){
       
         // If no suitable group, create a new one
         if (maxGroup && maxSimilarity > .25) {
-            console.log({groups});
-            console.log({maxGroup});
-            // groups[maxGroup].push(strings[i]); 
             groups[maxGroup] = [...groups[maxGroup].slice(0, maxIndex), strings[i], ...groups[maxGroup].slice(maxIndex)];
         } else {
             groups.push([strings[i]]);
         }
-        console.log({groups});
-        // if (i > 3) return;
     }
 
 
     let flattened = [];
-    console.log(Array.from(groups.values()).sort((a, b) => b.length - a.length));
     Array.from(groups.values()).sort((a, b) => b.length - a.length).forEach(subarr => {
         flattened.push(...subarr);
     });
 
     return flattened;
   }
-
-  function insertItemAtIndex(arr, item, index) {
-  return [...arr.slice(0, index), item, ...arr.slice(index)];
-}

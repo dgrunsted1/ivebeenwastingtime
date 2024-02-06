@@ -19,19 +19,14 @@
     }
 
     afterUpdate(async () => {
-        // let result = merge(recipes);
         let ingr_list = [];
         recipes.forEach(obj => {
-            // console.log({obj});
             if (obj.ingredients) {
                 ingr_list.push(...obj.ingredients);
             }
         });
-        // console.log({ingr_list});
         let result = groupBySimilarity(ingr_list);
-        // console.log({result});
         grocery_list = result;
-        skipped = result.skipped;
     });
 
     const copy_to_clipboard = () => {
@@ -72,6 +67,7 @@
     </div>
     <div class="">
         <div class="grocery_list max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto">
+            {#if grocery_list.length > 0}
             {#each grocery_list as item}
                     <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">
                         <input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}">
@@ -80,6 +76,7 @@
                         <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" value={item.ingredient}> 
                     </div>                        
             {/each}
+            {/if}
         </div>
         {#if skipped.length > 0}
             <div id="skipped" class="flex flex-col">
