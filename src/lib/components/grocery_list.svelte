@@ -22,14 +22,14 @@
         // let result = merge(recipes);
         let ingr_list = [];
         recipes.forEach(obj => {
-            console.log({obj});
+            // console.log({obj});
             if (obj.ingredients) {
                 ingr_list.push(...obj.ingredients);
             }
         });
-        console.log({ingr_list});
+        // console.log({ingr_list});
         let result = groupBySimilarity(ingr_list);
-        console.log({result});
+        // console.log({result});
         grocery_list = result;
         skipped = result.skipped;
     });

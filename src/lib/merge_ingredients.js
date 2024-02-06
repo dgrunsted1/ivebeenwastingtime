@@ -100,61 +100,6 @@ function round_amount(in_amount, mult){
     }
     return Math.round((result + Number.EPSILON) * 100) / 100;
 }
-
-export const groupBySimilarity = function(strings) {
-
-    // Split each string into words
-
-    let stringWords = strings.map(s => removePunctuationSymbolsParentheses(s.ingredient).split(' ')).sort((a, b) => b.length - a.length);
-    
-    // Initialize a map to hold the groups
-    const groups = new Map();
-  
-    for (let i = 0; i < strings.length; i++) {
-      const str1Words = stringWords[i];
-      
-      // Check if this string belongs in an existing group
-      let maxSimilarity = 0;
-      let maxGroup;
-      groups.forEach((group, key) => {
-        let intersection = 0;
-        const str2Words = removePunctuationSymbolsParentheses(key.ingredient).split(' ');
-        str1Words.forEach(word => {
-          if (str2Words.includes(word)) {
-            intersection++;
-          }
-        });
-        const min_length = (str1Words.length > str2Words.length) ? str2Words.length : str1Words.length ;
-        const similarity = intersection / min_length;
-        if (intersection > 0) console.log("-----------------------------------------------");   
-        if (intersection > 0) console.log({length});
-        if (intersection > 0) console.log({intersection});
-        if (intersection > 0) console.log({similarity});
-        if (intersection > 0) console.log({str2Words});
-        if (intersection > 0) console.log({str1Words});
-        if (similarity > maxSimilarity) {
-          maxSimilarity = similarity;
-          maxGroup = key;
-        }
-      });
-      
-      // If no suitable group, create a new one
-      if (maxSimilarity < .25) {
-        groups.set(strings[i], [strings[i]]); 
-      } else {
-        groups.get(maxGroup).push(strings[i]);
-      }
-    }
-
-
-    let flattened = [];
-    console.log(Array.from(groups.values()).sort((a, b) => b.length - a.length));
-    Array.from(groups.values()).sort((a, b) => b.length - a.length).forEach(subarr => {
-        flattened.push(...subarr);
-    });
-
-    return flattened;
-  }
   
   function removePunctuationSymbolsParentheses(text) {
 
@@ -172,3 +117,73 @@ export const groupBySimilarity = function(strings) {
   
     return text;
   }
+
+
+
+  export const groupBySimilarity = function(strings) {
+
+    // Split each string into words
+    strings = strings.sort((a, b) => b.length - a.length);
+    let stringWords = strings.map(s => removePunctuationSymbolsParentheses(s.ingredient).split(' '));
+    console.log(stringWords);
+    // Initialize a map to hold the groups
+    // const groups = new Map();
+    let groups = [];
+    for (let i = 0; i < strings.length; i++) {
+    //   console.log("-----------------------------------------------");
+    const str1Words = stringWords[i];
+    //   console.log({str1Words});
+    //   // Check if this string belongs in an existing group
+      let maxSimilarity = 0;
+      let maxGroup;
+      let maxIndex;
+      for (let j = 0; j < groups.length; j++) {
+            for (let k = 0; k < groups[j].length; k++) {
+                let intersection = 0;
+                const str2Words = removePunctuationSymbolsParentheses(groups[j][k].ingredient).split(' ');
+                str1Words.forEach(word => {
+                if (str2Words.includes(word)) {
+                    intersection++;
+                }
+                });
+                // const min_length = (str1Words.length > str2Words.length) ? str2Words.length : str1Words.length ;
+                const similarity = intersection / str1Words.length;
+                if (intersection > 0) console.log({length});
+                if (intersection > 0) console.log({intersection});
+                if (intersection > 0) console.log({similarity});
+                if (intersection > 0) console.log({str2Words});
+                if (intersection > 0) console.log({str1Words});
+                if (similarity > maxSimilarity) {
+                maxSimilarity = similarity;
+                maxGroup = j;
+                maxIndex = k;
+                }
+            }
+        }
+      
+        // If no suitable group, create a new one
+        if (maxGroup && maxSimilarity > .25) {
+            console.log({groups});
+            console.log({maxGroup});
+            // groups[maxGroup].push(strings[i]); 
+            groups[maxGroup] = [...groups[maxGroup].slice(0, maxIndex), strings[i], ...groups[maxGroup].slice(maxIndex)];
+        } else {
+            groups.push([strings[i]]);
+        }
+        console.log({groups});
+        // if (i > 3) return;
+    }
+
+
+    let flattened = [];
+    console.log(Array.from(groups.values()).sort((a, b) => b.length - a.length));
+    Array.from(groups.values()).sort((a, b) => b.length - a.length).forEach(subarr => {
+        flattened.push(...subarr);
+    });
+
+    return flattened;
+  }
+
+  function insertItemAtIndex(arr, item, index) {
+  return [...arr.slice(0, index), item, ...arr.slice(index)];
+}
