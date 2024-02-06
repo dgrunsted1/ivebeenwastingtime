@@ -4,10 +4,11 @@
 		import "../input.css";
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
 
-    	let page_links = [{href:"/gallery", display: "Gallery"},
-			{href:"/menu", display: "Create Menu"},
-			{href:"/my_menus", display: "My Menus"},
+    	let page_links = [
+			{href:"/gallery", display: "Gallery"},
 			{href:"/today", display: "Today"},
+			{href:"/my_menus", display: "My Menus"},
+			{href:"/menu", display: "Create Menu"},
 			{href:"/add_recipe", display: "Add Recipe"}
     	];
 	</script>
@@ -31,15 +32,15 @@
 							<ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-36 space-y-1.5">
 								{#each page_links as link}
 									{#if link.href != $page.url.pathname}
-										<li><a href={link.href} class="btn btn-xs btn-primary">{link.display}</a></li>
+										<li><a href={link.href} class="btn btn-xs btn-primary flex content-center">{link.display}</a></li>
 									{:else}
-										<li><a href={link.href} class="btn btn-xs btn-ghost" disabled>{link.display}</a></li>
+										<li><a href={link.href} class="btn btn-xs btn-ghost flex content-center" disabled>{link.display}</a></li>
 									{/if}
 								{/each}
 							{#if !$currentUser && $page.url.pathname != "/login"}
-								<li><a href="login" class="btn btn-xs btn-primary">login</a></li>
+								<li><a href="login" class="btn btn-xs btn-primary flex content-center">login</a></li>
 							{:else if $currentUser && $page.url.pathname != "/login" && $page.url.pathname != "/gallery"}
-								<li><div on:click={signOut} class="btn btn-xs btn-primary" on:keypress={signOut}>logout</div></li>
+								<li><div on:click={signOut} class="btn btn-xs btn-primary flex content-center" on:keypress={signOut}>logout</div></li>
 							{/if}
 							</ul>
 						</div>
