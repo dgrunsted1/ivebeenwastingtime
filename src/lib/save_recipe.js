@@ -61,7 +61,8 @@ async function get_ingr_ids(recipe){
                 if (db_ingr.quantity != recipe.expand.ingr_list[i].quantity || 
                 db_ingr.ingredient != recipe.expand.ingr_list[i].ingredient || 
                 db_ingr.unit != recipe.expand.ingr_list[i].unit){
-                    if (recipe.expand.ingr_list[i].recipe.length > 1){
+
+                    if (recipe.expand.ingr_list[i].recipe && recipe.expand.ingr_list[i].recipe.length > 1){
                         const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.expand.ingr_list[i].id]});
                         const new_ingr_data = {
                             "quantity": recipe.expand.ingr_list[i].quantity,
@@ -112,8 +113,8 @@ async function get_ingr_ids(recipe){
                     ingr_ids.push(new_ingr.id);
                 }
             }
-        } else {
-            if (recipe.expand.ingr_list[i].recipe.length > 1){
+        } else if (recipe.expand.ingr_list[i].id) {
+            if (recipe.expand.ingr_list[i].recipe && recipe.expand.ingr_list[i].recipe.length > 1){
                 const remove_from_ingr = await pb.collection('ingredients').update(recipe.expand.ingr_list[i].id, {"recipe-": [recipe.id]});
             } else {
                 await pb.collection('ingredients').delete(recipe.expand.ingr_list[i].id);

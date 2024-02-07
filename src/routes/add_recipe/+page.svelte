@@ -57,7 +57,7 @@
     }
 
     function update_recipe(){
-
+        
     }
 </script>
 <div class="flex flex-col max-w-5xl px-1 space-y-5 mb-5 w-fit m-auto">

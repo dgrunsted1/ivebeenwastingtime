@@ -88,7 +88,7 @@
     }
 
     function check_item(e){
-        let id;
+        let ingr;
         let is_removed = false;
         if (e.srcElement.type != "checkbox"){
             original = e.target.firstChild.id;
@@ -99,12 +99,12 @@
                 is_removed = true;
             }
         }else{
-            id = e.srcElement.id;
+            ingr = e.srcElement.id;
             is_removed = e.srcElement.checked;
         }
         let temp = [];
         for (let i = 0; i < recipe.expand.ingr_list.length; i++){
-            if (recipe.expand.ingr_list[i].id == id){
+            if (recipe.expand.ingr_list[i].ingredient == ingr){
                 recipe.expand.ingr_list[i].removed = is_removed;
             }
         }
@@ -328,7 +328,7 @@
                             <input type="text" class="ingr_amount input input-bordered input-xs px-1 mr-1 w-10 text-center h-fit" bind:value={recipe.expand.ingr_list[i].quantity}>
                             <input type="text" class="ingr_unit input input-bordered input-xs px-1 mr-1 w-16 text-center h-fit" id="{recipe.expand.ingr_list[i].id}" bind:value={recipe.expand.ingr_list[i].unit}>
                             <input type="text" class="ingr_name input input-bordered input-xs px-1 mr-1 w-80 h-fit" bind:value={recipe.expand.ingr_list[i].ingredient}>
-                            <input on:click={check_item} type="checkbox" class="checkbox checkbox-accent checkbox-sme" id="{recipe.expand.ingr_list[i].id}">
+                            <input on:click={check_item} id={recipe.expand.ingr_list[i].ingredient} type="checkbox" class="checkbox checkbox-accent checkbox-sm"/>
                         </div>
                     {/if}
                 {/each}
