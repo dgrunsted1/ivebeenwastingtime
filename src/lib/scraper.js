@@ -332,6 +332,5 @@ export const scrape = async function(url) {
             set_view_time: `${(set_view_time-go_to_time)/1000}s`,
             compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
         };
-        console.log(results);
         return results;
 };

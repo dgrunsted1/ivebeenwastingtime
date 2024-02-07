@@ -56,7 +56,6 @@
     })
 
     afterUpdate(() => {
-        console.log("after update");
         let textareas = document.getElementsByTagName("textarea");
         for (let i = 0; i < textareas.length; i++) {
             resizeIt(textareas[i]);
