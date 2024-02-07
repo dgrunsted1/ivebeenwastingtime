@@ -298,7 +298,7 @@
         </div>
         
         <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-md">Sort</label>
+            <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
                     {#if opt == sort_val}
