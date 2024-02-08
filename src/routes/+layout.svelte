@@ -14,7 +14,7 @@
 	</script>
 		{#if !is_homepage}
 			<div>
-				<div class="navbar bg-base-100 fixed z-10">
+				<div class="navbar bg-base-100 fixed z-10 flex content-center min-h-4">
 					<div class="navbar-start">
 						
 						<!-- {#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea") && $page.url.pathname != "/gallery" && $page.url.pathname != "/test_suite"}
@@ -22,7 +22,7 @@
 						{/if} -->
 					</div>
 					<div class="navbar-center">
-					<a class="btn btn-ghost normal-case md:text-xl py-1 btn-sm md:btn-lg" href="/">www.ivebeenwastingtime.com</a>
+					<a class=" normal-case py-1 text-sm md:text-xl" href="/">www.ivebeenwastingtime.com</a>
 					</div>
 					<div class="navbar-end">
 						<div class="dropdown dropdown-end">
