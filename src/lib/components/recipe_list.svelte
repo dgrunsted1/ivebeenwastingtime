@@ -26,22 +26,29 @@
     function check_item(e){
         let index = 0;
         let check_box;
+        let card;
         if (e.srcElement.parentNode.getElementsByTagName("p")[0]){
+            card = e.srcElement.parentNode.parentNode;
             index = e.srcElement.parentNode.getElementsByTagName("p")[0].id;
             check_box = e.target.firstChild;
             if (check_box.checked) {
+                card.classList.remove("bg-emerald-900");
                 check_box.checked = false;
                 dispatch("remove_from_menu", {index: index});
             } else {
+                card.classList.add("bg-emerald-900");
                 dispatch("add_to_menu", {index: index});
                 check_box.checked = true;
             }
         }else {
+            card = e.srcElement.parentNode.parentNode.parentNode.parentNode;
             index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
             check_box = e.srcElement;
             if (check_box.checked) {
+                card.classList.add("bg-emerald-900");
                 dispatch("add_to_menu", {index: index});
             } else {
+                card.classList.remove("bg-emerald-900");
                 dispatch("remove_from_menu", {index: index});
             }
         }
@@ -53,6 +60,7 @@
 
     function view(e) {
         let mode = "menu";
+        let card = e.srcElement.parentNode.parentNode.parentNode.parentNode;
         let index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
         let element = e.srcElement;
         let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
@@ -74,6 +82,8 @@
         let btns = document.getElementsByClassName(`recipe_btn ${new_index}`);
         let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
         if (old_btns && old_index != -1){
+                let old_card = old_btns[0].parentNode.parentNode.parentNode.parentNode;
+                old_card.classList.remove("bg-amber-900");
                 old_btns[1].classList.remove("bg-secondary");
                 old_btns[1].classList.add("bg-base-200");
                 old_btns[0].classList.remove("bg-secondary");
@@ -81,6 +91,8 @@
         }
         
         if (mode_in != "menu"){
+            const new_card = btns[btn].parentNode.parentNode.parentNode.parentNode;
+            new_card.classList.add("bg-amber-900");
             btns[btn].classList.add("bg-secondary");
             btns[btn].classList.remove("bg-base-200");
         }
