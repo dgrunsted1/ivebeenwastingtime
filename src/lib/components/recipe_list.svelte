@@ -20,7 +20,7 @@
             if (!categories.countries.includes(recipes[i].country) && recipes[i].country) categories.countries.push(recipes[i].country);
             if (!categories.cats.includes(recipes[i].category) && recipes[i].category) categories.cats.push(recipes[i].category);
         }
-        
+
         categories = categories;
     });
 
@@ -76,7 +76,7 @@
         let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
         if (old_btns && old_index != -1){
                 let old_card = old_btns[0].parentNode.parentNode.parentNode.parentNode;
-                old_card.classList.remove("bg-amber-900");
+                old_card.classList.remove("bg-yellow-900");
                 old_btns[1].classList.remove("bg-secondary");
                 old_btns[1].classList.add("bg-base-200");
                 old_btns[0].classList.remove("bg-secondary");
@@ -85,7 +85,7 @@
         
         if (mode_in != "menu"){
             const new_card = btns[btn].parentNode.parentNode.parentNode.parentNode;
-            new_card.classList.add("bg-amber-900");
+            new_card.classList.add("bg-yellow-900");
             btns[btn].classList.add("bg-secondary");
             btns[btn].classList.remove("bg-base-200");
         }
