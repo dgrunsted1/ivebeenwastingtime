@@ -26,29 +26,22 @@
     function check_item(e){
         let index = 0;
         let check_box;
-        let card;
         if (e.srcElement.parentNode.getElementsByTagName("p")[0]){
-            card = e.srcElement.parentNode.parentNode;
             index = e.srcElement.parentNode.getElementsByTagName("p")[0].id;
             check_box = e.target.firstChild;
             if (check_box.checked) {
-                card.classList.remove("bg-emerald-900");
                 check_box.checked = false;
                 dispatch("remove_from_menu", {index: index});
             } else {
-                card.classList.add("bg-emerald-900");
                 dispatch("add_to_menu", {index: index});
                 check_box.checked = true;
             }
         }else {
-            card = e.srcElement.parentNode.parentNode.parentNode.parentNode;
             index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
             check_box = e.srcElement;
             if (check_box.checked) {
-                card.classList.add("bg-emerald-900");
                 dispatch("add_to_menu", {index: index});
             } else {
-                card.classList.remove("bg-emerald-900");
                 dispatch("remove_from_menu", {index: index});
             }
         }
@@ -60,7 +53,6 @@
 
     function view(e) {
         let mode = "menu";
-        let card = e.srcElement.parentNode.parentNode.parentNode.parentNode;
         let index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
         let element = e.srcElement;
         let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
