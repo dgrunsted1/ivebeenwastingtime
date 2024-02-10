@@ -57,37 +57,18 @@
         let index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
         let element = e.srcElement;
         let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
-        if (element.classList.contains("bg-base-200")){
-            update_btn_style(curr_recipe_id, index, mode_in);
-            curr_recipe_id = index;
-            dispatch(`update_${mode_in}`, {index: index});
-        }else {
-            update_btn_style(curr_recipe_id, -1, mode);
-            dispatch(`update_${mode_in}`, {index: -1});
-        }
-    }
-
-    function update_btn_style(old_index, new_index, mode_in) {
-        let btn;
-        if (mode_in == "view") btn = 0;
-        else btn = 1;
-
-        let btns = document.getElementsByClassName(`recipe_btn ${new_index}`);
-        let old_btns = document.getElementsByClassName(`recipe_btn ${old_index}`);
-        if (old_btns && old_index != -1){
-                let old_card = old_btns[0].parentNode.parentNode.parentNode.parentNode;
-                old_card.classList.remove("bg-yellow-900");
-                old_btns[1].classList.remove("bg-secondary");
-                old_btns[1].classList.add("bg-base-200");
-                old_btns[0].classList.remove("bg-secondary");
-                old_btns[0].classList.add("bg-base-200");
-        }
-        
-        if (mode_in != "menu"){
-            const new_card = btns[btn].parentNode.parentNode.parentNode.parentNode;
-            new_card.classList.add("bg-yellow-900");
-            btns[btn].classList.add("bg-secondary");
-            btns[btn].classList.remove("bg-base-200");
+        for (let i = 0; i < display_recipes.length; i++){
+            if (display_recipes[i].id == index){
+                if (display_recipes[i].mode == mode_in) {
+                    display_recipes[i].mode = null;
+                    dispatch(`update_${mode_in}`, {index: -1});
+                } else {
+                    display_recipes[i].mode = mode_in;
+                    dispatch(`update_${mode_in}`, {index: index});
+                }
+            } else {
+                display_recipes[i].mode = null;
+            }
         }
     }
 
@@ -216,7 +197,6 @@
         
         filter_recipes(search_recipes);
 
-        update_btn_style(curr_recipe_id, -1, "menu");
         dispatch(`reset_mode`, {index: -1});
         document.getElementById("menu_loading").classList.add('hidden');
     }
@@ -401,14 +381,14 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-emerald-900" : ""}"> 
+        <div class="flex flex-row card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-emerald-900" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-yellow-900" : ""}"> 
             <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view" on:click={view}><ViewIcon/></button>
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit" on:click={view}><EditIcon/></button>
+                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view {(curr.mode == "view") ? "bg-secondary" : ""}" on:click={view}><ViewIcon/></button>
+                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit {(curr.mode == "edit") ? "bg-secondary" : ""}" on:click={view}><EditIcon/></button>
                     </div>
                     <div class="flex space-x-1">
                         <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
