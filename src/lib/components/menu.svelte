@@ -111,7 +111,7 @@
         <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={menu.title}/>
     </div>
     <div class="flex content-center">
-        <div class="tabs tabs-boxed w-fit mx-auto flex items-center">
+        <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200">
             <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
@@ -130,9 +130,9 @@
     {#if tab == "recipe_list"}
         <div class="max-h-[calc(100vh-230px)] md:max-h-[calc(100vh-210px)] overflow-y-auto">
                 {#each menu as recipe}
-                    <div class="img_serv_container card card-bordered sm:card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl">
-                        <figure class="image w-1/3">
-                            <img class="" src={recipe.image} alt={recipe.title}/>
+                    <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
+                        <figure class="image w-1/3 h-full">
+                            <img class="h-full" src={recipe.image} alt={recipe.title}/>
                         </figure>
                         <div class="servings_time_container w-2/3 ml-2.5">
                             <p class="title text-xs bold md:text-xl">{recipe.title}</p>

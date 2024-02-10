@@ -39,7 +39,7 @@
                 <div id="recipes" class="">
                     {#each todays_menu.expand.recipes as curr, i}
                     <a href={`/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
-                        <div class="card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1">
+                        <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1">
                             <figure class="md:w-3/5"><img src={curr.image} alt={curr.title}/></figure>
                             <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                 <p id={i} class="md:w-2/3 text-xs">{curr.title}</p>

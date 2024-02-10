@@ -381,7 +381,7 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered sm:card-side bg-base-100 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-emerald-900" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-yellow-900" : ""}"> 
+        <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-emerald-900" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-yellow-900" : ""}"> 
             <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
