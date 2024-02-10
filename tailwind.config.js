@@ -15,8 +15,8 @@ export default {
           "neutral": "#423B0B",
           "base-100": "#FCF8F4",
           "info": "#3abff8",
-          "success": "#36d399",
-          "warning": "#fbbd23",     
+          "success": "#a7f3d0",
+          "warning": "#fde68a",     
           "error": "#f87272",
         },
       },
@@ -27,6 +27,8 @@ export default {
           "accent": "#FFEFD3",
           "neutral": "#4F4945",
           "base-100": "#262626",
+          "success": "#064e3b",
+          "warning": "#78350f"
         }
       }
     ], // true: all themes | false: only light + dark | array: specific themes like this ["light", "dark", "cupcake"]
