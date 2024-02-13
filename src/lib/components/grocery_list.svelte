@@ -22,7 +22,10 @@
         let ingr_list = [];
         recipes.forEach(obj => {
             if (obj.ingredients) {
-                ingr_list.push(...obj.ingredients);
+                for (let i = 0; i < obj.ingredients.length; i++) {
+                    obj.ingredients[i].quantity = obj.ingredients[i].quantity * obj.multiplier;
+                    ingr_list.push(obj.ingredients[i]);
+                }
             }
         });
         let result = groupBySimilarity(ingr_list);
