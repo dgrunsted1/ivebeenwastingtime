@@ -21,20 +21,20 @@ const reg_exp = {
     match: [
         //  6 medium tomatillos (about 1 1/2 pounds, 0.7kg), husks removed and halved
         //  1 medium onion, thinly sliced (about 6 ounces; 170g)
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)(.*)/, amnt: 1, opp:"none", unit: 2, name: 3},
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)(.*)/, amnt: [1,2], opp:"avg", unit: 3, name: 4},
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d+ \d\/\d|\d+.\d+) ([A-zñ]+)(.*)/, amnt: 1, opp:"none", unit: 2, name: 3},
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d+ \d\/\d|\d+.\d+) to (\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d+|\d\/\d|\d \d\/\d) ([A-zñ]+)(.*)/, amnt: [1,2], opp:"avg", unit: 3, name: 4},
         //  1 cup/200 grams granulated sugar
         //  ¼ cup/30 grams confectioners’ sugar
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+)\/(\d+) ([A-z]+) (.*)/, amnt: 1, opp:"none", unit: 2, name: 5},
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d+ \d\/\d|\d+.\d+) ([A-z]+)\/(\d+) ([A-z]+) (.*)/, amnt: 1, opp:"none", unit: 2, name: 5},
         //  amount unit (something in parenthasis) name
         //  1 tablespoon (15ml) vegetable oil
         //  1 1/4 cup (60ml) vegetable oil
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) ([A-z]+) (\(\w+\)) (.*)/, amnt: 1, opp:"none", unit: 2, name: 4},
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d+ \d\/\d|\d+.\d+) ([A-z]+) (\(\w+\)) (.*)/, amnt: 1, opp:"none", unit: 2, name: 4},
         //  1 (14 ounce; 396g) block firm tofu, cut into 1- by 2- by 1/2-inch squares
         //  1 (1-inch) knob ginger, peeled, roughly chopped
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [5,6]},
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d+ \d\/\d|\d+.\d+) \((\d+)[ -](\w+)(|[; ,] \d+\w+)\) ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [5,6]},
         //  1 1-lb. bag frozen spinach
-        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d \d\/\d) (\d+)-(\w+)[.] ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [4,5]}
+        {exp:/^(\d[\u00BC-\u00BE\u2150-\u215E]|[\u00BC-\u00BE\u2150-\u215E]|\d|\d\/\d|\d+ \d\/\d|\d+.\d+) (\d+)-(\w+)[.] ([A-z]+) (.*)/, amnt: [1,2], opp:"mult", unit: 3, name: [4,5]}
     ]
 };
 
