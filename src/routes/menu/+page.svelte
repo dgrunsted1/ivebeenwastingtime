@@ -117,7 +117,7 @@
                     </div>
                     <div id="right_column" class="collapse-content md:collapse-open">
                         {#if menu_recipes && mode == "menu"}
-                            <Menu menu={menu_recipes} {mults} {page}/>
+                            <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
                         {:else if view_recipe && mode == "view"}
                             <DisplayRecipe recipe={view_recipe}/>
                         {:else if edit_recipe && mode == "edit"}

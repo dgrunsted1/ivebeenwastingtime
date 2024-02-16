@@ -13,9 +13,9 @@
     } else if ($page.url.pathname == "/prep") {
         scroll_size = 270;
     } else if ($page.url.pathname == "/menu"){
-        scroll_size = 150;
+        scroll_size = 60;
     } else if ($page.url.pathname == "/my_menus"){
-        scroll_size = 250;
+        scroll_size = 70;
     }
 
     afterUpdate(async () => {
@@ -69,7 +69,7 @@
         {/if}
     </div>
     <div class="">
-        <div class="grocery_list max-h-[calc(100vh-{scroll_size}px)] overflow-y-auto">
+        <div class="grocery_list {`max-h-[calc(60vh)]`} overflow-y-auto">
             {#if grocery_list.length > 0}
             {#each grocery_list as item}
                     <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">

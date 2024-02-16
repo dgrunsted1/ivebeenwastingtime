@@ -347,7 +347,7 @@
     <dialog id="my_modal_2" class="modal">
         {#if modal_menu.id}
             <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
-                <Menu menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
+                <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
             </form>
             <form method="dialog" class="modal-backdrop">
                 <button>close</button>

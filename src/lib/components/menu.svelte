@@ -4,6 +4,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
 
+    export let title;
     export let menu;
     export let id = null;
     export let mults;
@@ -108,7 +109,7 @@
 
 <div id="menu">
     <div class="flex flex-col items-center p-3">
-        <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={menu.title}/>
+        <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={title}/>
     </div>
     <div class="flex content-center">
         <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200">
