@@ -88,8 +88,6 @@
                     <div class="skip_row flex items-center"><div class="add_skip btn btn-secondary btn-xs m-1 text-xs" on:click={add_to_list}>add to list</div><div class="skip_item text-xs">{skip.original}</div></div>
                 {/each}
             </div>
-        {:else if grocery_list.length > 0}
-            <div id="skipped">No items skipped</div>
         {/if}
     </div>
 </div>
