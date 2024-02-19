@@ -1,5 +1,5 @@
 <script>
-    import { createEventDispatcher, afterUpdate } from 'svelte';
+    import { createEventDispatcher, tick } from 'svelte';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
 
     export let grocery_list = [];
@@ -30,7 +30,7 @@
     const remove_item = (ingr) => {
         let delete_item = confirm("Are you sure you want to delete this item?");
         if (delete_item){
-            grocery_list = grocery_list.filter(curr => curr.ingredient != ingr);
+            grocery_list = grocery_list.filter(curr => curr.id != ingr);
             dispatch("update_grocery_list", {grocery_list: grocery_list});
         }
     }
@@ -57,6 +57,31 @@
         }
         edit_item();
     }
+
+    const new_item = async () => {
+        const new_item = {quantity: 0, unit: "unit", ingredient: "", checked: false, id: generate_id()};
+        grocery_list.push(new_item);
+        grocery_list = grocery_list;
+        await tick();
+        new_item.input.focus();
+    }
+
+    const enter_new_item = async (e) => {
+        const items = document.getElementsByClassName("grocery_item");
+        const items_array = Array.prototype.slice.call(items);
+        if (e.key == "Enter" && items_array[items_array.length-1] == e.srcElement.parentNode){
+            await new_item();
+        }
+    }
+
+    const generate_id = () => {
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let id = '';
+        for (let i = 0; i < 15; i++) {
+        id += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return id;
+    }
 </script>
 
 <div id="list" class="flex flex-col w-full">
@@ -72,15 +97,20 @@
     <div class="">
         <div class="grocery_list {`max-h-[calc(60vh)]`} overflow-y-auto">
             {#if grocery_list.length > 0}
-            {#each grocery_list as item}
-                    <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">
-                        {#if status != "none"}<input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
-                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
-                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
-                        <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item}>
-                        {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={remove_item(item.ingredient)}><DeleteIcon/></button>{/if}
-                    </div>                        
-            {/each}
+                {#each grocery_list as item, i}
+                        <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">
+                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
+                            <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
+                            <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
+                            <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item} on:keypress={enter_new_item} bind:this={item.input}>
+                            {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={() => remove_item(item.id)}><DeleteIcon/></button>{/if}
+                        </div>                        
+                {/each} 
+                {#if status != "none"}
+                    <div class="flex relative my-1 tooltip space-x-2 justify-center items-center">
+                        <button class="btn btn-xs btn-accent" on:click={new_item}>new item</button>
+                    </div>
+                {/if}
             {/if}
         </div>
     </div>
