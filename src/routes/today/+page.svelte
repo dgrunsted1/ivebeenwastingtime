@@ -3,7 +3,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { page } from '$app/stores';
-    import { get_grocery_list } from '/src/lib/merge_ingredients.js'
+    import { get_grocery_list, groupBySimilarity } from '/src/lib/merge_ingredients.js'
     import { update_grocery_list, create_grocery_list } from '/src/lib/groceries.js'
 
 
@@ -27,11 +27,19 @@
                 grocery_list = get_grocery_list(todays_menu);
                 grocery_list_id = create_grocery_list(grocery_list, todays_menu.id);
             } else {
-                grocery_list = todays_menu.expand.grocery_list.list;
+                grocery_list = groupBySimilarity(todays_menu.expand.grocery_list.list);
                 grocery_list_id = todays_menu.expand.grocery_list.id;
-
             }
-            
+            let checked = [];
+            let unchecked = [];
+            for (let i = 0; i < grocery_list.length; i++){
+                if (grocery_list[i].checked){
+                    checked.push(grocery_list[i]);
+                } else {
+                    unchecked.push(grocery_list[i]);
+                }
+            }
+            grocery_list = unchecked.concat(checked);
         }
         loading = false;
     });

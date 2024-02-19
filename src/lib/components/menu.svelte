@@ -73,7 +73,7 @@
             const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false, grocery_list: null });
             if (resultList.items[0].grocery_list){
                 const grocery_list_id = resultList.items[0].grocery_list;
-                const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { "menu": null });
+                const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { "menu": null, active: false });
             }
         }
         const true_record = await pb.collection('menus').update(id, { "today": true });
