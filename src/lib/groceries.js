@@ -17,8 +17,6 @@ export const create_grocery_list = async function(grocery_list, menu_id){
 }
 
 export const update_grocery_list = async function(grocery_list, id){
-    console.log("called update_grocery_list");
-    console.log(grocery_list);
     const data = {
         "list": grocery_list
     };

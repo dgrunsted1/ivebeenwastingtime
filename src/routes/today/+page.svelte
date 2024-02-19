@@ -36,16 +36,16 @@
         loading = false;
     });
 
-    function update_groceries(e){
+    async function update_groceries(e){
         grocery_list_status = "updating";
-        update_grocery_list(e.detail.grocery_list, grocery_list_id);
+        await update_grocery_list(e.detail.grocery_list, grocery_list_id);
         grocery_list = e.detail.grocery_list;
         grocery_list_status = "saved";
     }
 
-    function reset_list(){
+    async function reset_list(){
         grocery_list = get_grocery_list(todays_menu);
-        update_grocery_list(grocery_list, grocery_list_id);
+        await update_grocery_list(grocery_list, grocery_list_id);
     }
 </script>
 
