@@ -1,12 +1,17 @@
 <script>
-    import { onMount } from 'svelte';
+    import { onMount, afterUpdate } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { page } from '$app/stores';
+    import { get_grocery_list } from '/src/lib/merge_ingredients.js'
+    import { update_grocery_list, create_grocery_list } from '/src/lib/groceries.js'
+
 
 
     let todays_menu = {};
-    let grocery_list = []; 
+    let grocery_list = [];
+    let grocery_list_id = "";
+    let grocery_list_status = "saved";
     let mode = "menu";
     $: loading = true;
 
@@ -14,19 +19,34 @@
         if (!$currentUser) window.location.href = "/login";
         const result_list = await pb.collection('menus').getList(1, 50, {
             filter: `user="${$currentUser.id}" && today=True`,
-            expand: `recipes,recipes.notes,recipes.ingr_list`
+            expand: `recipes,recipes.notes,recipes.ingr_list, grocery_list`
         });
         if (result_list.items[0]){
             todays_menu = result_list.items[0];
-            todays_menu.expand.recipes.forEach((recipe, i) => {
-                grocery_list[i] = {
-                    ingredients: recipe.expand.ingr_list,
-                    multiplier: parseFloat(todays_menu.servings[recipe.id]) / parseFloat(recipe.servings)
-                };  
-            });
+            if (!todays_menu.expand.grocery_list || !todays_menu.expand.grocery_list.list){
+                grocery_list = get_grocery_list(todays_menu);
+                grocery_list_id = create_grocery_list(grocery_list, todays_menu.id);
+            } else {
+                grocery_list = todays_menu.expand.grocery_list.list;
+                grocery_list_id = todays_menu.expand.grocery_list.id;
+
+            }
+            
         }
         loading = false;
     });
+
+    function update_groceries(e){
+        grocery_list_status = "updating";
+        update_grocery_list(e.detail.grocery_list, grocery_list_id);
+        grocery_list = e.detail.grocery_list;
+        grocery_list_status = "saved";
+    }
+
+    function reset_list(){
+        grocery_list = get_grocery_list(todays_menu);
+        update_grocery_list(grocery_list, grocery_list_id);
+    }
 </script>
 
 {#if todays_menu.id}
@@ -51,7 +71,7 @@
             </div>
             <div id="right_column" class="md:w-1/2">
                 {#if todays_menu && mode == "menu"}
-                    <GroceryList recipes={grocery_list} />
+                    <GroceryList bind:grocery_list={grocery_list} on:update_grocery_list={update_groceries} bind:status={grocery_list_status}  on:reset_grocery_list={reset_list}/>
                 {:else}
                     <h2>select recipes to add to your menu</h2>
                 {/if}

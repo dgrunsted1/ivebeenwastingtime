@@ -1,36 +1,10 @@
 <script>
-    import { each } from "svelte/internal";
-    import { afterUpdate } from 'svelte';
-    import { merge, groupBySimilarity } from '/src/lib/merge_ingredients.js'
-    import { page } from '$app/stores';
+    import { createEventDispatcher, afterUpdate } from 'svelte';
 
-    export let recipes;
-    let grocery_list = [];
-    let skipped = [];
-    let scroll_size = 0;
-    if ($page.url.pathname == "/today"){
-        scroll_size = 130;
-    } else if ($page.url.pathname == "/prep") {
-        scroll_size = 270;
-    } else if ($page.url.pathname == "/menu"){
-        scroll_size = 60;
-    } else if ($page.url.pathname == "/my_menus"){
-        scroll_size = 70;
-    }
-
-    afterUpdate(async () => {
-        let ingr_list = [];
-        recipes.forEach(obj => {
-            if (obj.ingredients) {
-                for (let i = 0; i < obj.ingredients.length; i++) {
-                    obj.ingredients[i].quantity = obj.ingredients[i].quantity * obj.multiplier;
-                    ingr_list.push(obj.ingredients[i]);
-                }
-            }
-        });
-        let result = groupBySimilarity(ingr_list);
-        grocery_list = result;
-    });
+    export let grocery_list = [];
+    export let status;
+    let dispatch = createEventDispatcher();
+    let delay_timer;
 
     const copy_to_clipboard = () => {
         let copy_text = "";
@@ -52,42 +26,61 @@
         navigator.clipboard.writeText(copy_text);
     }
 
-    function add_to_list(e) {
-        grocery_list.push(e.detail.items);
-        skipped = skipped.filter((curr) => {
-            return curr.original[0] != e.detail.items.original[0];
-        });
-        skipped = skipped;
-        grocery_list = grocery_list;
+    const remove_item = (ingr) => {
+        let delete_item = confirm("Are you sure you want to delete this item?");
+        if (delete_item){
+            grocery_list = grocery_list.filter(curr => curr.ingredient != ingr);
+            dispatch("update_grocery_list", {grocery_list: grocery_list});
+        }
+    }
+
+    const edit_item = () => {
+        if (status == "edited") return;
+        status = "edited";
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(function() {
+            dispatch("update_grocery_list", {grocery_list: grocery_list});
+        }, 2000);
+    }
+
+    const reset_list = () => {
+        let reset_list = confirm("Are you sure you want to reset your grocery list?");
+        if (reset_list){
+            dispatch("reset_grocery_list");
+        }
+    }
+
+    const uncheck_list = () => {
+        for (let i = 0; i < grocery_list.length; i++){
+            grocery_list[i].checked = false;
+        }
+        edit_item();
     }
 </script>
 
 <div id="list" class="flex flex-col w-full">
     <div id="header" class="flex justify-evenly items-center m-2.5 mt-0">
         {#if grocery_list.length > 0}
-            <div id="count" class="text-xs">{grocery_list.length} Items</div><button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
+            {#if status != "none"}<div id="update_status" class="text-xs">{status}</div>{/if}
+            <div id="count" class="text-xs">{grocery_list.length} Items</div>
+            <button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
+            {#if status != "none"}<button id="uncheck" class="btn btn-xs md:btn-sm btn-accent" on:click={uncheck_list}>uncheck</button>{/if}
+            {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={reset_list}>reset</button>{/if}
         {/if}
     </div>
     <div class="">
         <div class="grocery_list {`max-h-[calc(60vh)]`} overflow-y-auto">
             {#if grocery_list.length > 0}
             {#each grocery_list as item}
-                    <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center">
-                        <input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}">
-                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" value={item.quantity}>
-                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" value={item.unit}>
-                        <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" value={item.ingredient}> 
+                    <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">
+                        {#if status != "none"}<input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
+                        <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
+                        <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
+                        <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item}>
+                        {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={remove_item(item.ingredient)}>dlt</button>{/if}
                     </div>                        
             {/each}
             {/if}
         </div>
-        {#if skipped.length > 0}
-            <div id="skipped" class="flex flex-col">
-                <div id="skip_head" class="w-1/3">Skipped:</div>
-                {#each skipped as skip}
-                    <div class="skip_row flex items-center"><div class="add_skip btn btn-secondary btn-xs m-1 text-xs" on:click={add_to_list}>add to list</div><div class="skip_item text-xs">{skip.original}</div></div>
-                {/each}
-            </div>
-        {/if}
     </div>
 </div>

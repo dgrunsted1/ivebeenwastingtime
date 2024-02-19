@@ -118,6 +118,22 @@ function round_amount(in_amount, mult){
     return text;
   }
 
+  export const get_grocery_list = function(menu) {
+    let grocery_list = [];
+    menu = (menu.expand && menu.expand.recipes) ? menu.expand.recipes : menu;
+    menu.forEach((recipe, i) => {
+        const mult = (menu.servings) ? parseFloat(menu.servings[recipe.id]) / parseFloat(recipe.servings) : 1;
+        if (recipe.expand.ingr_list) {
+            for (let i = 0; i < recipe.expand.ingr_list.length; i++) {
+                recipe.expand.ingr_list[i].quantity = recipe.expand.ingr_list[i].quantity * mult;
+                recipe.expand.ingr_list[i].checked = false;
+                grocery_list.push(recipe.expand.ingr_list[i]);
+            }
+        } 
+    });
+    return groupBySimilarity(grocery_list);
+  }
+
 
 
   export const groupBySimilarity = function(strings) {
