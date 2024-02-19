@@ -1,8 +1,10 @@
 <script>
-    import { onMount, afterUpdate, tick } from 'svelte';
+    import { afterUpdate } from 'svelte';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
+    import { get_grocery_list } from '/src/lib/merge_ingredients.js'
+
 
     export let title;
     export let menu;
@@ -23,12 +25,7 @@
         } else {
             if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = false;
         }
-        menu.forEach((recipe, i) => {
-            grocery_list[i] = {
-                ingredients: recipe.expand.ingr_list,
-                multiplier: parseFloat(mults[recipe.id]) / parseFloat(recipe.servings)
-            };  
-        });
+        grocery_list = get_grocery_list(menu);
         if (!menu.title) menu.title = "New Menu";
         
         
@@ -70,9 +67,14 @@
     async function set_todays_menu(e){
         const resultList = await pb.collection('menus').getList(1, 50, {
             filter: `user = '${$currentUser.id}' && today = True`,
+            expand: `grocery_list`
         });
         if (resultList.items.length){
-            const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false });
+            const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false, grocery_list: null });
+            if (resultList.items[0].grocery_list){
+                const grocery_list_id = resultList.items[0].grocery_list;
+                const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { "menu": null });
+            }
         }
         const true_record = await pb.collection('menus').update(id, { "today": true });
     }
@@ -147,6 +149,6 @@
                 {/each}
         </div>
     {:else if tab == "grocery_list"}
-        <GroceryList recipes={grocery_list}/>
+        <GroceryList status="none" {grocery_list}/>
     {/if}
 </div>
