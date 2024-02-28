@@ -4,7 +4,7 @@
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { page } from '$app/stores';
     import { get_grocery_list, groupBySimilarity } from '/src/lib/merge_ingredients.js'
-    import { update_grocery_list, create_grocery_list } from '/src/lib/groceries.js'
+    import { update_grocery_list, create_grocery_list, update_made } from '/src/lib/groceries.js'
 
 
 
@@ -14,6 +14,7 @@
     let grocery_list_status = "saved";
     let mode = "menu";
     $: loading = true;
+    let delay_timer;
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -55,6 +56,15 @@
         grocery_list = get_grocery_list(todays_menu);
         await update_grocery_list(grocery_list, grocery_list_id);
     }
+
+    function toggle_made(e){
+        const id = e.srcElement.id;
+        todays_menu.made[id] = !todays_menu.made[id];
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(function() {
+            update_made(todays_menu.made, todays_menu.id);
+        }, 2000);
+    }
 </script>
 
 {#if todays_menu.id}
@@ -66,14 +76,17 @@
             <div id="left_column" class="md:w-1/2 md:max-h-[calc(100vh-150px)] md:overflow-y-auto">
                 <div id="recipes" class="">
                     {#each todays_menu.expand.recipes as curr, i}
-                    <a href={`/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
+                    <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
                         <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1">
-                            <figure class="md:w-3/5"><img src={curr.image} alt={curr.title}/></figure>
+                            <figure class="md:w-3/5 {(todays_menu.made[curr.id]) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
                             <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                 <p id={i} class="md:w-2/3 text-xs">{curr.title}</p>
+                                <div class="card-actions flex justify-self-end justify-center">
+                                    <button class="btn-primary btn w-fit btn-sm" id={curr.id} on:click|stopPropagation={toggle_made}>{(todays_menu.made[curr.id]) ? "not made" : "made"}</button>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                     {/each}
                 </div>
             </div>

@@ -31,7 +31,7 @@
         let delete_item = confirm("Are you sure you want to delete this item?");
         if (delete_item){
             grocery_list = grocery_list.filter(curr => curr.id != ingr);
-            dispatch("update_grocery_list", {grocery_list: grocery_list});
+            edit_item();
         }
     }
 

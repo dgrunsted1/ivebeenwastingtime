@@ -46,15 +46,18 @@
     async function save_menu(e){
         e.srcElement.innerHTML = '<span class="loading loading-dots loading-md mx-7"></span>';
         let recipe_ids = [];
+        let made = {};
         for (let i = 0; i < menu.length; i++){
             recipe_ids.push(menu[i].id);
+            made[menu[i].id] = 0;
         }
         const data = {
             "recipes": recipe_ids,
             "user": $currentUser.id,
             "today": false,
             "title": menu.title,
-            "servings": mults
+            "servings": mults,
+            "made": made
         };
         const record = await pb.collection('menus').create(data);
         id = record.id;

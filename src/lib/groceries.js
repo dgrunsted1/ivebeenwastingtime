@@ -23,3 +23,11 @@ export const update_grocery_list = async function(grocery_list, id){
     
     const record = await pb.collection('groceries').update(id, data);
 }
+
+export const update_made = async function(made, id){
+    const data = {
+        "made": made
+    };
+    
+    const record = await pb.collection('menus').update(id, data);
+}
