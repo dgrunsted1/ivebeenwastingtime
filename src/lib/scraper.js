@@ -287,33 +287,32 @@ export const scrape = async function(url) {
         const set_view_time = Date.now();
 
         let results = {};
+        try{
+            if (url.includes("www.bonappetit.com")){
+                results = await get_ba_data(page);
+            }else if (url.includes("cooking.nytimes.com")) {
+                results = await get_nyt_data(page);
 
-        if (url.includes("www.bonappetit.com")){
-            results = await get_ba_data(page);
-        }else if (url.includes("cooking.nytimes.com")) {
-            results = await get_nyt_data(page);
-
-        } else {
-            for (const k in site_selectors){
-                try{
-                    if(k == "ingredients"){
-                        results.expand = {ingr_list: []};
-                        results.expand.ingr_list = await get_ingredients(page, site_selectors[k]);
-                    }else if(k == "directions"){
-                        results[k] = await get_directions(page, site_selectors[k]);
-                    }else {
-                        results[k] = await get_element(page, site_selectors[k]);
-                    }
-                }catch (e){
-                    await browser.close();
-                    let data = {
-                        data: JSON.stringify({message: e.message, url: url, step: k, result: results[k]}),
-                        function: "prep scrape"
-                    };
-                    console.log("error", data);
-                    const result = await pb.collection('errors').create(data);
-                }
+            } else {
+                for (const k in site_selectors){
+                        if(k == "ingredients"){
+                            results.expand = {ingr_list: []};
+                            results.expand.ingr_list = await get_ingredients(page, site_selectors[k]);
+                        }else if(k == "directions"){
+                            results[k] = await get_directions(page, site_selectors[k]);
+                        }else {
+                            results[k] = await get_element(page, site_selectors[k]);
+                        }
+                    
+                };
+            }
+        }catch (e){
+            await browser.close();
+            let data = {
+                data: JSON.stringify({message: e.message, url: url}),
+                function: "prep scrape"
             };
+            const result = await pb.collection('errors').create(data);
         }
         
         results.image = await get_img(page, "none");
