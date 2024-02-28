@@ -225,7 +225,7 @@ async function get_ba_data(page){
         let description = body.querySelector(".body").textContent;
         let ingr_list = body.querySelector("[data-testid='IngredientList']");
         let servings = ingr_list.querySelector("p").textContent;
-        let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > div > *");
+        let ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
         if (ingredient_list.length <= 2) ingredient_list = ingr_list.querySelectorAll("div:nth-child(3) > *");
         let ingredients = [];
         for (let i = 0; i < ingredient_list.length; i++){
@@ -279,17 +279,17 @@ export const scrape = async function(url) {
             return {err: "website not supported"};
         }
         const selector_time = Date.now();
-
-        await page.goto(url);
-        const go_to_time = Date.now();
-
-        await page.setViewport({width: 1080, height: 1024});
-        const set_view_time = Date.now();
-
-        let results = {};
         try{
+            await page.goto(url);
+            const go_to_time = Date.now();
+            
+            await page.setViewport({width: 1080, height: 1024});
+            const set_view_time = Date.now();
+
+            let results = {};
             if (url.includes("www.bonappetit.com")){
                 results = await get_ba_data(page);
+                console.log({results});
             }else if (url.includes("cooking.nytimes.com")) {
                 results = await get_nyt_data(page);
 
@@ -306,6 +306,24 @@ export const scrape = async function(url) {
                     
                 };
             }
+
+            results.image = await get_img(page, "none");
+
+            results.description = (results.description) ? results.description.split(".")[0] : results.description;
+            results.servings = format_servings(results.servings);
+            let close = await browser.close();
+            const end = Date.now();
+            results.timing = {
+                execution_time: `${(end-start)/1000}s`,
+                logic_time: `${(end-set_view_time)/1000}s`,
+                init_time: `${(init_time-start)/1000}s`,
+                await_data_time: `${(await_data-init_time)/1000}s`,
+                selector_time: `${(selector_time-await_data)/1000}s`,
+                got_to_time: `${(go_to_time-selector_time)/1000}s`,
+                set_view_time: `${(set_view_time-go_to_time)/1000}s`,
+                compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
+            };
+            return results;
         }catch (e){
             await browser.close();
             let data = {
@@ -313,23 +331,6 @@ export const scrape = async function(url) {
                 function: "prep scrape"
             };
             const result = await pb.collection('errors').create(data);
+            return {err: "an error has occurred and has been reported,  sorry for the inconvenince, try again or copy/paste each field manually"};
         }
-        
-        results.image = await get_img(page, "none");
-
-        results.description = (results.description) ? results.description.split(".")[0] : results.description;
-        results.servings = format_servings(results.servings);
-        let close = await browser.close();
-        const end = Date.now();
-        results.timing = {
-            execution_time: `${(end-start)/1000}s`,
-            logic_time: `${(end-set_view_time)/1000}s`,
-            init_time: `${(init_time-start)/1000}s`,
-            await_data_time: `${(await_data-init_time)/1000}s`,
-            selector_time: `${(selector_time-await_data)/1000}s`,
-            got_to_time: `${(go_to_time-selector_time)/1000}s`,
-            set_view_time: `${(set_view_time-go_to_time)/1000}s`,
-            compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
-        };
-        return results;
 };
