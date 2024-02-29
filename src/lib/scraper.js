@@ -276,7 +276,7 @@ export const scrape = async function(url) {
         }else if(url.includes("www.bonappetit.com")){
             site_selectors = selectors.ba;
         }else{
-            return {err: "website not supported"};
+            return {err: {title: "website not supported", msg: "supported websites include bon appetit, serious eats, and nytimes"}};
         }
         const selector_time = Date.now();
         try{
@@ -331,6 +331,6 @@ export const scrape = async function(url) {
                 function: "prep scrape"
             };
             const result = await pb.collection('errors').create(data);
-            return {err: "an error has occurred and has been reported,  sorry for the inconvenince, try again or copy/paste each field manually"};
+            return {err: {title: "an error has occurred", msg: "This has been reported,  sorry for the inconvenince, try again or copy/paste each field manually"}};
         }
 };

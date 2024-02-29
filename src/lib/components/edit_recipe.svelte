@@ -74,11 +74,17 @@
         }
     });
 
+    async function check_recipe_exists(title){
+        let result = await pb.collection('recipes').getList(1, 1000, {field: `title`, filter: `user = '${$currentUser.id}' && title = title`});
+        if (result.items.length) return true;
+        return false;
+    }
+
     async function save_recipe_v2(e){
         save = false;
         reset_checks();
         document.getElementById("new_note").value = "";
-        dispatch("update_recipe", {recipe: save_recipe(e, recipe, $currentUser, document.getElementById("new_note").value)});
+        save_recipe(e, recipe, $currentUser, document.getElementById("new_note").value);
     }
 
     function reset_checks(){
