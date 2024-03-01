@@ -8,6 +8,7 @@
     export let recipe;
     export let index;
     export let save = false;
+    export let show_alert;
     let dispatch = createEventDispatcher();
     $: categories = [];
     $: display_categories = [];
@@ -73,12 +74,6 @@
             }
         }
     });
-
-    async function check_recipe_exists(title){
-        let result = await pb.collection('recipes').getList(1, 1000, {field: `title`, filter: `user = '${$currentUser.id}' && title = title`});
-        if (result.items.length) return true;
-        return false;
-    }
 
     async function save_recipe_v2(e){
         save = false;
@@ -253,7 +248,12 @@
                 <img src={recipe.image} alt={recipe.title} class="self-center"/>
             {:else}
                 <div class="w-full flex flex-col space-y-2">
-                    <div class="w-full flex flex-col"><input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple><p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p></div>
+                    <div class="w-full flex flex-col">
+                        {#if !show_alert}
+                            <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>
+                        {/if}
+                        <p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p>
+                    </div>
                     <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
                 </div>
             {/if}

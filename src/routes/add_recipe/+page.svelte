@@ -54,7 +54,9 @@
             result.data.expand.ingr_list = process_recipe_old(result.data.expand.ingr_list);
             result.data.url = e.srcElement.value;
             recipe = result.data;
-            if (check_recipe_exists(recipe.title)){
+            const recipe_exist = await check_recipe_exists(recipe.title);
+            if (recipe_exist){
+                console.log("here");
                 show_alert("Recipe already exists", "warning", "You have already added this recipe");
             }
         }
@@ -85,5 +87,5 @@
         <span id="loading" class="loading loading-dots loading-lg hidden"></span>
     </div>
     <Alerts msg={alert.msg} type={alert.type} show={alert.show} title={alert.title}/>
-    <EditRecipe {recipe} index=0 save={true}/>
+    <EditRecipe {recipe} index=0 save={true} show_alert={alert.show}/>
 </div>
