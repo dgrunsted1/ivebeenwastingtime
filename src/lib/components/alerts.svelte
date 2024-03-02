@@ -7,26 +7,21 @@
     let delay_timer;
 
     afterUpdate(() => {
-        console.log({show});
-        console.log({type});
-        const time = 3000;
-        if (show) {
-            document.getElementById("alert").classList.add("visible");
-            
-            if (type !== "error"){
-                clearTimeout(delay_timer);
-                delay_timer = setTimeout(close_alert(), 3000);
-            }
+        if (show) {            
+            // if (type !== "error"){
+            //     clearTimeout(delay_timer);
+            //     delay_timer = setTimeout(close_alert(), 3000);
+            // }
         }
     });
 
     function close_alert(){
-        document.getElementById("alert").classList.remove("visible");
         show = false;
     }
 </script>
 
-<div role="alert" id="alert" class="drop-shadow-xl alert alert-{type} p-1 md:p-10 w-96">
+
+<div role="alert" id="alert" class="drop-shadow-xl alert alert-{type} fixed top-24 transition-[left] {show ? 'left-0' : '-left-96'} duration-700 p-1 md:p-10 w-96">
     {#if type == "warning"}
             <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
     {:else if type == "error"}
@@ -44,18 +39,3 @@
         <button on:click|stopPropagation={close_alert} class="btn btn-xs">close</button>
     </div>
 </div>
-
-
-<style>
-    .alert {
-        position: fixed;
-        top: 100px;
-        left: -400px;
-        transition: 1s;
-    }
-
-    .visible {
-        transition: 1s;
-        left: 0;
-    }
-</style>
