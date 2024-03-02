@@ -23,7 +23,6 @@
 </script>
 
 
-<div role="alert" id="alert" class="drop-shadow-xl alert {alert_type} fixed top-24 transition-[left] {show ? 'left-0' : '-left-96'} duration-700 p-1 md:p-10 w-96">
 
 <div role="alert" id="alert" class="drop-shadow-xl alert alert-{type} fixed top-24 transition-[left] {show ? 'left-0' : '-left-96'} duration-700 p-1 md:p-10 w-96">
     {#if type == "warning"}
