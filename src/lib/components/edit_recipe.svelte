@@ -7,6 +7,7 @@
     import ThumbUp from "/src/lib/icons/thumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
 
+    
     export let recipe;
     export let index;
     export let save = false;
