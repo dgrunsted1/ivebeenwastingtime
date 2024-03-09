@@ -56,8 +56,7 @@
             recipe = result.data;
             const recipe_exist = await check_recipe_exists(recipe.title);
             if (recipe_exist){
-                console.log("here");
-                show_alert("Recipe already exists", "warning", "You have already added this recipe");
+                show_alert("You have already added this recipe", "warning", "Recipe already exists");
             }
         }
         document.getElementById('loading').classList.add('hidden');
