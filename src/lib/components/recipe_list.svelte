@@ -5,7 +5,7 @@
     import ViewIcon from "/src/lib/icons/ViewIcon.svelte";
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { onMount, afterUpdate } from "svelte";
-    import ThumbUp from "/src/lib/icons/thumbUp.svelte";
+    import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
     import { update_fave_made } from '/src/lib/save_recipe.js';
 

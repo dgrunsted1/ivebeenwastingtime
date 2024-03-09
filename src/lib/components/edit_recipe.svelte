@@ -4,10 +4,10 @@
     import { page } from '$app/stores';
     import { save_recipe } from '/src/lib/save_recipe.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
-    import ThumbUp from "/src/lib/icons/thumbUp.svelte";
+    import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
 
-    
+
     export let recipe;
     export let index;
     export let save = false;
