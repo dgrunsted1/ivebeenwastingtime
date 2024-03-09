@@ -85,6 +85,6 @@
     <div class="h-5 flex justify-center">
         <span id="loading" class="loading loading-dots loading-lg hidden"></span>
     </div>
-    <Alerts msg={alert.msg} type={alert.type} show={alert.show} title={alert.title}/>
+    <Alerts msg={alert.msg} type={alert.type} bind:show={alert.show} title={alert.title}/>
     <EditRecipe {recipe} index=0 save={true} show_alert={alert.show}/>
 </div>
