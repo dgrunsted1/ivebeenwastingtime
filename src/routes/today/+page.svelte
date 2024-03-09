@@ -103,10 +103,10 @@
                         <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1">
                             <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr.id]) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
                             <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
-                                <p id={i} class="md:w-2/3 text-xs">{curr.title}</p>
-                                <div class="card-actions flex justify-self-end justify-center">
-                                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
+                                <p id={i} class="w-1/2 text-xs">{curr.title}</p>
+                                <div class="card-actions flex flex-row justify-evenly items-center">
                                     <button class="btn-primary btn w-fit btn-sm" id={curr.id} on:click|stopPropagation={toggle_made}>{(todays_menu.made && todays_menu.made[curr.id]) ? "not made" : "made"}</button>
+                                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
                                 </div>
                             </div>
                         </div>
