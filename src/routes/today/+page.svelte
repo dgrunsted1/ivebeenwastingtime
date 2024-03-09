@@ -5,7 +5,8 @@
     import { page } from '$app/stores';
     import { get_grocery_list, groupBySimilarity } from '/src/lib/merge_ingredients.js'
     import { update_grocery_list, create_grocery_list, update_made } from '/src/lib/groceries.js'
-
+    import Heart from "/src/lib/icons/Heart.svelte";
+    import { update_fave } from '/src/lib/save_recipe.js';
 
 
     let todays_menu = {};
@@ -15,6 +16,7 @@
     let mode = "menu";
     $: loading = true;
     let delay_timer;
+    let update_fave_list = [];
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -59,10 +61,31 @@
 
     function toggle_made(e){
         const id = e.srcElement.id;
-        todays_menu.made[id] = !todays_menu.made[id];
+        if (todays_menu.made){
+            todays_menu.made[id] = !todays_menu.made[id];
+        } else {
+            todays_menu.made = {};
+            todays_menu.made[id] = true;
+        }
         clearTimeout(delay_timer);
         delay_timer = setTimeout(function() {
             update_made(todays_menu.made, todays_menu.id);
+        }, 2000);
+    }
+
+    function update_fave_queue(e){
+        update_fave_list.push(e.srcElement.id);
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(async () => {
+            let id_update_list = [];
+            for (let i = 0; i < todays_menu.expand.recipes.length; i++){
+                if (update_fave_list.includes(todays_menu.expand.recipes[i].id)){
+                    id_update_list.push({id: todays_menu.expand.recipes[i].id, favorite: todays_menu.expand.recipes[i].favorite});
+                }
+            }
+            await update_fave(id_update_list);
+            update_fave_list = [];
+
         }, 2000);
     }
 </script>
@@ -78,11 +101,12 @@
                     {#each todays_menu.expand.recipes as curr, i}
                     <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
                         <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1">
-                            <figure class="md:w-3/5 {(todays_menu.made[curr.id]) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
+                            <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr.id]) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
                             <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                 <p id={i} class="md:w-2/3 text-xs">{curr.title}</p>
                                 <div class="card-actions flex justify-self-end justify-center">
-                                    <button class="btn-primary btn w-fit btn-sm" id={curr.id} on:click|stopPropagation={toggle_made}>{(todays_menu.made[curr.id]) ? "not made" : "made"}</button>
+                                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
+                                    <button class="btn-primary btn w-fit btn-sm" id={curr.id} on:click|stopPropagation={toggle_made}>{(todays_menu.made && todays_menu.made[curr.id]) ? "not made" : "made"}</button>
                                 </div>
                             </div>
                         </div>

@@ -4,6 +4,8 @@
     import { page } from '$app/stores';
     import { save_recipe } from '/src/lib/save_recipe.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
+    import ThumbUp from "/src/lib/icons/thumbUp.svelte";
+    import Heart from "/src/lib/icons/Heart.svelte";
 
     export let recipe;
     export let index;
@@ -236,7 +238,7 @@
     }
 </script>
 
-<div id="recipe" class="flex flex-col w-full">
+<div id="recipe" class="flex flex-col">
     <div class="save_btn_container flex flex-col items-center mb-5">
         <button class="save_btn btn btn-secondary btn-xs md:btn-md w-1/3" disabled="true" on:click={save_recipe_v2}>
             save recipe
@@ -310,13 +312,19 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="dropdown w-1/2">
-                            <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered input-xs m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
-                            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                {#each display_categories as category}
-                                    <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur();}}>{category}</li>
-                                {/each}
-                            </ul>
+                        <div class="flex items-center w-full justify-around">
+                            <div class="dropdown w-1/2 flex justify-around">
+                                <input type="text" id="category" placeholder="category" tabindex="0" class="input input-bordered input-xs m-1 cursor-text w-full" bind:value={recipe.category} on:input={filter_categories}/>
+                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                    {#each display_categories as category}
+                                        <li class="cursor-pointer" on:click={()=>{recipe.category = category; document.activeElement.blur();}}>{category}</li>
+                                    {/each}
+                                </ul>
+                            </div>
+                            <div class="flex w-1/2 space-x-1 justify-evenly">
+                                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.made} view {recipe.made ? "bg-secondary" : ""}" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp /></button>
+                                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.favorite} view {recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart/></button>
+                            </div>
                         </div>
                     </div>
                 </div>

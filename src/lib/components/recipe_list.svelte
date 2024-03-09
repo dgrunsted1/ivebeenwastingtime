@@ -5,6 +5,10 @@
     import ViewIcon from "/src/lib/icons/ViewIcon.svelte";
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { onMount, afterUpdate } from "svelte";
+    import ThumbUp from "/src/lib/icons/thumbUp.svelte";
+    import Heart from "/src/lib/icons/Heart.svelte";
+    import { update_fave_made } from '/src/lib/save_recipe.js';
+
     const dispatch = createEventDispatcher();
     export let recipes;
     let display_recipes = recipes;
@@ -13,6 +17,8 @@
     let display_cats = {cuisines:[], countries:[], cats:[]};
     let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
     $: sort_val = null;
+    let update_fave_made_list = [];
+    let delay_timer;
 
     onMount(async () => {
         for (let i = 0; i < recipes.length; i++){
@@ -179,26 +185,37 @@
         let search_recipes = search();
 
         if (e.srcElement.tagName != "INPUT"){
-            //get info
-            let classes = Array.from(e.srcElement.classList);
-            let clicked = (classes.includes('btn-primary')) ? true : false;
-    
-            //update btn style
-            update_filter_style(clicked, e);
-            
-            //select type of category selected
-            let selected_cat = e.srcElement.textContent;
-            let type_cat = get_cat_name(classes);
-            
-            
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(async () => {
+                //get info
+                let classes = Array.from(e.srcElement.classList);
+                let clicked = (classes.includes('btn-primary')) ? true : false;
+        
+                //update btn style
+                update_filter_style(clicked, e);
+                
+                //select type of category selected
+                let selected_cat = e.srcElement.textContent;
+                let type_cat = get_cat_name(classes);
+                
+                
 
-            update_display_cats(selected_cat, clicked, type_cat);
+                update_display_cats(selected_cat, clicked, type_cat);
+
+                filter_recipes(search_recipes);
+
+                dispatch(`reset_mode`, {index: -1});
+                document.getElementById("menu_loading").classList.add('hidden');
+            }, 1000);
+            
+        } else {
+            filter_recipes(search_recipes);
+
+            dispatch(`reset_mode`, {index: -1});
+            document.getElementById("menu_loading").classList.add('hidden');
         }
         
-        filter_recipes(search_recipes);
-
-        dispatch(`reset_mode`, {index: -1});
-        document.getElementById("menu_loading").classList.add('hidden');
+        
     }
 
     function search(){
@@ -345,9 +362,25 @@
         }
         return 0;
     }
+
+    function update_fave_made_queue(e){
+        update_fave_made_list.push(e.srcElement.id);
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(async () => {
+            let id_update_list = [];
+            for (let i = 0; i < recipes.length; i++){
+                if (update_fave_made_list.includes(recipes[i].id)){
+                    id_update_list.push({id: recipes[i].id, favorite: recipes[i].favorite, made: recipes[i].made});
+                }
+            }
+            await update_fave_made(id_update_list);
+            update_fave_made_list = [];
+
+        }, 2000);
+    }
 </script>
-<div class="flex flex-col space-y-1">
-    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md py-1">
+<div class="flex flex-col">
+    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
@@ -359,7 +392,7 @@
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:change={select_cat}/>
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keyup={select_cat}/>
         <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
         <div class="dropdown dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
@@ -386,6 +419,10 @@
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
+                    <div class="flex w-fit space-x-1">
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
+                    </div>
                     <div class="flex w-fit space-x-1">
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view {(curr.mode == "view") ? "bg-secondary" : ""}" on:click={view}><ViewIcon/></button>
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit {(curr.mode == "edit") ? "bg-secondary" : ""}" on:click={view}><EditIcon/></button>
