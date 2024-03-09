@@ -110,12 +110,9 @@
                         <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
-                <div class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2 md:w-1/2">
-                    <input type="checkbox" class="h-1"/> 
-                    <div class="collapse-title text-xs text-center min-h-2">
-                    Your Menu
-                    </div>
-                    <div id="right_column" class="collapse-content md:collapse-open">
+                <details class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
+                    <summary class="collapse-title text-xl font-medium">Your Menu</summary>
+                    <div id="right_column" class="collapse-content md:collapse-open w-full">
                         {#if menu_recipes && mode == "menu"}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
                         {:else if view_recipe && mode == "view"}
@@ -126,7 +123,7 @@
                             <h2>select recipes to add to your menu</h2>
                         {/if}
                     </div>
-                </div>
+                </details>
             </div>
         {:else}
             <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">

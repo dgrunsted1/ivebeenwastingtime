@@ -30,4 +30,13 @@ export const update_made = async function(made, id){
     };
     
     const record = await pb.collection('menus').update(id, data);
+
+    for (const [key, val] of Object.entries(made)){
+        if (val){
+            const ingr_data = {
+                "made": true
+            };
+            const ingr_record = await pb.collection('recipes').update(key, ingr_data);
+        }
+    }
 }

@@ -32,7 +32,9 @@ export async function save_recipe(e, recipe, user, new_note) {
         "cuisine": recipe.cuisine,
         "country": recipe.country,
         "ingr_list": ingr_ids,
-        "url_id": await get_url_id(recipe)
+        "url_id": await get_url_id(recipe),
+        "made": recipe.made,
+        "favorite": recipe.favorite
     };
     if (note_ids.length) data.notes = note_ids;
     if (recipe.id){
@@ -168,4 +170,25 @@ const get_url_id = async function (recipe){
     } catch (e){
         return new_url_id;
     }
+}
+
+export const update_fave_made = async function (id_list){
+    for (let i = 0; i < id_list.length; i++){
+        const data = {
+            "made": id_list[i].made,
+            "favorite": id_list[i].favorite
+        };
+        const record = await pb.collection('recipes').update(id_list[i].id, data);
+    }
+    
+}
+
+export const update_fave = async function (id_list){
+    for (let i = 0; i < id_list.length; i++){
+        const data = {
+            "favorite": id_list[i].favorite
+        };
+        const record = await pb.collection('recipes').update(id_list[i].id, data);
+    }
+    
 }
