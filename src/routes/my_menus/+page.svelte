@@ -3,16 +3,15 @@
     import { onMount } from 'svelte';
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
-    import { page } from '$app/stores';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
-    import { invalidateAll } from '$app/navigation';
-  import { debug } from 'svelte/internal';
+
 
     
     $: user_menus = [];
     $: modal_menu = [];
     $: loading = true;
     $: sort_val = null;
+    let delay_timer;
     let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
 
     onMount(async () => {
@@ -110,42 +109,45 @@
     }
 
     async function search(e){
-        document.getElementById("user_menus_length").innerHTML = `<span class="loading loading-dots loading-xs"></span>`;
-        let search_str = e.srcElement.value;
-        let recipe_ids = [];
-        if (search_str == ""){
-            const result_list = await pb.collection('menus').getList(1, 50, {
-                filter: `user="${$currentUser.id}"`,
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(async () => {
+            document.getElementById("user_menus_length").innerHTML = `<span class="loading loading-dots loading-xs"></span>`;
+            let search_str = e.srcElement.value;
+            let recipe_ids = [];
+            if (search_str == ""){
+                const result_list = await pb.collection('menus').getList(1, 50, {
+                    filter: `user="${$currentUser.id}"`,
+                    expand: `recipes,recipes.ingr_list`
+                });
+                user_menus = result_list.items;
+                return;
+            }
+            const result_ingr = await pb.collection('ingredients').getList(1, 50, {
+                filter: `ingredient ~ '${search_str}'`,
+                expand: `recipe`
+            });
+            for (let i = 0; i < result_ingr.items.length; i++){
+                for (let j = 0; j < result_ingr.items[i].recipe.length; j++){
+                    if (!recipe_ids.includes(result_ingr.items[i].recipe[j])) recipe_ids.push(result_ingr.items[i].recipe[j]);
+                }
+            }
+            const result_recipe = await pb.collection('recipes').getList(1, 50, {
+                filter: `title ~ '${search_str}'`,
+            });
+            for (let i = 0; i < result_recipe.items.length; i++){
+                if (!recipe_ids.includes(result_recipe.items[i].id)) recipe_ids.push(result_recipe.items[i].id);
+            }
+            let recipe_id_string = "";
+            for (let i = 0; i < recipe_ids.length; i++){
+                recipe_id_string += ` || recipes ~ '${recipe_ids[i]}'`;
+            }
+            const result_menu = await pb.collection('menus').getList(1, 50, {
+                filter: `title ~ '${search_str}'${recipe_id_string}`,
                 expand: `recipes,recipes.ingr_list`
             });
-            user_menus = result_list.items;
-            return;
-        }
-        const result_ingr = await pb.collection('ingredients').getList(1, 50, {
-            filter: `ingredient ~ '${search_str}'`,
-            expand: `recipe`
-        });
-        for (let i = 0; i < result_ingr.items.length; i++){
-            for (let j = 0; j < result_ingr.items[i].recipe.length; j++){
-                if (!recipe_ids.includes(result_ingr.items[i].recipe[j])) recipe_ids.push(result_ingr.items[i].recipe[j]);
-            }
-        }
-        const result_recipe = await pb.collection('recipes').getList(1, 50, {
-            filter: `title ~ '${search_str}'`,
-        });
-        for (let i = 0; i < result_recipe.items.length; i++){
-            if (!recipe_ids.includes(result_recipe.items[i].id)) recipe_ids.push(result_recipe.items[i].id);
-        }
-        let recipe_id_string = "";
-        for (let i = 0; i < recipe_ids.length; i++){
-            recipe_id_string += ` || recipes ~ '${recipe_ids[i]}'`;
-        }
-        const result_menu = await pb.collection('menus').getList(1, 50, {
-            filter: `title ~ '${search_str}'${recipe_id_string}`,
-            expand: `recipes,recipes.ingr_list`
-        });
-        user_menus = result_menu.items;
-        document.getElementById("user_menus_length").innerHTML = user_menus.length;
+            user_menus = result_menu.items;
+            document.getElementById("user_menus_length").innerHTML = user_menus.length;
+        }, 1000);
     }
 
     function sort_menus(e){
@@ -292,7 +294,7 @@
     <div class="flex justify-between mx-4">
         <div class="flex w-fit space-x-6 items-center">
             <div class="form-control w-full max-w-xs">
-                <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:change|preventDefault={search}/>
+                <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
             </div>
             <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
         </div>
