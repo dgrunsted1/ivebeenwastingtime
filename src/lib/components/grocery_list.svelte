@@ -34,10 +34,19 @@
         navigator.clipboard.writeText(copy_text);
     }
 
-    const remove_item = (ingr) => {
+    const remove_item = (qty, unit, ingr) => {
         let delete_item = confirm("Are you sure you want to delete this item?");
         if (delete_item){
-            grocery_list = grocery_list.filter(curr => curr.id != ingr);
+            let temp_arr = [];
+            let found = false;
+            for (let i = 0; i < grocery_list.length; i++){
+                if (grocery_list[i].quantity != qty || grocery_list[i].unit != unit || grocery_list[i].ingredient != ingr || found){
+                    temp_arr.push(grocery_list[i]);
+                }else {
+                    found = true;
+                }
+            }
+            grocery_list = temp_arr;
             edit_item();
         }
     }
@@ -110,7 +119,7 @@
                             <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
                             <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
                             <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item} on:keypress={enter_new_item} bind:this={item.input}>
-                            {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={() => remove_item(item.id)}><DeleteIcon/></button>{/if}
+                            {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={() => remove_item(item.quantity, item.unit, item.ingredient)}><DeleteIcon/></button>{/if}
                         </div>                        
                 {/each} 
                 {#if status != "none"}
