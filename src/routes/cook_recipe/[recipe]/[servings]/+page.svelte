@@ -1,11 +1,19 @@
 <script>
+    import { currentUser } from '/src/lib/pocketbase.js';
+
+
+    import ThumbUp from "/src/lib/icons/BigThumbUp.svelte";
+    import Heart from "/src/lib/icons/BigHeart.svelte";
     import { onMount } from 'svelte';
-    import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import { page } from '$app/stores';
     
     /** @type {import('./$types').PageData} */
     export let data;
     const scroll_size = 425;
+    let user_logged_in = false;
+
+    onMount(async () => {
+        if ($currentUser.id == data.post.recipe.user) user_logged_in = true;
+    });
 
     const get_quantity = function(quantity){
         if (quantity){
@@ -44,8 +52,15 @@
                         <div>{data.post.servings}</div>
                     </div>
                 </div>
-                <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
-    
+                <div class="flex justify-evenly items-center">
+                    <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                    {#if user_logged_in}
+                        <div class="w-1/3 flex justify-evenly">
+                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.made ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.made = !data.post.recipe.made}}><ThumbUp /></button>
+                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite}}><Heart/></button>
+                        </div>
+                    {/if}
+                </div>    
             </div>
         </div>
         <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
