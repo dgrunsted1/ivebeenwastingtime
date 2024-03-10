@@ -17,6 +17,7 @@
     $: loading = true;
     let delay_timer;
     let update_fave_list = [];
+    let tab = "recipe_list";
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -97,6 +98,17 @@
 
         }, 2000);
     }
+
+    function switch_tab(e){
+        let siblings = e.srcElement.parentNode.children;
+        for (let curr of siblings){
+            if (curr != e.srcElement && curr.classList.contains("tab-active")) {
+                curr.classList.remove("tab-active");
+            }
+        }
+        e.srcElement.classList.add("tab-active");
+        tab = e.srcElement.id;
+    }
 </script>
 
 {#if todays_menu.id}
@@ -104,8 +116,12 @@
         <div class="flex justify-center p-1">
             <h1 class="text-2xl">{todays_menu.title}</h1>
         </div>
-        <div id="content" class="flex flex-col md:flex-row m-2 mt-0 space-y-24 md:space-y-0">
-            <div id="left_column" class="md:w-1/2 md:max-h-[calc(100vh-150px)] md:overflow-y-auto">
+        <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200 md:hidden">
+            <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
+            <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
+        </div>
+        <div id="content" class="flex flex-col md:flex-row m-2 mt-2">
+            <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"} md:w-1/2 md:max-h-[calc(100vh-150px)] md:overflow-y-auto">
                 <div id="recipes" class="">
                     {#each todays_menu.expand.recipes as curr, i}
                     <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
@@ -123,7 +139,7 @@
                     {/each}
                 </div>
             </div>
-            <div id="right_column" class="md:w-1/2">
+            <div id="right_column" class="{tab == "grocery_list" ? "" : "hidden"} md:flex md:w-1/2">
                 {#if todays_menu && mode == "menu"}
                     <GroceryList bind:grocery_list={grocery_list} on:update_grocery_list={update_groceries} bind:status={grocery_list_status}  on:reset_grocery_list={reset_list}/>
                 {:else}

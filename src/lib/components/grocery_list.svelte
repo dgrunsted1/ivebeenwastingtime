@@ -1,12 +1,19 @@
 <script>
-    import { createEventDispatcher, tick } from 'svelte';
+    import { createEventDispatcher, onMount, tick } from 'svelte';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+    import { page } from '$app/stores';
 
     export let grocery_list = [];
     export let status;
     let dispatch = createEventDispatcher();
     let delay_timer;
+    let view_size = `max-h-[calc(64vh)]`;
 
+    onMount(async () => {
+        if ($page.url.pathname == "/today"){
+            view_size = `max-h-[calc(75vh)]`;
+        }
+    });
     const copy_to_clipboard = () => {
         let copy_text = "";
         let first = true;
@@ -95,7 +102,7 @@
         {/if}
     </div>
     <div class="">
-        <div class="grocery_list {`max-h-[calc(60vh)]`} overflow-y-auto">
+        <div class="grocery_list {view_size} overflow-y-auto">
             {#if grocery_list.length > 0}
                 {#each grocery_list as item, i}
                         <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">

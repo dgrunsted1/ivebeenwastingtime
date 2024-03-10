@@ -3,7 +3,9 @@
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
-    import { get_grocery_list } from '/src/lib/merge_ingredients.js'
+    import { get_grocery_list } from '/src/lib/merge_ingredients.js';
+    import { createEventDispatcher } from 'svelte';
+
 
 
     export let title;
@@ -14,6 +16,7 @@
     let grocery_list = [];
     let num_servings = 0;
     let total_time = 0;
+    const dispatch = createEventDispatcher();
 
 
     afterUpdate(() => {
@@ -110,9 +113,13 @@
         return total_time;
     }
 
+    function close_modal(){
+        dispatch('close_modal');
+    }
+
 </script>
 
-<div id="menu">
+<div id="menu" class="h-3/4">
     <div class="flex flex-col items-center p-3">
         <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={title}/>
     </div>
@@ -124,10 +131,10 @@
         {#if $page.url.pathname == "/menu"}
             <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
         {:else if $page.url.pathname == "/my_menus"}
-            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>make<br>todays menu</button>
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>set today</button>
         {/if}
     </div>
-    <div class="flex justify-around mt-2">
+    <div class="flex justify-around m-1 items-center">
         <p class="text-xs">{menu.length} recipes</p>
         <p class="text-xs">{num_servings} servings</p>
         <p class="text-xs">{total_time}</p>

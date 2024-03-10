@@ -110,9 +110,9 @@
                         <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
-                <details class="collapse md:collapse-open bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
+                <details class="collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
                     <summary class="collapse-title text-xl font-medium">Your Menu</summary>
-                    <div id="right_column" class="collapse-content md:collapse-open w-full">
+                    <div id="right_column" class="collapse-content w-full">
                         {#if menu_recipes && mode == "menu"}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
                         {:else if view_recipe && mode == "view"}

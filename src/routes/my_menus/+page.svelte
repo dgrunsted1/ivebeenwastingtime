@@ -289,6 +289,10 @@
         }
         return 0;
     }
+
+    function close_modal(){
+        my_modal_2.hideModal();
+    }
 </script>
 {#if user_menus.length > 0 || loading}
     <div class="flex justify-between mx-4">
@@ -349,7 +353,8 @@
     <dialog id="my_modal_2" class="modal">
         {#if modal_menu.id}
             <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
-                <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
+                <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
+                <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id} on:close_modal={close_modal}/>
             </form>
             <form method="dialog" class="modal-backdrop">
                 <button>close</button>
