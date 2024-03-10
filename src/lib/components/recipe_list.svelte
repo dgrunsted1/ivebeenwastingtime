@@ -180,41 +180,33 @@
     }
 
     function select_cat(e){
-        document.getElementById("menu_loading").classList.remove('hidden');
+        let delay_time = (e.srcElement.tagName != "INPUT") ? 0 : 1000;
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(() => {
+            document.getElementById("menu_loading").classList.remove('hidden');
+            let search_recipes = search();
 
-        let search_recipes = search();
-
-        if (e.srcElement.tagName != "INPUT"){
-            clearTimeout(delay_timer);
-            delay_timer = setTimeout(async () => {
-                //get info
-                let classes = Array.from(e.srcElement.classList);
-                let clicked = (classes.includes('btn-primary')) ? true : false;
-        
-                //update btn style
-                update_filter_style(clicked, e);
-                
-                //select type of category selected
-                let selected_cat = e.srcElement.textContent;
-                let type_cat = get_cat_name(classes);
-                
-                
-
-                update_display_cats(selected_cat, clicked, type_cat);
-
-                filter_recipes(search_recipes);
-
-                dispatch(`reset_mode`, {index: -1});
-                document.getElementById("menu_loading").classList.add('hidden');
-            }, 1000);
+            if (e.srcElement.tagName != "INPUT"){
+                    //get info
+                    let classes = Array.from(e.srcElement.classList);
+                    let clicked = (classes.includes('btn-primary')) ? true : false;
             
-        } else {
+                    //update btn style
+                    update_filter_style(clicked, e);
+                    
+                    //select type of category selected
+                    let selected_cat = e.srcElement.textContent;
+                    let type_cat = get_cat_name(classes);
+                    
+                    
+
+                    update_display_cats(selected_cat, clicked, type_cat);
+            }
             filter_recipes(search_recipes);
 
             dispatch(`reset_mode`, {index: -1});
             document.getElementById("menu_loading").classList.add('hidden');
-        }
-        
+        }, delay_time);
         
     }
 
@@ -222,12 +214,15 @@
         let recipes_with_ingr = [];
         for (let i = 0; i < recipes.length; i ++){
             for (let j = 0; j < recipes[i].expand.ingr_list.length; j++){
-                if (recipes[i].expand.ingr_list[j].ingredient.includes(document.getElementById("search").value)){
+                // console.log(recipes[i].title);
+                if (recipes[i].expand.ingr_list[j].ingredient.toUpperCase().includes(document.getElementById("search").value.toUpperCase()) ||
+                    recipes[i].title.toUpperCase().includes(document.getElementById("search").value.toUpperCase())){
                     recipes_with_ingr.push(recipes[i]);
                     break;
                 }
             }
         }
+        console.log("search done");
         return recipes_with_ingr;
     }
 
