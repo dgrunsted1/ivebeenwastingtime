@@ -1,10 +1,10 @@
 <script>
     import { currentUser } from '/src/lib/pocketbase.js';
-
-
     import ThumbUp from "/src/lib/icons/BigThumbUp.svelte";
     import Heart from "/src/lib/icons/BigHeart.svelte";
     import { onMount } from 'svelte';
+    import { update_fave_made } from '/src/lib/save_recipe.js';
+
     
     /** @type {import('./$types').PageData} */
     export let data;
@@ -22,6 +22,10 @@
         } else {
             return "";
         }
+    }
+
+    async function update_fave_made_pre(){
+        await update_fave_made([{id: data.post.recipe.id, favorite: data.post.recipe.favorite, made: data.post.recipe.made}]);
     }
 
 </script>
@@ -56,8 +60,8 @@
                     <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
                     {#if user_logged_in}
                         <div class="w-1/3 flex justify-evenly">
-                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.made ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.made = !data.post.recipe.made}}><ThumbUp /></button>
-                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite}}><Heart/></button>
+                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.made ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp/></button>
+                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart/></button>
                         </div>
                     {/if}
                 </div>    
