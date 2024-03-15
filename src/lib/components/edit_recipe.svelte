@@ -247,19 +247,19 @@
     </div>
     <div class="img_info_container flex flex-col md:flex-row w-full content-center justify-around">
         <div class="img_container flex md:w-1/2 content-center">
-            {#if recipe.image}
-                <img src={recipe.image} alt={recipe.title} class="self-center"/>
-            {:else}
-                <div class="w-full flex flex-col space-y-2">
-                    <div class="w-full flex flex-col">
+            <div class="w-full flex flex-col space-y-2">
+                <div class="w-full flex flex-col">
+                    {#if recipe.image}
+                        <img src={recipe.image} alt={recipe.title} class="self-center"/>
+                    {:else}
                         {#if !show_alert}
                             <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>
                         {/if}
                         <p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p>
-                    </div>
-                    <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
+                    {/if}
                 </div>
-            {/if}
+                <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
+            </div>
         </div>
         <div class="info_container md:w-1/2 mx-1">
             <div class="title_container form-control">
@@ -269,6 +269,10 @@
             <div class="decription_container form-control w-full">
                 <label for="desc" class="label p-0"><span class="label-text-alt p-0">Description</span></label>
                 <textarea class="desc textarea textarea-bordered" type="text" bind:value={recipe.description}></textarea>
+            </div>
+            <div class="title_container form-control">
+                <label for="title" class="label p-0"><span class="label-text-alt p-0">link</span></label>
+                <input type="text" class="title input input-bordered input-xs" bind:value={recipe.url}/>
             </div>
             <div class="misc w-full">
                 <div class="flex flex-row">
