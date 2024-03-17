@@ -1,5 +1,5 @@
 <script>
-    import { afterUpdate } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
@@ -17,7 +17,11 @@
     let num_servings = 0;
     let total_time = 0;
     const dispatch = createEventDispatcher();
+    let overflow_len = ``;
 
+    onMount(async () => {
+        overflow_len = ($page.pathname == "/menu") ? `max-h-[50vh]` : `max-h-[60vh]`;
+    });
 
     afterUpdate(() => {
         grocery_list = [];
@@ -141,7 +145,7 @@
     </div>
     
     {#if tab == "recipe_list"}
-        <div class="max-h-[calc(100vh-230px)] md:max-h-[calc(100vh-210px)] overflow-y-auto">
+        <div class="{overflow_len} md:max-h-[calc(100vh-210px)] overflow-y-auto">
                 {#each menu as recipe}
                     <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
                         <figure class="image w-1/3 h-full">
