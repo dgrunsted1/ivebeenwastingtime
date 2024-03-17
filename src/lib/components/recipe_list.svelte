@@ -404,7 +404,7 @@
     </div>
 </div>
 
-<div id="recipes" class="max-h-[62vh] md:h-[calc(100vh-170px)] overflow-y-auto">
+<div id="recipes" class="max-h-[60vh] md:h-[calc(100vh-170px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>
@@ -430,7 +430,7 @@
             </div>
         </div>
     {/each}
-    <div class="flex justify-center m-5">
+    <div class="flex justify-center m-3">
         <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
     </div>
 </div>
