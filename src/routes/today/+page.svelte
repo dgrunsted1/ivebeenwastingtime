@@ -114,15 +114,15 @@
 {#if todays_menu.id}
     <div id="main">
         <div class="flex justify-center p-1">
-            <h1 class="text-2xl">{todays_menu.title}</h1>
+            <h1 class="text-xl">{todays_menu.title}</h1>
         </div>
         <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200 md:hidden">
             <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
         <div id="content" class="flex flex-col md:flex-row m-2 mt-2">
-            <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"} md:w-1/2 md:max-h-[calc(100vh-150px)] md:overflow-y-auto">
-                <div id="recipes" class="">
+            <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2 md:max-h-[calc(100vh-150px)] md:overflow-y-auto">
+                <div id="recipes" class="max-h-[75vh] overflow-y-auto">
                     {#each todays_menu.expand.recipes as curr, i}
                     <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
                         <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr.id]) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1">

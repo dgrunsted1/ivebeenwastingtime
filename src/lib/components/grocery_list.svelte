@@ -11,7 +11,7 @@
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){
-            view_size = `max-h-[calc(75vh)]`;
+            view_size = `max-h-[calc(70vh)]`;
         }
     });
     const copy_to_clipboard = () => {
