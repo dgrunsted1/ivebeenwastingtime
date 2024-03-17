@@ -19,7 +19,7 @@
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
-        const result_list = await pb.collection('recipes').getList(1, 50, {
+        const result_list = await pb.collection('recipes').getList(1, 250, {
             filter: `user="${$currentUser.id}"`,
             expand: `notes, ingr_list`,
             sort: `-created`
