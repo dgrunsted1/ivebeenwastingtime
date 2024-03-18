@@ -7,7 +7,7 @@
     export let status;
     let dispatch = createEventDispatcher();
     let delay_timer;
-    let view_size = `max-h-[calc(64vh)]`;
+    let view_size = `max-h-[calc(55vh)]`;
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){

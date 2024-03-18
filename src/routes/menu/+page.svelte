@@ -111,7 +111,7 @@
                     {/if}
                 </div>
                 <details class="collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
-                    <summary class="collapse-title text-xl font-medium">Your Menu</summary>
+                    <summary class="collapse-title text-lg p-2 h-5 flex ">Your Menu</summary>
                     <div id="right_column" class="collapse-content w-full">
                         {#if menu_recipes && mode == "menu"}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>

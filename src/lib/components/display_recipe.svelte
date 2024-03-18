@@ -11,7 +11,7 @@ function get_local_time(utc_code){
 
 </script>
 
-<div id="recipe" class="flex flex-col m-auto py-2">
+<div id="recipe" class="flex flex-col m-auto py-2 max-h-[70vh] overflow-y-scroll">
     <div class="img_info_container flex items-center justify-center flex-col md:flex-row">
         <div class="img_container md:w-1/2">
             <img src={recipe.image} alt={recipe.title} class="w-full"/>

@@ -374,7 +374,8 @@
         }, 2000);
     }
 </script>
-<div class="flex flex-col">
+
+<div class="hidden md:flex flex-col">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
@@ -404,7 +405,7 @@
     </div>
 </div>
 
-<div id="recipes" class="max-h-[61vh] md:h-[calc(100vh-170px)] overflow-y-auto">
+<div id="recipes" class="h-[61vh] md:h-[calc(100vh-170px)] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>
@@ -432,5 +433,35 @@
     {/each}
     <div class="flex justify-center m-3">
         <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
+    </div>
+</div>
+
+<div class="flex flex-col md:hidden absolute bottom-25 left-2 right-2">
+    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+        {#each categories.cats as cat}
+            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
+        {/each}
+        {#each categories.cuisines as cuisine}
+            <button class="btn btn-primary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
+        {/each}
+        {#each categories.countries as country}
+            <button class="btn btn-primary btn-xs country" on:click={select_cat}>{country}</button> 
+        {/each}
+    </div>
+    <div class="form-control flex flex-row justify-between w-full items-center">
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keyup={select_cat}/>
+        <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
+        <div class="dropdown dropdown-end">
+            <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                {#each sort_opts as opt}
+                    {#if opt == sort_val}
+                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes}>{opt}</a></li>
+                    {:else}
+                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes}>{opt}</a></li>
+                    {/if}
+                {/each}
+            </ul>
+        </div>
     </div>
 </div>
