@@ -7,11 +7,13 @@
     export let status;
     let dispatch = createEventDispatcher();
     let delay_timer;
-    let view_size = `max-h-[calc(64vh)]`;
+    let view_size_mobile = `max-h-[calc(55vh)]`;
+    let view_size_desktop = `md:max-h-[calc(64vh)]`;
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){
-            view_size = `max-h-[calc(65vh)]`;
+            view_size_mobile = `max-h-[calc(65vh)]`;
+            view_size_desktop = `md:max-h-[calc(80vh)]`;
         }
     });
     const copy_to_clipboard = () => {
@@ -111,7 +113,7 @@
         {/if}
     </div>
     <div class="">
-        <div class="grocery_list {view_size} overflow-y-auto">
+        <div class="grocery_list {view_size_mobile} {view_size_desktop} overflow-y-auto">
             {#if grocery_list.length > 0}
                 {#each grocery_list as item, i}
                         <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">
