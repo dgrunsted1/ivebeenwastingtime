@@ -16,7 +16,7 @@
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
-        const result_list = await pb.collection('menus').getList(1, 50, {
+        const result_list = await pb.collection('menus').getList(1, 250, {
             filter: `user="${$currentUser.id}"`,
             expand: `recipes,recipes.ingr_list`,
             sort: `-created`
@@ -115,14 +115,14 @@
             let search_str = e.srcElement.value;
             let recipe_ids = [];
             if (search_str == ""){
-                const result_list = await pb.collection('menus').getList(1, 50, {
+                const result_list = await pb.collection('menus').getList(1, 250, {
                     filter: `user="${$currentUser.id}"`,
                     expand: `recipes,recipes.ingr_list`
                 });
                 user_menus = result_list.items;
                 return;
             }
-            const result_ingr = await pb.collection('ingredients').getList(1, 50, {
+            const result_ingr = await pb.collection('ingredients').getList(1, 250, {
                 filter: `ingredient ~ '${search_str}'`,
                 expand: `recipe`
             });
@@ -131,7 +131,7 @@
                     if (!recipe_ids.includes(result_ingr.items[i].recipe[j])) recipe_ids.push(result_ingr.items[i].recipe[j]);
                 }
             }
-            const result_recipe = await pb.collection('recipes').getList(1, 50, {
+            const result_recipe = await pb.collection('recipes').getList(1, 250, {
                 filter: `title ~ '${search_str}'`,
             });
             for (let i = 0; i < result_recipe.items.length; i++){
@@ -141,7 +141,7 @@
             for (let i = 0; i < recipe_ids.length; i++){
                 recipe_id_string += ` || recipes ~ '${recipe_ids[i]}'`;
             }
-            const result_menu = await pb.collection('menus').getList(1, 50, {
+            const result_menu = await pb.collection('menus').getList(1, 250, {
                 filter: `title ~ '${search_str}'${recipe_id_string}`,
                 expand: `recipes,recipes.ingr_list`
             });

@@ -1,6 +1,7 @@
 <script>
     import { onMount } from 'svelte';
     import { currentUser, pb } from '/src/lib/pocketbase.js';
+    import { get_servings, get_total_time } from '/src/lib/recipe_util.js';
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
     import DisplayRecipe from "/src/lib/components/display_recipe.svelte";
     import RecipeList from "/src/lib/components/recipe_list.svelte";
@@ -111,7 +112,17 @@
                     {/if}
                 </div>
                 <details class="collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
-                    <summary class="collapse-title text-xl font-medium">Your Menu</summary>
+                    <summary class="collapse-title text-xl font-medium">
+                        {#if menu_recipes.length > 0}
+                            <div class="flex justify-around m-1 items-center">
+                                <p class="text-xs">{menu_recipes.length} recipes</p>
+                                <p class="text-xs">{get_servings(menu_recipes, mults)} servings</p>
+                                <p class="text-xs">{get_total_time(menu_recipes)}</p>
+                            </div>
+                        {:else}
+                            Your Menu
+                        {/if}
+                    </summary>
                     <div id="right_column" class="collapse-content w-full">
                         {#if menu_recipes && mode == "menu"}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>

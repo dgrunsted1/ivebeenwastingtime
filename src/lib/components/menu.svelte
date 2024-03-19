@@ -4,6 +4,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
     import { get_grocery_list } from '/src/lib/merge_ingredients.js';
+    import { get_servings, get_total_time } from '/src/lib/recipe_util.js';
     import { createEventDispatcher } from 'svelte';
 
 
@@ -75,7 +76,7 @@
     }
     
     async function set_todays_menu(e){
-        const resultList = await pb.collection('menus').getList(1, 50, {
+        const resultList = await pb.collection('menus').getList(1, 1, {
             filter: `user = '${$currentUser.id}' && today = True`,
             expand: `grocery_list`
         });
@@ -89,34 +90,6 @@
         const true_record = await pb.collection('menus').update(id, { "today": true });
     }
 
-    function get_servings(recipes, mults){
-        let total_serv = 0;
-        for (let i = 0; i < recipes.length; i++){
-            total_serv += parseInt(mults[recipes[i].id]);
-        }
-        return total_serv;
-    }
-
-    function get_total_time(recipes){
-        let total_time = 0;
-        let mins = 0;
-        for (let i = 0; i < recipes.length; i++){
-            let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
-            if (min_result){
-                mins += parseInt(min_result[1]);
-            }
-
-            let hr_result = recipes[i].time.match(/(\d+) [hrs|hours|hour|hr]/);
-            if (hr_result){
-                mins += parseInt(hr_result[1]) * 60;
-            }
-        }
-        let hours = parseInt(mins/60);
-        mins = mins % 60;
-        total_time = hours + "hrs " + mins + "mins";
-        return total_time;
-    }
-
     function close_modal(){
         dispatch('close_modal');
     }
@@ -124,19 +97,19 @@
 </script>
 
 <div id="menu" class="h-3/4">
-    <div class="flex flex-col items-center p-3">
+    <div class="flex items-center p-3 justify-between">
         <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={title}/>
+        {#if $page.url.pathname == "/menu"}
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
+        {:else if $page.url.pathname == "/my_menus"}
+            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>set today</button>
+        {/if}
     </div>
     <div class="flex content-center">
         <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200">
             <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
-        {#if $page.url.pathname == "/menu"}
-            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
-        {:else if $page.url.pathname == "/my_menus"}
-            <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="today_btn" on:click={set_todays_menu}>set today</button>
-        {/if}
     </div>
     <div class="flex justify-around m-1 items-center">
         <p class="text-xs">{menu.length} recipes</p>
