@@ -21,7 +21,7 @@
     let overflow_len = ``;
 
     onMount(async () => {
-        overflow_len = ($page.pathname == "/menu") ? `max-h-[50vh]` : `max-h-[60vh]`;
+        overflow_len = ($page.url.pathname == "/menu") ? `max-h-[60vh]` : `max-h-[60vh]`;
     });
 
     afterUpdate(() => {
@@ -111,11 +111,13 @@
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
     </div>
-    <div class="flex justify-around m-1 items-center">
-        <p class="text-xs">{menu.length} recipes</p>
-        <p class="text-xs">{num_servings} servings</p>
-        <p class="text-xs">{total_time}</p>
-    </div>
+    {#if $page.url.pathname != "/menu"}
+        <div class="flex justify-around m-1 items-center">
+            <p class="text-xs">{menu.length} recipes</p>
+            <p class="text-xs">{num_servings} servings</p>
+            <p class="text-xs">{total_time}</p>
+        </div>
+    {/if}
     
     {#if tab == "recipe_list"}
         <div class="{overflow_len} md:max-h-[calc(100vh-210px)] overflow-y-auto">

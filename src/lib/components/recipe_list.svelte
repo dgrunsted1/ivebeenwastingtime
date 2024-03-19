@@ -404,7 +404,7 @@
     </div>
 </div>
 
-<div id="recipes" class="max-h-[61vh] md:h-[calc(100vh-170px)] overflow-y-auto">
+<div id="recipes" class="max-h-[61vh] md:max-h-[80vh] overflow-y-auto">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>
@@ -439,7 +439,7 @@
     <div class="form-control flex flex-row justify-between w-full items-center">
         <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keyup={select_cat}/>
         <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
-        <div class="dropdown dropdown-end">
+        <div class="dropdown dropdown-top md:dropdown-bottom dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
