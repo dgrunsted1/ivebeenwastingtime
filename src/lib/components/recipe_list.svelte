@@ -387,7 +387,7 @@
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:input={select_cat}/>
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
         <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
         <div class="dropdown dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
@@ -437,7 +437,7 @@
 
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:input={select_cat}/>
+        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
         <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
         <div class="dropdown dropdown-top md:dropdown-bottom dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
