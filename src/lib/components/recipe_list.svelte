@@ -184,7 +184,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
             document.getElementById("menu_loading").classList.remove('hidden');
-            let search_recipes = search();
+            let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
                     //get info
@@ -210,13 +210,13 @@
         
     }
 
-    function search(){
+    function search(search_text){
         let recipes_with_ingr = [];
         for (let i = 0; i < recipes.length; i ++){
             for (let j = 0; j < recipes[i].expand.ingr_list.length; j++){
                 // console.log(recipes[i].title);
-                if (recipes[i].expand.ingr_list[j].ingredient.toUpperCase().includes(document.getElementById("search").value.toUpperCase()) ||
-                    recipes[i].title.toUpperCase().includes(document.getElementById("search").value.toUpperCase())){
+                if (recipes[i].expand.ingr_list[j].ingredient.toUpperCase().includes(search_text.toUpperCase()) ||
+                    recipes[i].title.toUpperCase().includes(search_text.toUpperCase())) {
                     recipes_with_ingr.push(recipes[i]);
                     break;
                 }
