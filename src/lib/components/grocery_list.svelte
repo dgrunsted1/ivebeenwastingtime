@@ -2,9 +2,12 @@
     import { createEventDispatcher, onMount, tick } from 'svelte';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { page } from '$app/stores';
+    import EditIcon from "/src/lib/icons/EditIcon.svelte";
+
 
     export let grocery_list = [];
     export let status;
+    $: edit = false;
     let dispatch = createEventDispatcher();
     let delay_timer;
     let view_size_mobile = `max-h-[calc(55vh)]`;
@@ -100,29 +103,42 @@
         }
         return id;
     }
+
+    const edit_groceries = () => {
+        edit = !edit;
+    }
 </script>
 
 <div id="list" class="flex flex-col w-full">
-    <div id="header" class="flex justify-evenly items-center m-2.5 mt-0">
+    <div id="header" class="flex justify-between items-center my-2.5 mt-0">
         {#if grocery_list.length > 0}
-            {#if status != "none"}<div id="update_status" class="text-xs">{status}</div>{/if}
-            <div id="count" class="text-xs">{grocery_list.length} Items</div>
+            <div>
+                {#if status != "none"}<div id="update_status" class="text-xs">{status}</div>{/if}
+                <div id="count" class="text-xs">{grocery_list.length} Items</div>
+            </div>
             <button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
             {#if status != "none"}<button id="uncheck" class="btn btn-xs md:btn-sm btn-accent" on:click={uncheck_list}>uncheck</button>{/if}
             {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={reset_list}>reset</button>{/if}
+            {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>{/if}
         {/if}
     </div>
     <div class="">
         <div class="grocery_list {view_size_mobile} {view_size_desktop} overflow-y-auto">
             {#if grocery_list.length > 0}
                 {#each grocery_list as item, i}
+                    {#if edit}
                         <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-center items-center">
-                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
                             <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
                             <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
                             <input type="text" class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item} on:keypress={enter_new_item} bind:this={item.input}>
                             {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={() => remove_item(item.quantity, item.unit, item.ingredient)}><DeleteIcon/></button>{/if}
-                        </div>                        
+                        </div>
+                    {:else}
+                        <div class="grocery_item flex relative my-1 tooltip space-x-2 justify-left items-center">
+                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-xs" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
+                            <p class="text-sm">{item.quantity} {item.unit} {item.ingredient}</p>
+                        </div>
+                    {/if}
                 {/each} 
                 {#if status != "none"}
                     <div class="flex relative my-1 tooltip space-x-2 justify-center items-center">
