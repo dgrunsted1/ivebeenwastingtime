@@ -120,7 +120,7 @@
             <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
-        <div id="content" class="flex flex-col md:flex-row m-2 mt-2">
+        <div id="content" class="flex flex-col md:flex-row md:space-x-3 m-2 mt-2">
             <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2">
                 <div id="recipes" class="max-h-[70vh] md:max-h-[85vh] overflow-y-auto">
                     {#each todays_menu.expand.recipes as curr, i}

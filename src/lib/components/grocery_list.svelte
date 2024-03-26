@@ -110,10 +110,10 @@
 </script>
 
 <div id="list" class="flex flex-col w-full">
-    <div id="header" class="flex justify-between items-center my-2.5 mt-0">
+    <div id="header" class="flex {($page.url.pathname == "/today") ? `justify-between` : `justify-evenly`} items-center my-2.5 mt-0">
         {#if grocery_list.length > 0}
             <div>
-                {#if status != "none"}<div id="update_status" class="text-xs">{status}</div>{/if}
+                {#if status != "none" && $page.url.pathname == "/today"}<div id="update_status" class="text-xs">{status}</div>{/if}
                 <div id="count" class="text-xs">{grocery_list.length} Items</div>
             </div>
             <button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>

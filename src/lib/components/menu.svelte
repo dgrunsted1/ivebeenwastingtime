@@ -96,7 +96,7 @@
 
 </script>
 
-<div id="menu" class="h-3/4">
+<div id="menu" class="h-3/4 md:h-full w-full">
     <div class="flex items-center p-3 justify-between">
         <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={title}/>
         {#if $page.url.pathname == "/menu"}

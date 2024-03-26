@@ -100,7 +100,7 @@
 </script>
 <div id="main">
         {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
-            <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0">
+            <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0 md:space-x-3">
                 <div id="left_column" class="md:w-1/2">
                     {#if user_recipes.items}
                         <RecipeList recipes={user_recipes.items} 
@@ -111,7 +111,7 @@
                         <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
-                <details class="collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
+                <details class="md:hidden collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
                     <summary class="collapse-title text-xl font-medium">
                         {#if menu_recipes.length > 0}
                             <div class="flex justify-around m-1 items-center">
@@ -135,6 +135,17 @@
                         {/if}
                     </div>
                 </details>
+                <div id="right_column" class="hidden md:flex w-full">
+                    {#if menu_recipes && mode == "menu"}
+                        <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
+                    {:else if view_recipe && mode == "view"}
+                        <DisplayRecipe recipe={view_recipe}/>
+                    {:else if edit_recipe && mode == "edit"}
+                        <EditRecipe recipe={edit_recipe}/>
+                    {:else}
+                        <h2>select recipes to add to your menu</h2>
+                    {/if}
+                </div>
             </div>
         {:else}
             <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
