@@ -132,8 +132,8 @@
         recipe.expand.ingr_list[recipe.expand.ingr_list.length] = {amount: 1, unit: "", name: "", original:[""]};
     }
 
-    function add_dir(){
-        recipe.directions[recipe.directions.length] = "";
+    function add_dir(e){
+        recipe.directions = recipe.directions.toSpliced(e.srcElement.id, 0, "");
     }
 
     function remove_dir(e){
@@ -372,7 +372,13 @@
             {#if recipe.directions.length}
                 {#each recipe.directions as curr, i}
                     <div class="step w-full md:w-4/5">
-                        <label for="directions" class="mx-1 label p-0 "><span class="label-text-alt p-0">Step {i+1}</span><button id={i} class="btn btn-xs my-1" on:click={remove_dir}>remove</button></label>
+                        <label for="directions" class="mx-1 label p-0 ">
+                            <span class="label-text-alt p-0">Step {i+1}</span>
+                            <div class="flex justify-center mt-2 space-x-1">
+                                <button id={i} class="btn btn-xs my-1 bg-transparent" on:click={add_dir}>add</button>
+                                <button id={i} class="btn btn-xs my-1 bg-transparent" on:click={remove_dir}>remove</button>
+                            </div>
+                        </label>
                         <textarea class="directions w-full textarea textarea-bordered" bind:value={recipe.directions[i]}/>
                     </div>
                 {/each}
@@ -383,7 +389,7 @@
             {/if}
             
             <div class="flex justify-center mt-2">
-                <button class="btn btn-secondary btn-xs" on:click={add_dir}>add direction</button>
+                <button id={recipe.directions.length} class="btn btn-secondary btn-xs" on:click={add_dir}>add direction</button>
             </div>
         </div>
 
