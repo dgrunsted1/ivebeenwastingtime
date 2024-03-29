@@ -11,12 +11,12 @@
     let dispatch = createEventDispatcher();
     let delay_timer;
     let view_size_mobile = `max-h-[calc(55vh)]`;
-    let view_size_desktop = `md:max-h-[calc(64vh)]`;
+    let view_size_desktop = `md:max-h-[calc(100vh-235px)]`;
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){
             view_size_mobile = `max-h-[calc(65vh)]`;
-            view_size_desktop = `md:max-h-[calc(80vh)]`;
+            view_size_desktop = `md:max-h-[calc(100vh-170px)]`;
         }
     });
     const copy_to_clipboard = () => {
@@ -122,7 +122,7 @@
             {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>{/if}
         {/if}
     </div>
-    <div class="">
+    <div class="md:mx-3">
         <div class="grocery_list {view_size_mobile} {view_size_desktop} overflow-y-auto">
             {#if grocery_list.length > 0}
                 {#each grocery_list as item, i}
