@@ -14,7 +14,7 @@ function get_local_time(utc_code){
 <div id="recipe" class="flex flex-col m-auto py-2">
     <div class="img_info_container flex items-center justify-center flex-col md:flex-row">
         <div class="img_container md:w-1/2">
-            <img src={recipe.image} alt={recipe.title} class="w-full"/>
+            <img src={recipe.image} alt={recipe.title} class="max-h-52 md:max-h-96"/>
         </div>
         <div class="info_container md:w-1/2 flex flex-col m-1">
             <div class="title_container flex justify-around">

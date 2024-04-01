@@ -59,19 +59,11 @@
     }
 
     function view(e) {
-        let mode = "menu";
-        let index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
-        let element = e.srcElement;
-        let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
+        let index = e.currentTarget.getElementsByTagName("p")[0].id;
         for (let i = 0; i < display_recipes.length; i++){
             if (display_recipes[i].id == index){
-                if (display_recipes[i].mode == mode_in) {
-                    display_recipes[i].mode = null;
-                    dispatch(`update_${mode_in}`, {index: -1});
-                } else {
-                    display_recipes[i].mode = mode_in;
-                    dispatch(`update_${mode_in}`, {index: index});
-                }
+                display_recipes[i].mode = `edit`;
+                dispatch(`update_edit`, {index: index});
             } else {
                 display_recipes[i].mode = null;
             }
@@ -409,22 +401,22 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-warning" : ""}"> 
+        <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-warning" : ""}" on:click={view}> 
             <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
                     </div>
-                    <div class="flex w-fit space-x-1">
+                    <!-- <div class="flex w-fit space-x-1">
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view {(curr.mode == "view") ? "bg-secondary" : ""}" on:click={view}><ViewIcon/></button>
                         <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit {(curr.mode == "edit") ? "bg-secondary" : ""}" on:click={view}><EditIcon/></button>
-                    </div>
+                    </div> -->
                     <div class="flex space-x-1">
-                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
-                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                        <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
+                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
                     </div>
                 </div>
             </div>

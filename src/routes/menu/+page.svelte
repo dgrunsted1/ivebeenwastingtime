@@ -38,6 +38,7 @@
                     continue;
                 }
             }
+            my_modal_2.showModal();
             mode = "edit";
         }else {
             edit_recipe = null;
@@ -124,28 +125,31 @@
                         {/if}
                     </summary>
                     <div id="right_column" class="collapse-content w-full">
-                        {#if menu_recipes && mode == "menu"}
+                        {#if menu_recipes}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
-                        {:else if view_recipe && mode == "view"}
-                            <DisplayRecipe recipe={view_recipe}/>
-                        {:else if edit_recipe && mode == "edit"}
-                            <EditRecipe recipe={edit_recipe}/>
                         {:else}
                             <h2>select recipes to add to your menu</h2>
                         {/if}
                     </div>
                 </details>
                 <div id="right_column" class="hidden md:flex w-full">
-                    {#if menu_recipes && mode == "menu"}
+                    {#if menu_recipes}
                         <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
-                    {:else if view_recipe && mode == "view"}
-                        <DisplayRecipe recipe={view_recipe}/>
-                    {:else if edit_recipe && mode == "edit"}
-                        <EditRecipe recipe={edit_recipe}/>
                     {:else}
                         <h2>select recipes to add to your menu</h2>
                     {/if}
                 </div>
+                <dialog id="my_modal_2" class="modal">
+                    {#if edit_recipe}
+                        <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
+                            <!-- <button class="btn btn-xs p-2 flex flex-end content-center inline-block top-1 right-1">x</button> -->
+                            <DisplayRecipe recipe={edit_recipe}/>
+                        </form>
+                        <form method="dialog" class="modal-backdrop">
+                            <button>close</button>
+                        </form>
+                    {/if}
+                </dialog>
             </div>
         {:else}
             <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
