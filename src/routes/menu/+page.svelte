@@ -15,6 +15,7 @@
     let mode = "menu";
     let view_recipe;
     let edit_recipe;
+    let edit_modal_recipe = false;
     $: loading = true;
 
 
@@ -38,7 +39,7 @@
                     continue;
                 }
             }
-            my_modal_2.showModal();
+            my_modal_3.showModal();
             mode = "edit";
         }else {
             edit_recipe = null;
@@ -139,16 +140,19 @@
                         <h2>select recipes to add to your menu</h2>
                     {/if}
                 </div>
-                <dialog id="my_modal_2" class="modal">
-                    {#if edit_recipe}
-                        <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
-                            <!-- <button class="btn btn-xs p-2 flex flex-end content-center inline-block top-1 right-1">x</button> -->
-                            <DisplayRecipe recipe={edit_recipe}/>
-                        </form>
-                        <form method="dialog" class="modal-backdrop">
-                            <button>close</button>
-                        </form>
-                    {/if}
+                <dialog id="my_modal_3" class="modal">
+                        <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
+                            <form method="dialog">
+                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={()=>{edit_recipe = null}}>✕</button>
+                            </form>
+                            {#if edit_recipe}
+                                {#if edit_modal_recipe}
+                                    <EditRecipe recipe={edit_recipe} on:update_edit={update_edit} on:done_editing={() => edit_modal_recipe = false}/>
+                                {:else}
+                                    <DisplayRecipe recipe={edit_recipe} on:edit_recipe={()=>{edit_modal_recipe = true}}/>
+                                {/if}
+                            {/if}
+                        </div>
                 </dialog>
             </div>
         {:else}

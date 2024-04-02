@@ -237,10 +237,15 @@
     const parse_directions = function(e){
         recipe.directions = e.data.split("\n");
     }
+    
+    const done_editing = function(){
+        dispatch("done_editing");
+    }
 </script>
 
 <div id="recipe" class="flex flex-col">
-    <div class="save_btn_container flex flex-col items-center mb-5">
+    <button class="btn btn-xs btn-ghost absolute left-4 top-2" on:click={done_editing}>done</button>
+    <div class="save_btn_container flex flex-col items-center mb-5 mt-1">
         <button class="save_btn btn btn-secondary btn-xs md:btn-md w-1/3" disabled="true" on:click={save_recipe_v2}>
             save recipe
         </button>

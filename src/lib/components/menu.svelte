@@ -39,7 +39,7 @@
 
         total_time = get_total_time(menu);
 
-        if (!menu.title){
+        if (!menu.title || menu.title == "New Menu"){
             menu.title = "New Menu";
             if (menu.length > 1) menu.title = generate_menu_title();
         }

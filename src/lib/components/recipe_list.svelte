@@ -365,6 +365,11 @@
 
         }, 2000);
     }
+
+    function check_time(curr){
+        let result = curr.time.match(/^(\d+ (hrs|hr) \d+ (min|mins)|\d+ (min|mins)|\d+ (hrs|hr))$/);
+        return (result) ? true : false;
+    }
 </script>
 <div class="hidden md:flex flex-col">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
@@ -404,16 +409,43 @@
         <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view}> 
             <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
-                <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
+                <div class="flex flex-col w-full content-center h-full">
+                    <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
+                    <div class="flex cursor-pointer content-center">
+                        <div class="text-[10px] border px-1 rounded-tl rounded-bl flex">
+                            {#if isNaN(curr.servings)}
+                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-1 text-[10px]" on:click|stopPropagation={(e)=>{/**idk yet*/}}>
+                                    {#if curr.servings == ""}
+                                        add serv
+                                    {:else}
+                                        fix serv
+                                    {/if}
+                                </button>
+                            {:else}
+                                {curr.servings} serv
+                            {/if}
+                        </div>
+                        <div class="text-[10px] border px-1">
+                            {#if check_time(curr)}
+                                {curr.time}
+                            {:else}
+                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-1 text-[10px]" on:click|stopPropagation={(e)=>{/**idk yet*/}}>
+                                    {#if curr.time == ""}
+                                        add time
+                                    {:else}
+                                        fix time
+                                    {/if}
+                                </button>
+                            {/if}
+                        </div>
+                        <div class="text-[10px] border px-1 rounded-tr rounded-br">{curr.expand.ingr_list.length} ingr</div>
+                    </div>
+                </div>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
                     </div>
-                    <!-- <div class="flex w-fit space-x-1">
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view {(curr.mode == "view") ? "bg-secondary" : ""}" on:click={view}><ViewIcon/></button>
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit {(curr.mode == "edit") ? "bg-secondary" : ""}" on:click={view}><EditIcon/></button>
-                    </div> -->
                     <div class="flex space-x-1">
                         <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
                         <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
