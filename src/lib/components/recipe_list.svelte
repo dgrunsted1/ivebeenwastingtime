@@ -367,8 +367,24 @@
     }
 
     function check_time(curr){
-        let result = curr.time.match(/^(\d+ (hrs|hr) \d+ (min|mins)|\d+ (min|mins)|\d+ (hrs|hr))$/);
+        let result = curr.time.match(/^(\d+ (hrs|hr|hours|hour) \d+ (min|mins|minutes|minute)|\d+ (min|mins|minutes|minute)|\d+ (hrs|hr|hours|hour))$/);
         return (result) ? true : false;
+    }
+
+    async function edit_element(e){
+        const id = e.srcElement.id;
+        let recipe = recipes.find(r => r.id === id);
+        console.log(e.srcElement.innerHTML.includes("time"));
+        if (e.srcElement.innerHTML.includes("time")){
+            let ans = window.prompt(`Enter Time (ex: 1 hr 20 mins)`, recipe.time);
+            recipe.time = ans;
+            await pb.collection('recipes').update(id, {time: recipe.time});
+        } else {
+            let ans = window.prompt(`Enter servings (ex: 6)`, recipe.servings);
+            recipe.servings = ans;
+            await pb.collection('recipes').update(id, {servings: recipe.servings});
+        }
+        dispatch("update_recipe", {recipe: recipe});
     }
 </script>
 <div class="hidden md:flex flex-col">
@@ -406,15 +422,15 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
-            <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
+        <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
+            <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <div class="flex flex-col w-full content-center h-full">
                     <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
                     <div class="flex cursor-pointer ">
                         <div class="text-[10px] border border-color px-1 rounded-tl rounded-bl flex items-center">
                             {#if isNaN(curr.servings)}
-                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-0 text-[10px]" on:click|stopPropagation={(e)=>{/**idk yet*/}}>
+                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-0 text-[10px]" on:click|stopPropagation={edit_element}>
                                     {#if curr.servings == ""}
                                         add serv
                                     {:else}
@@ -429,7 +445,7 @@
                             {#if check_time(curr)}
                                 {curr.time}
                             {:else}
-                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-1 text-[10px]" on:click|stopPropagation={(e)=>{/**idk yet*/}}>
+                                <button id={curr.id} class="btn w-fit btn-xs bg-base-200 p-1 text-[10px]" on:click|stopPropagation={edit_element}>
                                     {#if curr.time == ""}
                                         add time
                                     {:else}
