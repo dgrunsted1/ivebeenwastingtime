@@ -100,15 +100,15 @@
         edit_recipe = null;
     }
 
-    function update_recipe(e){
-        console.log(e.detail);
-        for (let i = 0; i < user_recipes.items.length; i++) {
-            if (user_recipes.items[i].id === e.detail.recipe.id) {
-                user_recipes.items[i] = e.detail.recipe;
-                user_recipes = user_recipes;
-            }
-        }
-    }
+    // function update_recipe(e){
+    //     console.log(e.detail);
+    //     for (let i = 0; i < user_recipes.items.length; i++) {
+    //         if (user_recipes.items[i].id === e.detail.recipe.id) {
+    //             user_recipes.items[i] = e.detail.recipe;
+    //             user_recipes = user_recipes;
+    //         }
+    //     }
+    // }
 </script>
 <div id="main">
         {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
@@ -118,8 +118,7 @@
                         <RecipeList recipes={user_recipes.items} 
                             on:update_view={update_view} on:update_edit={update_edit}
                             on:remove_from_menu={remove_from_menu}
-                            on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}
-                            on:update_recipe={update_recipe}/>
+                            on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
                     {:else}
                         <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
