@@ -488,6 +488,8 @@
         </div>
     </div>
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+        <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
+        <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
