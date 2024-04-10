@@ -54,7 +54,7 @@
     </div>
     <div class="ingr_directions_container flex flex-col md:w-4/5 m-auto mt-2">
         <div>Ingredients</div>
-        <div id="ingredient_list" class="flex flex-col w-full m-2">
+        <div id="ingredient_list" class="flex flex-col m-2">
             {#each recipe.expand.ingr_list as ingr}
                 {#if ingr}
                     <div class="ingr_row flex w-full ml-2.5 space-x-1 items-center">
