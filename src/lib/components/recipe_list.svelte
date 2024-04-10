@@ -85,7 +85,7 @@
 
     function update_display_cats(selected_cat, clicked, type_cat){
         if (clicked){
-            if (!display_cats[type_cat].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
+            if (!display_cats[type_cat].includes(selected_cat) || ["thumb_up", "heart"].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
         } else {
             let tmp_cats = [];
             for (let [key, value] of Object.entries(display_cats)){
@@ -115,12 +115,10 @@
                         } else if (key == 'countries') {
                             key = 'country';
                         }
-                        
                         if (curr_recipe[key] == curr_cat){
                             if (!new_display.includes(curr_recipe)){
                                 let cat_found = (!display_cats.cats.length) ? true : false;
                                 for (let cat of display_cats.cats){
-                                    
                                     if (cat == curr_recipe.category){
                                         cat_found = true;
                                     }
@@ -136,7 +134,26 @@
                 for (let recipe of recipes_in){
                     for (let cat of display_cats.cats){
                         if (recipe.category == cat){
-                            new_display.push(recipe);
+                            if (display_cats.cats.includes("heart") || display_cats.cats.includes("thumb_up")){
+                                if ((display_cats.cats.includes("heart") && recipe.favorite) || (display_cats.cats.includes("thumb_up") && recipe.made)) {
+                                    if (!new_display.includes(recipe)) new_display.push(recipe);
+                                }
+                            }else if (!new_display.includes(recipe)) {
+                                if (!new_display.includes(recipe)) new_display.push(recipe);
+                            }
+                            
+                        }else if (cat =="heart"){
+                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "heart"){
+                                if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
+                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                                if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
+                            }
+                        }else if (cat == "thumb_up"){
+                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "thumb_up"){
+                                if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
+                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                                if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
+                            }
                         }
                     }
                 }
@@ -160,6 +177,7 @@
     }
 
     function get_cat_name(classes){
+        console.log({classes});
         let type_cat;
         if (classes.includes('cuisine')){
             type_cat = 'cuisines';
@@ -176,6 +194,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
             document.getElementById("menu_loading").classList.remove('hidden');
+            console.log("search", e.srcElement.value);
             let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
@@ -187,11 +206,12 @@
                     update_filter_style(clicked, e);
                     
                     //select type of category selected
-                    let selected_cat = e.srcElement.textContent;
+                    let selected_cat = (e.srcElement.id) ? e.srcElement.id : e.srcElement.textContent;
                     let type_cat = get_cat_name(classes);
                     
                     
-
+                    console.log({selected_cat, clicked, type_cat});
+                    console.log(e.srcElement);
                     update_display_cats(selected_cat, clicked, type_cat);
             }
             filter_recipes(search_recipes);
@@ -374,6 +394,8 @@
 </script>
 <div class="hidden md:flex flex-col">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+        <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
+        <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
