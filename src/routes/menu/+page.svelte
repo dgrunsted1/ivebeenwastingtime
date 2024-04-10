@@ -15,6 +15,7 @@
     let mode = "menu";
     let view_recipe;
     let edit_recipe;
+    let edit_modal_recipe = false;
     $: loading = true;
 
 
@@ -38,6 +39,7 @@
                     continue;
                 }
             }
+            my_modal_3.showModal();
             mode = "edit";
         }else {
             edit_recipe = null;
@@ -97,6 +99,16 @@
         view_recipe = null;
         edit_recipe = null;
     }
+
+    // function update_recipe(e){
+    //     console.log(e.detail);
+    //     for (let i = 0; i < user_recipes.items.length; i++) {
+    //         if (user_recipes.items[i].id === e.detail.recipe.id) {
+    //             user_recipes.items[i] = e.detail.recipe;
+    //             user_recipes = user_recipes;
+    //         }
+    //     }
+    // }
 </script>
 <div id="main">
         {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
@@ -124,28 +136,34 @@
                         {/if}
                     </summary>
                     <div id="right_column" class="collapse-content w-full">
-                        {#if menu_recipes && mode == "menu"}
+                        {#if menu_recipes}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
-                        {:else if view_recipe && mode == "view"}
-                            <DisplayRecipe recipe={view_recipe}/>
-                        {:else if edit_recipe && mode == "edit"}
-                            <EditRecipe recipe={edit_recipe}/>
                         {:else}
                             <h2>select recipes to add to your menu</h2>
                         {/if}
                     </div>
                 </details>
                 <div id="right_column" class="hidden md:flex w-full">
-                    {#if menu_recipes && mode == "menu"}
+                    {#if menu_recipes}
                         <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
-                    {:else if view_recipe && mode == "view"}
-                        <DisplayRecipe recipe={view_recipe}/>
-                    {:else if edit_recipe && mode == "edit"}
-                        <EditRecipe recipe={edit_recipe}/>
                     {:else}
                         <h2>select recipes to add to your menu</h2>
                     {/if}
                 </div>
+                <dialog id="my_modal_3" class="modal">
+                        <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
+                            <form method="dialog">
+                                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={()=>{edit_recipe = null}}>✕</button>
+                            </form>
+                            {#if edit_recipe}
+                                {#if edit_modal_recipe}
+                                    <EditRecipe recipe={edit_recipe} on:update_edit={update_edit} on:done_editing={() => edit_modal_recipe = false}/>
+                                {:else}
+                                    <DisplayRecipe recipe={edit_recipe} on:edit_recipe={()=>{edit_modal_recipe = true}}/>
+                                {/if}
+                            {/if}
+                        </div>
+                </dialog>
             </div>
         {:else}
             <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">

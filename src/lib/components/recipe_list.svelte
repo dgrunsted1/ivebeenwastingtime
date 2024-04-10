@@ -59,19 +59,11 @@
     }
 
     function view(e) {
-        let mode = "menu";
-        let index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
-        let element = e.srcElement;
-        let mode_in = (e.srcElement.classList.contains("view")) ? "view" : "edit";
+        let index = e.currentTarget.getElementsByTagName("p")[0].id;
         for (let i = 0; i < display_recipes.length; i++){
             if (display_recipes[i].id == index){
-                if (display_recipes[i].mode == mode_in) {
-                    display_recipes[i].mode = null;
-                    dispatch(`update_${mode_in}`, {index: -1});
-                } else {
-                    display_recipes[i].mode = mode_in;
-                    dispatch(`update_${mode_in}`, {index: index});
-                }
+                display_recipes[i].mode = `edit`;
+                dispatch(`update_edit`, {index: index});
             } else {
                 display_recipes[i].mode = null;
             }
@@ -93,7 +85,7 @@
 
     function update_display_cats(selected_cat, clicked, type_cat){
         if (clicked){
-            if (!display_cats[type_cat].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
+            if (!display_cats[type_cat].includes(selected_cat) || ["thumb_up", "heart"].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
         } else {
             let tmp_cats = [];
             for (let [key, value] of Object.entries(display_cats)){
@@ -123,12 +115,10 @@
                         } else if (key == 'countries') {
                             key = 'country';
                         }
-                        
                         if (curr_recipe[key] == curr_cat){
                             if (!new_display.includes(curr_recipe)){
                                 let cat_found = (!display_cats.cats.length) ? true : false;
                                 for (let cat of display_cats.cats){
-                                    
                                     if (cat == curr_recipe.category){
                                         cat_found = true;
                                     }
@@ -144,7 +134,26 @@
                 for (let recipe of recipes_in){
                     for (let cat of display_cats.cats){
                         if (recipe.category == cat){
-                            new_display.push(recipe);
+                            if (display_cats.cats.includes("heart") || display_cats.cats.includes("thumb_up")){
+                                if ((display_cats.cats.includes("heart") && recipe.favorite) || (display_cats.cats.includes("thumb_up") && recipe.made)) {
+                                    if (!new_display.includes(recipe)) new_display.push(recipe);
+                                }
+                            }else if (!new_display.includes(recipe)) {
+                                if (!new_display.includes(recipe)) new_display.push(recipe);
+                            }
+                            
+                        }else if (cat =="heart"){
+                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "heart"){
+                                if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
+                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                                if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
+                            }
+                        }else if (cat == "thumb_up"){
+                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "thumb_up"){
+                                if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
+                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                                if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
+                            }
                         }
                     }
                 }
@@ -168,6 +177,7 @@
     }
 
     function get_cat_name(classes){
+        console.log({classes});
         let type_cat;
         if (classes.includes('cuisine')){
             type_cat = 'cuisines';
@@ -184,6 +194,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
             document.getElementById("menu_loading").classList.remove('hidden');
+            console.log("search", e.srcElement.value);
             let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
@@ -195,11 +206,12 @@
                     update_filter_style(clicked, e);
                     
                     //select type of category selected
-                    let selected_cat = e.srcElement.textContent;
+                    let selected_cat = (e.srcElement.id) ? e.srcElement.id : e.srcElement.textContent;
                     let type_cat = get_cat_name(classes);
                     
                     
-
+                    console.log({selected_cat, clicked, type_cat});
+                    console.log(e.srcElement);
                     update_display_cats(selected_cat, clicked, type_cat);
             }
             filter_recipes(search_recipes);
@@ -373,9 +385,17 @@
 
         }, 2000);
     }
+
+    function check_time(curr){
+        let result = curr.time.match(/^(\d+ (hrs|hr|hours|hour) \d+ (min|mins|minutes|minute)|\d+ (min|mins|minutes|minute)|\d+ (hrs|hr|hours|hour))$/);
+        return (result) ? true : false;
+    }
+    
 </script>
 <div class="hidden md:flex flex-col">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+        <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
+        <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
@@ -409,22 +429,37 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""} {(curr.mode == "view" || curr.mode == "edit") ? "bg-warning" : ""}"> 
-            <figure class="w-1/5 md:w-2/5"><img src={curr.image} alt={curr.title}/></figure>
+        <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
+            <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title}/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
-                <p id={curr.id} class="w-3/4 text-xs">{curr.title}</p>
+                <div class="flex flex-col w-full content-center h-full">
+                    <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
+                    <div class="flex cursor-pointer ">
+                        <div class="text-[10px] border border-color px-1 rounded-tl rounded-bl flex items-center">
+                            {#if isNaN(curr.servings)}
+                                {curr.servings}
+                            {:else}
+                                {curr.servings} serv
+                            {/if}
+                        </div>
+                        <div class="text-[10px] border border-color px-1 flex items-center">
+                            {#if curr.time}
+                                {curr.time}
+                            {:else}
+                                no time
+                            {/if}
+                        </div>
+                        <div class="text-[10px] border border-color px-1 rounded-tr rounded-br flex items-center">{curr.expand.ingr_list.length} ingr</div>
+                    </div>
+                </div>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
                     <div class="flex w-fit space-x-1">
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
-                    </div>
-                    <div class="flex w-fit space-x-1">
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} view {(curr.mode == "view") ? "bg-secondary" : ""}" on:click={view}><ViewIcon/></button>
-                        <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {curr.id} edit {(curr.mode == "edit") ? "bg-secondary" : ""}" on:click={view}><EditIcon/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
                     </div>
                     <div class="flex space-x-1">
-                        <input type="checkbox" on:click|self={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
-                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                        <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
+                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
                     </div>
                 </div>
             </div>
@@ -444,15 +479,17 @@
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
                     {#if opt == sort_val}
-                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes}>{opt}</a></li>
+                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
                     {:else}
-                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes}>{opt}</a></li>
+                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
                     {/if}
                 {/each}
             </ul>
         </div>
     </div>
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+        <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
+        <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
         {#each categories.cats as cat}
             <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}

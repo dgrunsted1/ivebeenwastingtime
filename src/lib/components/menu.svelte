@@ -9,7 +9,6 @@
 
 
 
-    export let title;
     export let menu;
     export let id = null;
     export let mults;
@@ -19,12 +18,15 @@
     let total_time = 0;
     const dispatch = createEventDispatcher();
     let overflow_len = ``;
+    let basic_words = ['and', 'the', 'of', 'with', 'recipe'];
+    let delay_timer;
 
     onMount(async () => {
         overflow_len = ($page.url.pathname == "/menu") ? `max-h-[60vh]` : `max-h-[60vh]`;
     });
 
     afterUpdate(() => {
+        clearTimeout(delay_timer);
         grocery_list = [];
         num_servings = get_servings(menu, mults);
         if (!menu.length){
@@ -34,11 +36,40 @@
             if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = false;
         }
         grocery_list = get_grocery_list(menu);
-        if (!menu.title) menu.title = "New Menu";
-        
-        
+
         total_time = get_total_time(menu);
+
+        if (!menu.title || menu.title == "New Menu"){
+            menu.title = "New Menu";
+            if (menu.length > 1) menu.title = generate_menu_title();
+        }
+        
+        
     });
+
+    function generate_menu_title(){
+        let output = "";
+        for(let i = 0; i < menu.length; i++){
+            let temp_recipe_title = menu[i].title.replace(/ *\([^)]*\) */g, "");
+            let temp_recipe_title_array = temp_recipe_title.split(' ');
+            let temp_recipe_length = temp_recipe_title_array.length;
+            let menu_section_length = Math.ceil(temp_recipe_length/menu.length);
+            for (let j = i; j < i+menu_section_length; j++){
+                if (output != "") output = output + " ";
+                if (output && basic_words.includes(output.split(' ')[output.length-2])){
+                    for (let k = j; k < 50; k++){
+                        if (!basic_words.includes(temp_recipe_title_array[k%temp_recipe_title_array.length])){
+                            output = output + " " + temp_recipe_title_array[k%temp_recipe_title_array.length];
+                            break;
+                        }
+                    }
+                }else {
+                    output = output + temp_recipe_title_array[j%temp_recipe_title_array.length];
+                }
+            }
+        }
+        return output;
+    }
 
     function switch_tab(e){
         let siblings = e.srcElement.parentNode.children;
@@ -98,7 +129,7 @@
 
 <div id="menu" class="h-3/4 md:h-full w-full">
     <div class="flex items-center p-3 justify-between">
-        <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={title}/>
+        <input type="text" class="input input-bordered border-primary input-xs w-2/3" bind:value={menu.title}/>
         {#if $page.url.pathname == "/menu"}
             <button class="btn btn-secondary self-end btn-xs md:btn-sm" id="save_btn" on:click={save_menu}>save menu</button>
         {:else if $page.url.pathname == "/my_menus"}

@@ -1,22 +1,31 @@
 <script>
+    import EditIcon from "/src/lib/icons/EditIcon.svelte";
+    import { createEventDispatcher,afterUpdate, onMount } from 'svelte';
 
-export let recipe;
 
-function get_local_time(utc_code){
+    export let recipe;
+    let dispatch = createEventDispatcher();
+
+
+    function get_local_time(utc_code){
         const event = new Date(utc_code);
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
         return event.toLocaleDateString(undefined, options);
     }
 
+    function edit_groceries(){
+        dispatch("edit_recipe");
+    }
+
 </script>
 
 <div id="recipe" class="flex flex-col m-auto py-2">
     <div class="img_info_container flex items-center justify-center flex-col md:flex-row">
-        <div class="img_container md:w-1/2">
-            <img src={recipe.image} alt={recipe.title} class="w-full"/>
+        <div class="img_container md:max-w-1/2">
+            <img src={recipe.image} alt={recipe.title} class="max-h-52 md:max-h-96 rounded m-auto"/>
         </div>
-        <div class="info_container md:w-1/2 flex flex-col m-1">
+        <div class="info_container w-full md:w-1/2 flex flex-col m-1">
             <div class="title_container flex justify-around">
                 <div class="title md:w-4/5 text-sm md:text-xl">{recipe.title}</div>
             </div>
@@ -37,11 +46,13 @@ function get_local_time(utc_code){
                     <div>{recipe.servings}</div>
                 </div>
             </div>
-            <div class="w-full flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={recipe.url} target="_blank">original recipe</a></div>
-
+            <div class="w-full flex justify-evenly content-center mt-1">
+                <a class="btn btn-accent btn-xs" href={recipe.url} target="_blank">original recipe</a>
+                <button class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>
+            </div>
         </div>
     </div>
-    <div class="ingr_directions_container flex flex-col md:w-4/5 m-auto">
+    <div class="ingr_directions_container flex flex-col md:w-4/5 m-auto mt-2">
         <div>Ingredients</div>
         <div id="ingredient_list" class="flex flex-col w-full m-2">
             {#each recipe.expand.ingr_list as ingr}
