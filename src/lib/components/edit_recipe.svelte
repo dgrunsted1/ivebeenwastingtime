@@ -255,7 +255,7 @@
             <div class="w-full flex flex-col space-y-2">
                 <div class="w-full flex flex-col">
                     {#if recipe.image}
-                        <img src={recipe.image} alt={recipe.title} class="self-center"/>
+                        <img src={recipe.image} alt={recipe.title} class="self-center rounded"/>
                     {:else}
                         {#if !show_alert}
                             <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>

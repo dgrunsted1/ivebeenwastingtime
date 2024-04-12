@@ -383,7 +383,7 @@
             await update_fave_made(id_update_list);
             update_fave_made_list = [];
 
-        }, 2000);
+        }, 1000);
     }
 
     function check_time(curr){
@@ -430,7 +430,7 @@
     </div>
     {#each display_recipes as curr, i}
         <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
-            <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title}/></figure>
+            <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title} class="h-full"/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <div class="flex flex-col w-full content-center h-full">
                     <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
