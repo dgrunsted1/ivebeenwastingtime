@@ -152,6 +152,12 @@
             <p class="text-xs">{num_servings} servings</p>
             <p class="text-xs">{total_time}</p>
         </div>
+    {:else}
+        <div class="hidden md:flex justify-around m-1 items-center">
+            <p class="text-xs">{menu.length} recipes</p>
+            <p class="text-xs">{num_servings} servings</p>
+            <p class="text-xs">{total_time}</p>
+        </div>
     {/if}
     
     {#if tab == "recipe_list"}
