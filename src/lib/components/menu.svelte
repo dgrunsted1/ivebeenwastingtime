@@ -125,6 +125,10 @@
         dispatch('close_modal');
     }
 
+    function update_mult(e){
+        dispatch('update_mult', {id: e.srcElement.id, mult: e.srcElement.value});
+    }
+
 </script>
 
 <div id="menu" class="h-3/4 md:h-full w-full">
@@ -161,7 +165,9 @@
                             <p class="title text-xs bold md:text-xl">{recipe.title}</p>
                             <p class="time text-xs">{recipe.time}</p>
                             <div class="servings_container text-xs">
-                                servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" id={recipe.id} bind:value={mults[recipe.id]}>
+                                servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" 
+                                            id={recipe.id} bind:value={mults[recipe.id]} 
+                                            on:input={update_mult}>
                             </div>
                             <p class="description text-xs">{recipe.description}</p>
                         </div>

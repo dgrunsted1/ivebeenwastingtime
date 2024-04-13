@@ -100,15 +100,9 @@
         edit_recipe = null;
     }
 
-    // function update_recipe(e){
-    //     console.log(e.detail);
-    //     for (let i = 0; i < user_recipes.items.length; i++) {
-    //         if (user_recipes.items[i].id === e.detail.recipe.id) {
-    //             user_recipes.items[i] = e.detail.recipe;
-    //             user_recipes = user_recipes;
-    //         }
-    //     }
-    // }
+    function update_mult(e){
+        mults[e.detail.id] = e.detail.mult;
+    }
 </script>
 <div id="main">
         {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
@@ -137,7 +131,7 @@
                     </summary>
                     <div id="right_column" class="collapse-content w-full">
                         {#if menu_recipes}
-                            <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
+                            <Menu title="New Menu" menu={menu_recipes} {mults} {page} on:update_mult={update_mult}/>
                         {:else}
                             <h2>select recipes to add to your menu</h2>
                         {/if}
@@ -145,7 +139,7 @@
                 </details>
                 <div id="right_column" class="hidden md:flex w-full">
                     {#if menu_recipes}
-                        <Menu title="New Menu" menu={menu_recipes} {mults} {page}/>
+                        <Menu title="New Menu" menu={menu_recipes} {mults} {page} on:update_mult={update_mult}/>
                     {:else}
                         <h2>select recipes to add to your menu</h2>
                     {/if}
