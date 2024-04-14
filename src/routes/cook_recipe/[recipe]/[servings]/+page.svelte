@@ -16,6 +16,9 @@
     });
 
     const get_quantity = function(quantity){
+        if (isNaN(data.post.recipe.servings) || isNaN(data.post.servings)){
+            return quantity;
+        }
         if (quantity){
             let output = quantity * (parseFloat(data.post.servings) / parseFloat(data.post.recipe.servings));
             return output.toFixed(2) * 1;
