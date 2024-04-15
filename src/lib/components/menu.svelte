@@ -161,7 +161,7 @@
     {/if}
     
     {#if tab == "recipe_list"}
-        <div class="{overflow_len} md:max-h-[80vh] overflow-y-auto">
+        <div class="{overflow_len} md:max-h-[77vh] overflow-y-auto">
                 {#each menu as recipe}
                     <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
                         <figure class="image w-1/3 h-full">

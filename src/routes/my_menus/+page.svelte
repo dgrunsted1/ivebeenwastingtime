@@ -321,7 +321,7 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="max-h-[76vh] md:max-h-[88vh] overflow-y-auto">
+        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
             {#if loading}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
