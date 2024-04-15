@@ -26,6 +26,7 @@
     });
 
     function show_menu_modal(e){
+        const is_mobile = (window.getComputedStyle(document.getElementById("desktop_menu")).display == "none") ? true : false;
         let id = "";
         if (e.srcElement.id){
             id = e.srcElement.id;
@@ -39,7 +40,7 @@
                 modal_menu = user_menus[i];
             }
         }
-        my_modal_2.showModal();
+         if (is_mobile) my_modal_2.showModal();
     }
 
     function get_servings(recipes){
@@ -291,81 +292,90 @@
     }
 
     function close_modal(){
-        my_modal_2.hideModal();
+        const is_mobile = (window.getComputedStyle(document.getElementById("desktop_menu")).display == "none") ? true : false;
+        if (is_mobile) my_modal_2.hideModal();
     }
 </script>
-{#if user_menus.length > 0 || loading}
-    <div class="flex justify-between mx-4">
-        <div class="flex w-fit space-x-6 items-center">
-            <div class="form-control w-full max-w-xs">
-                <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
-            </div>
-            <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
-        </div>
-        
-        <div class="dropdown dropdown-end">
-            <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
-            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
-                {#each sort_opts as opt}
-                    {#if opt == sort_val}
-                    <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
-                    {:else}
-                    <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
-                    {/if}
-                {/each}
-            </ul>
-        </div>
-    </div>
 
-    <div id="menus" class="max-h-[76vh] md:max-h-[85vh] overflow-y-auto">
-        {#if loading}
-            <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
-        {:else}
-            {#each user_menus as curr, i}
-                <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-200 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
-                    <figure class="md:w-2/3">
-                        {#each user_menus[i].expand.recipes as recipe, j}
-                                <img class="w-16 md:w-20" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
-                        {/each}
-                    </figure>
-                    <div class="card-body flex flex-row justify-evenly content-center p-2 md:w-3/4">
-                        <div class="flex flex-col justify-center text-xs md:text-md">
-                            <p class="text-center">{user_menus[i].title}</p>
-                            <p class="text-center md:w-20">{format_date(user_menus[i].created)}</p>
-                        </div>
-                        <div class="flex flex-col justify-center text-xs md:text-md">
-                            <p class="text-center">{user_menus[i].expand.recipes.length} recipes</p>
-                            <p class="text-center">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
-                        </div>
-                        <div class="flex flex-col justify-center text-xs md:text-md">
-                            <p class="text-center">{get_servings(user_menus[i].expand.recipes)} servings</p>
-                            <p class="text-center">{get_total_time(user_menus[i].expand.recipes).display}</p>
-                        </div>
-                        <div class="flex conten-center items-center">
-                                <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+<div class="flex">
+    <div class="flex flex-col md:w-1/2">
+        <div class="flex justify-between mx-4">
+            <div class="flex w-fit space-x-6 items-center">
+                <div class="form-control w-full max-w-xs">
+                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                </div>
+                <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
+            </div>
+            
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                    {#each sort_opts as opt}
+                        {#if opt == sort_val}
+                        <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                        {:else}
+                        <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                        {/if}
+                    {/each}
+                </ul>
+            </div>
+        </div>
+    {#if user_menus.length > 0 || loading}
+        <div id="menus" class="max-h-[76vh] md:max-h-[88vh] overflow-y-auto">
+            {#if loading}
+                <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
+            {:else}
+                {#each user_menus as curr, i}
+                    <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-200 shadow-xl max-h-24 my-1.5 mx-1" on:click={show_menu_modal} on:keypress={show_menu_modal}>
+                        <figure class="md:w-2/3">
+                            {#each user_menus[i].expand.recipes as recipe, j}
+                                    <img class="w-16 md:w-20" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
+                            {/each}
+                        </figure>
+                        <div class="card-body flex flex-row justify-evenly content-center p-2 w-full md:w-3/4">
+                            <div class="flex flex-col w-full justify-between">
+                                <div class="flex flex-row justify-center text-xs md:text-md">
+                                    <p class="text-center">{user_menus[i].title}</p>
+                                    <p class="text-center md:w-20">{format_date(user_menus[i].created)}</p>
+                                </div>
+                                <div class="flex flex-row justify-center w-full">
+                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1 rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
+                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
+                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1 rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
+                                </div>
+                            </div>
+                            <div class="flex conten-center items-center">
+                                    <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            {/each}
-        {/if}
-        
-    </div>
-    <dialog id="my_modal_2" class="modal">
-        {#if modal_menu.id}
-            <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
-                <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
-                <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id} on:close_modal={close_modal}/>
-            </form>
-            <form method="dialog" class="modal-backdrop">
-                <button>close</button>
-            </form>
-        {/if}
-    </dialog>
-{:else}
-    <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
-        <h2>You have no menus yet</h2>
-        <div class="flex flex-row items-center space-x-1">
-            <h3>Click </h3><a href="/menu" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to create a new menu</h3>
+                {/each}
+            {/if}
         </div>
+        <dialog id="my_modal_2" class="modal">
+            {#if modal_menu.id}
+                <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
+                    <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
+                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id} on:close_modal={close_modal}/>
+                </form>
+                <form method="dialog" class="modal-backdrop">
+                    <button>close</button>
+                </form>
+            {/if}
+        </dialog>
+    {:else}
+        <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
+            <h2>You have no menus yet</h2>
+            <div class="flex flex-row items-center space-x-1">
+                <h3>Click </h3><a href="/menu" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3> to create a new menu</h3>
+            </div>
+        </div>
+    {/if}
     </div>
-{/if}
+    <div id="desktop_menu" class="hidden md:flex w-1/2">
+        {#if modal_menu.id}
+            <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
+        {/if}
+    </div>
+</div>
