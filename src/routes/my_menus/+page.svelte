@@ -332,17 +332,17 @@
                                     <img class="w-16 md:w-20" src={user_menus[i].expand.recipes[j].image} alt={user_menus[i].expand.recipes[j].title}/>
                             {/each}
                         </figure>
-                        <div class="card-body flex flex-row justify-evenly content-center p-2 w-full md:w-3/4">
-                            <div class="flex flex-col w-full justify-between">
+                        <div class="card-body flex flex-row justify-evenly content-center p-1 w-full">
+                            <div class="flex flex-col w-full justify-between content-center h-full">
                                 <div class="flex flex-row justify-center text-xs md:text-md">
                                     <p class="text-center">{user_menus[i].title}</p>
                                     <p class="text-center md:w-20">{format_date(user_menus[i].created)}</p>
                                 </div>
-                                <div class="flex flex-row justify-center w-full">
-                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1 rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
-                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
-                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1">{get_servings(user_menus[i].expand.recipes)} servings</p>
-                                    <p class="text-center text-[10px] md:text-[12px] border border-color px-1 rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
+                                <div class="flex flex-row justify-evenly w-full">
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
                                 </div>
                             </div>
                             <div class="flex conten-center items-center">

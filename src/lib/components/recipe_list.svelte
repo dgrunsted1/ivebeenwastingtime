@@ -434,22 +434,22 @@
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <div class="flex flex-col w-full content-center h-full">
                     <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
-                    <div class="flex cursor-pointer ">
-                        <div class="text-[10px] border border-color px-1 rounded-tl rounded-bl flex items-center">
+                    <div class="flex flex-row justify-stretch w-full">
+                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
                                 {curr.servings} serv
                             {/if}
                         </div>
-                        <div class="text-[10px] border border-color px-1 flex items-center">
+                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">
                             {#if curr.time}
                                 {curr.time}
                             {:else}
                                 no time
                             {/if}
                         </div>
-                        <div class="text-[10px] border border-color px-1 rounded-tr rounded-br flex items-center">{curr.expand.ingr_list.length} ingr</div>
+                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{curr.expand.ingr_list.length} ingr</div>
                     </div>
                 </div>
                 <div class="card-actions flex w-14 justify-self-end justify-center">
