@@ -424,12 +424,12 @@
     </div>
 </div>
 
-<div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto">
+<div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
+        <!-- <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
             <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title} class="h-full"/></figure>
             <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
                 <div class="flex flex-col w-full content-center h-full">
@@ -463,7 +463,44 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
+        <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered">
+            <figure class="h-full w-2/5"><img class="h-full" src={curr.image} alt={curr.title}/></figure>
+            <div class="card-body h-full flex flex-row justify-between p-1">
+                <div class="flex flex-col justify-between p-2">
+                    <h2 class="card-title text-sm">{curr.title}</h2>
+                    <div class="flex">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1">
+                            {#if isNaN(curr.servings)}
+                                {curr.servings}
+                            {:else}
+                                {curr.servings} serv
+                            {/if}
+                        </div>
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1">
+                            {#if curr.time}
+                                {curr.time}
+                            {:else}
+                                no time
+                            {/if}
+                        </div>
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1">
+                            {curr.expand.ingr_list.length} ingr
+                        </div>
+                    </div>
+                </div>
+              <div class="card-actions justify-end flex flex-col justify-center items-center">
+                <div class="flex w-fit space-x-1">
+                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
+                </div>
+                <div class="flex w-fit space-x-1">
+                    <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={curr.id} bind:checked={curr.checked}>
+                    <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                </div>
+              </div>
+            </div>
+          </div>
     {/each}
     <div class="flex justify-center m-3">
         <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
