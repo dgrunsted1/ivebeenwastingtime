@@ -465,42 +465,42 @@
             </div>
         </div> -->
         <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered" on:click={view} on:keydown={view}>
-            <figure class="w-1/4 md:w-2/5"><img class="h-full w-full" src={curr.image} alt={curr.title}/></figure>
-            <div class="card-body h-full flex flex-row justify-between p-1">
-                <div class="flex flex-col justify-between p-1">
+            <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
+            <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
+                <div class="flex flex-col justify-between p-1 w-3/4">
                     <h2 id={curr.id} class="card-title text-sm">{curr.title}</h2>
-                    <div class="flex self-center items-stretch">
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
+                    <div class="flex w-full">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
                                 {curr.servings} serv
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
                             {#if curr.time}
                                 {curr.time}
                             {:else}
                                 no time
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
                             {curr.expand.ingr_list.length} ingr
                         </div>
                     </div>
                 </div>
-                <div class="card-actions justify-end flex flex-col justify-center items-center w-fit">
+                <div class="card-actions flex flex-col justify-center items-end content-center w-1/4">
                     <div class="flex w-fit space-x-1">
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
                     </div>
-                    <div class="flex w-fit space-x-1">
+                    <div class="flex w-fit space-x-2">
                         <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={curr.id} bind:checked={curr.checked}>
                         <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
                     </div>
                 </div>
             </div>
-          </div>
+        </div>
     {/each}
     <div class="flex justify-center m-3">
         <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
