@@ -442,7 +442,7 @@
                                 {curr.servings} serv
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
                             {#if curr.time}
                                 {curr.time}
                             {:else}
@@ -454,7 +454,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-actions justify-end flex flex-col justify-center items-center">
+                <div class="card-actions justify-end flex flex-col justify-center items-center w-fit">
                     <div class="flex w-fit space-x-1">
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
