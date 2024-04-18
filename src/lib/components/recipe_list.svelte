@@ -429,13 +429,13 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="card card-side bg-base-100 shadow-xl h-26 md:h-32 card-bordered" on:click={view} on:keydown={view}>
-            <figure class="w-1/4 md:w-2/5 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
-            <div class="card-body h-full flex flex-row justify-between p-1 w-3/4 md:w-3/5">
-                <div class="flex flex-col justify-between p-1 w-full">
-                    <h2 id={curr.id} class="card-title text-sm md:text-lg md:p-2">{curr.title}</h2>
-                    <div class="flex self-center w-full">
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3 rounded-tl rounded-bl">
+        <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered" on:click={view} on:keydown={view}>
+            <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
+            <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
+                <div class="flex flex-col justify-between p-1 w-3/4">
+                    <h2 id={curr.id} class="card-title text-sm">{curr.title}</h2>
+                    <div class="flex w-full">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
@@ -449,7 +449,7 @@
                                 no time
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3 rounded-tr rounded-br">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
                             {curr.expand.ingr_list.length} ingr
                         </div>
                     </div>
