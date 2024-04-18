@@ -429,7 +429,7 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered" on:click={view} on:keydown={view}>
+        <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered" on:click={view} on:keydown={view}>
             <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
             <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
                 <div class="flex flex-col justify-between p-1 w-3/4">
