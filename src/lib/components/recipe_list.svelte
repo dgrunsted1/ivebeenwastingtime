@@ -439,7 +439,7 @@
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
-                                {curr.servings} serv
+                                {curr.servings} servings
                             {/if}
                         </div>
                         <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
@@ -450,7 +450,7 @@
                             {/if}
                         </div>
                         <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
-                            {curr.expand.ingr_list.length} ingr
+                            {curr.expand.ingr_list.length} ingredients
                         </div>
                     </div>
                 </div>
