@@ -429,48 +429,13 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <!-- <div class="flex flex-row card card-bordered card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 {(curr.checked) ? "bg-success" : ""}" on:click={view} on:keydown={view}> 
-            <figure class="w-1/5 md:w-2/5 h-20 md:h-24"><img src={curr.image} alt={curr.title} class="h-full"/></figure>
-            <div class="card-body max-h-full flex flex-row p-2 items-center w-4/5 md:w-3/5">
-                <div class="flex flex-col w-full content-center h-full">
-                    <p id={curr.id} class="text-xs cursor-pointer">{curr.title}</p>
-                    <div class="flex flex-row justify-stretch w-full">
-                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">
-                            {#if isNaN(curr.servings)}
-                                {curr.servings}
-                            {:else}
-                                {curr.servings} serv
-                            {/if}
-                        </div>
-                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">
-                            {#if curr.time}
-                                {curr.time}
-                            {:else}
-                                no time
-                            {/if}
-                        </div>
-                        <div class="text-center text-[10px] xl:text-[12px] border border-color w-1/3 px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{curr.expand.ingr_list.length} ingr</div>
-                    </div>
-                </div>
-                <div class="card-actions flex w-14 justify-self-end justify-center">
-                    <div class="flex w-fit space-x-1">
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
-                    </div>
-                    <div class="flex space-x-1">
-                        <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm" id={curr.id} bind:checked={curr.checked}>
-                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
-                    </div>
-                </div>
-            </div>
-        </div> -->
-        <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered" on:click={view} on:keydown={view}>
-            <figure class="w-24 md:w-2/5"><img class="h-full w-full" src={curr.image} alt={curr.title}/></figure>
-            <div class="card-body h-full flex flex-row justify-between p-1">
+        <div class="card card-side bg-base-100 shadow-xl h-26 md:h-32 card-bordered" on:click={view} on:keydown={view}>
+            <figure class="w-1/4 md:w-2/5 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
+            <div class="card-body h-full flex flex-row justify-between p-1 w-3/4 md:w-3/5">
                 <div class="flex flex-col justify-between p-1 w-full">
-                    <h2 id={curr.id} class="card-title text-sm">{curr.title}</h2>
+                    <h2 id={curr.id} class="card-title text-sm md:text-lg md:p-2">{curr.title}</h2>
                     <div class="flex self-center w-full">
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3 rounded-tl rounded-bl">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
@@ -484,7 +449,7 @@
                                 no time
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3 rounded-tr rounded-br">
                             {curr.expand.ingr_list.length} ingr
                         </div>
                     </div>
