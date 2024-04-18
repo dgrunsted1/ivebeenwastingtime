@@ -467,9 +467,9 @@
         <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered">
             <figure class="h-full w-2/5"><img class="h-full" src={curr.image} alt={curr.title}/></figure>
             <div class="card-body h-full flex flex-row justify-between p-1">
-                <div class="flex flex-col justify-between p-2">
+                <div class="flex flex-col justify-between p-1">
                     <h2 class="card-title text-sm">{curr.title}</h2>
-                    <div class="flex">
+                    <div class="flex self-center">
                         <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
@@ -477,7 +477,7 @@
                                 {curr.servings} serv
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitesapce-nowrap overflow-hidden h-fit px-1 text-nowrap">
                             {#if curr.time}
                                 {curr.time}
                             {:else}
@@ -489,16 +489,16 @@
                         </div>
                     </div>
                 </div>
-              <div class="card-actions justify-end flex flex-col justify-center items-center">
-                <div class="flex w-fit space-x-1">
-                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
-                    <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
+                <div class="card-actions justify-end flex flex-col justify-center items-center">
+                    <div class="flex w-fit space-x-1">
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
+                    </div>
+                    <div class="flex w-fit space-x-1">
+                        <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={curr.id} bind:checked={curr.checked}>
+                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                    </div>
                 </div>
-                <div class="flex w-fit space-x-1">
-                    <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={curr.id} bind:checked={curr.checked}>
-                    <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
-                </div>
-              </div>
             </div>
           </div>
     {/each}
