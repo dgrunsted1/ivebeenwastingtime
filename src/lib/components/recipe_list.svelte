@@ -33,8 +33,8 @@
     function check_item(e){
         let index = 0;
         let check_box;
-        if (e.srcElement.parentNode.getElementsByTagName("p")[0]){
-            index = e.srcElement.parentNode.getElementsByTagName("p")[0].id;
+        if (e.srcElement.parentNode.getElementsByTagName("h2")[0]){
+            index = e.srcElement.parentNode.getElementsByTagName("h2")[0].id;
             check_box = e.target.firstChild;
             if (check_box.checked) {
                 check_box.checked = false;
@@ -44,7 +44,7 @@
                 check_box.checked = true;
             }
         }else {
-            index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("p")[0].id;
+            index = e.srcElement.parentNode.parentNode.parentNode.getElementsByTagName("h2")[0].id;
             check_box = e.srcElement;
             if (check_box.checked) {
                 dispatch("add_to_menu", {index: index});
