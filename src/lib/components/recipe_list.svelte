@@ -465,31 +465,31 @@
             </div>
         </div> -->
         <div class="card card-side bg-base-100 shadow-xl h-32 card-bordered" on:click={view} on:keydown={view}>
-            <figure class="w-24 md:w-2/5"><img class="h-full w-full" src={curr.image} alt={curr.title}/></figure>
+            <figure class="w-1/4 md:w-2/5"><img class="h-full w-full" src={curr.image} alt={curr.title}/></figure>
             <div class="card-body h-full flex flex-row justify-between p-1">
-                <div class="flex flex-col justify-between p-1 w-full">
+                <div class="flex flex-col justify-between p-1">
                     <h2 id={curr.id} class="card-title text-sm">{curr.title}</h2>
-                    <div class="flex self-center w-full">
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                    <div class="flex self-center items-stretch">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
                             {#if isNaN(curr.servings)}
                                 {curr.servings}
                             {:else}
                                 {curr.servings} serv
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
                             {#if curr.time}
                                 {curr.time}
                             {:else}
                                 no time
                             {/if}
                         </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center w-1/3">
+                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center">
                             {curr.expand.ingr_list.length} ingr
                         </div>
                     </div>
                 </div>
-                <div class="card-actions justify-end flex flex-col justify-center items-center">
+                <div class="card-actions justify-end flex flex-col justify-center items-center w-fit">
                     <div class="flex w-fit space-x-1">
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
                         <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
