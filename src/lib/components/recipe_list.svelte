@@ -153,7 +153,9 @@
                             if (!new_display.includes(curr_recipe)){
                                 let cat_found = (!selected_cats.cats.length) ? true : false;
                                 for (let cat of selected_cats.cats){
-                                    if (cat == curr_recipe.category){
+                                    if (cat == curr_recipe.category ||
+                                        cat == "heart" && curr_recipe.favorite || 
+                                        cat == "thumb_up" && curr_recipe.made){
                                         cat_found = true;
                                     }
                                 }
@@ -163,7 +165,6 @@
                     }
                 }
             }
-
             if (!new_display.length){
                 for (let recipe of recipes_in){
                     for (let cat of selected_cats.cats){
