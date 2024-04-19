@@ -14,7 +14,8 @@
     let display_recipes = recipes;
     let curr_recipe_id = -1;
     let categories = {cuisines:[], countries:[], cats:[]};
-    let display_cats = {cuisines:[], countries:[], cats:[]};
+    let selected_cats = {cuisines:[], countries:[], cats:[]};
+    $: display_cats = {cuisines:[], countries:[], cats:[]};
     let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
     $: sort_val = null;
     let update_fave_made_list = [];
@@ -28,6 +29,7 @@
         }
 
         categories = categories;
+        display_cats = categories;
     });
 
     function check_item(e){
@@ -83,31 +85,48 @@
         }
     }
 
-    function update_display_cats(selected_cat, clicked, type_cat){
+    function update_selected_cats(selected_cat, clicked, type_cat){
         if (clicked){
-            if (!display_cats[type_cat].includes(selected_cat) || ["thumb_up", "heart"].includes(selected_cat)) display_cats[type_cat].push(selected_cat);
+            if (!selected_cats[type_cat].includes(selected_cat) || ["thumb_up", "heart"].includes(selected_cat)) selected_cats[type_cat].push(selected_cat);
         } else {
             let tmp_cats = [];
-            for (let [key, value] of Object.entries(display_cats)){
+            for (let [key, value] of Object.entries(selected_cats)){
                 if (key == type_cat){
                     for (let curr_cat of value){
                         if (curr_cat != selected_cat){
                             tmp_cats.push(curr_cat);
                         }
                     }
-                    display_cats[key] = tmp_cats;
+                    selected_cats[key] = tmp_cats;
                 }
             }
         }
+        // console.log({selected_cats});
+    }
+
+    function update_diplay_cats(){
+        let output = {cuisines:[], countries:[], cats:[]};
+
+        for (let i = 0; i < selected_cats.cats.length; i++){
+            for (let j = 0; j < recipes.length; j++){
+                if (recipes[j].category == selected_cats.cats[i]){
+                    console.log(recipes[j].category, selected_cats.cats[i], recipes[j].country, recipes[j].cuisine);
+                    if (!output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
+                    if (!output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
+                }
+            }
+        }
+        output.cats = categories.cats;
+        display_cats = output;
     }
 
     function filter_recipes(recipes_in){
-        if (display_cats.cats.length || display_cats.countries.length || display_cats.cuisines.length){
+        if (selected_cats.cats.length || selected_cats.countries.length || selected_cats.cuisines.length){
             let new_display = [];
             // update new display array
             for (let curr_recipe of recipes_in){
-                for (let [key, value] of Object.entries(display_cats)){
-                    // cats handled after this loop
+                for (let [key, value] of Object.entries(selected_cats)){
+                    // cats handled after this loop (including heart and thumb)
                     if (key == 'cats') continue;
                     for (let curr_cat of value){
                         if (key == 'cuisines') {
@@ -117,8 +136,8 @@
                         }
                         if (curr_recipe[key] == curr_cat){
                             if (!new_display.includes(curr_recipe)){
-                                let cat_found = (!display_cats.cats.length) ? true : false;
-                                for (let cat of display_cats.cats){
+                                let cat_found = (!selected_cats.cats.length) ? true : false;
+                                for (let cat of selected_cats.cats){
                                     if (cat == curr_recipe.category){
                                         cat_found = true;
                                     }
@@ -132,10 +151,10 @@
 
             if (!new_display.length){
                 for (let recipe of recipes_in){
-                    for (let cat of display_cats.cats){
+                    for (let cat of selected_cats.cats){
                         if (recipe.category == cat){
-                            if (display_cats.cats.includes("heart") || display_cats.cats.includes("thumb_up")){
-                                if ((display_cats.cats.includes("heart") && recipe.favorite) || (display_cats.cats.includes("thumb_up") && recipe.made)) {
+                            if (selected_cats.cats.includes("heart") || selected_cats.cats.includes("thumb_up")){
+                                if ((selected_cats.cats.includes("heart") && recipe.favorite) || (selected_cats.cats.includes("thumb_up") && recipe.made)) {
                                     if (!new_display.includes(recipe)) new_display.push(recipe);
                                 }
                             }else if (!new_display.includes(recipe)) {
@@ -143,15 +162,15 @@
                             }
                             
                         }else if (cat =="heart"){
-                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "heart"){
+                            if (selected_cats.cats.length == 1 && selected_cats.cats[0] == "heart"){
                                 if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
-                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                            }else if (selected_cats.cats.length == 2 && (selected_cats.cats.includes("heart") && selected_cats.cats.includes("thumb_up"))){
                                 if (recipe.favorite && !new_display.includes(recipe)) new_display.push(recipe);
                             }
                         }else if (cat == "thumb_up"){
-                            if (display_cats.cats.length == 1 && display_cats.cats[0] == "thumb_up"){
+                            if (selected_cats.cats.length == 1 && selected_cats.cats[0] == "thumb_up"){
                                 if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
-                            }else if (display_cats.cats.length == 2 && (display_cats.cats.includes("heart") && display_cats.cats.includes("thumb_up"))){
+                            }else if (selected_cats.cats.length == 2 && (selected_cats.cats.includes("heart") && selected_cats.cats.includes("thumb_up"))){
                                 if (recipe.made && !new_display.includes(recipe)) new_display.push(recipe);
                             }
                         }
@@ -159,8 +178,8 @@
                 }
             }
 
-
             display_recipes = new_display;
+            update_diplay_cats();
         }else{
             display_recipes = recipes_in;
         }
@@ -177,7 +196,7 @@
     }
 
     function get_cat_name(classes){
-        console.log({classes});
+        // console.log({classes});
         let type_cat;
         if (classes.includes('cuisine')){
             type_cat = 'cuisines';
@@ -194,7 +213,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
             document.getElementById("menu_loading").classList.remove('hidden');
-            console.log("search", e.srcElement.value);
+            // console.log("search", e.srcElement.value);
             let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
@@ -203,16 +222,16 @@
                     let clicked = (classes.includes('btn-primary')) ? true : false;
             
                     //update btn style
-                    update_filter_style(clicked, e);
+                    // update_filter_style(clicked, e);
                     
                     //select type of category selected
                     let selected_cat = (e.srcElement.id) ? e.srcElement.id : e.srcElement.textContent;
                     let type_cat = get_cat_name(classes);
                     
                     
-                    console.log({selected_cat, clicked, type_cat});
-                    console.log(e.srcElement);
-                    update_display_cats(selected_cat, clicked, type_cat);
+                    // console.log({selected_cat, clicked, type_cat});
+                    // console.log(e.srcElement);
+                    update_selected_cats(selected_cat, clicked, type_cat);
             }
             filter_recipes(search_recipes);
 
@@ -234,7 +253,7 @@
                 }
             }
         }
-        console.log("search done");
+        // console.log("search done");
         return recipes_with_ingr;
     }
 
@@ -392,18 +411,18 @@
     }
     
 </script>
-<div class="hidden md:flex flex-col">
+<div class="hidden md:flex flex-col w-full">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
         <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
         <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
-        {#each categories.cats as cat}
-            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
+        {#each display_cats.cats as cat}
+            <button class="btn {selected_cats.cats.includes(cat)?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}>{cat}</button> 
         {/each}
-        {#each categories.cuisines as cuisine}
-            <button class="btn btn-primary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
+        {#each display_cats.cuisines as cuisine}
+            <button class="btn {selected_cats.cuisines.includes(cuisine)?'btn-secondary':'btn-primary'} btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
-        {#each categories.countries as country}
-            <button class="btn btn-primary btn-xs country" on:click={select_cat}>{country}</button> 
+        {#each display_cats.countries as country}
+            <button class="btn {selected_cats.countries.includes(country)?'btn-secondary':'btn-primary'} btn-xs country" on:click={select_cat}>{country}</button> 
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
@@ -492,14 +511,14 @@
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
         <button id="thumb_up" class="btn btn-primary btn-xs category" on:click={select_cat}><ThumbUp/></button> 
         <button id="heart" class="btn btn-primary btn-xs category" on:click={select_cat}><Heart/></button> 
-        {#each categories.cats as cat}
-            <button class="btn btn-primary btn-xs category" on:click={select_cat}>{cat}</button> 
+        {#each display_cats.cats as cat}
+            <button class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-secondary':'btn-primary'} category" on:click={select_cat}>{cat}</button> 
         {/each}
-        {#each categories.cuisines as cuisine}
-            <button class="btn btn-primary btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
+        {#each display_cats.cuisines as cuisine}
+            <button class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-secondary':'btn-primary'} cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
-        {#each categories.countries as country}
-            <button class="btn btn-primary btn-xs country" on:click={select_cat}>{country}</button> 
+        {#each display_cats.countries as country}
+            <button class="btn btn-xs {selected_cats.countries.includes(country)?'btn-secondary':'btn-primary'} country" on:click={select_cat}>{country}</button> 
         {/each}
     </div>
 </div>
