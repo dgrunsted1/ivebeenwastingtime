@@ -457,11 +457,11 @@
         <span class="loading loading-ring loading-lg"></span>
     </div>
     {#each display_recipes as curr, i}
-        <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered" on:click={view} on:keydown={view}>
+        <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer" on:click={view} on:keydown={view}>
             <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
             <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
                 <div class="flex flex-col justify-between p-1 w-3/4">
-                    <h2 id={curr.id} class="card-title text-sm">{curr.title}</h2>
+                    <h2 id={curr.id} class="card-title text-sm text-ellipsis overflow-hidden">{curr.title}</h2>
                     <div class="flex w-full">
                         <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
                             {#if isNaN(curr.servings)}
