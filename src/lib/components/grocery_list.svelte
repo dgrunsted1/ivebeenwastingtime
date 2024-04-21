@@ -40,7 +40,7 @@
     }
 
     const remove_item = (qty, unit, ingr) => {
-        let delete_item = confirm("Are you sure you want to delete this item?");
+        let delete_item = confirm("Are you sure you want to delete:\n"+qty+" "+unit+" "+ingr+"?");
         if (delete_item){
             let temp_arr = [];
             let found = false;
@@ -119,7 +119,7 @@
             <button id="copy" class="btn btn-xs md:btn-sm btn-accent cursor-copy" on:click={copy_to_clipboard}>copy</button>
             {#if status != "none"}<button id="uncheck" class="btn btn-xs md:btn-sm btn-accent" on:click={uncheck_list}>uncheck</button>{/if}
             {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={reset_list}>reset</button>{/if}
-            {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>{/if}
+            {#if status != "none"}<button id="edit" class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>{/if}
         {/if}
     </div>
     <div class="md:mx-3">
