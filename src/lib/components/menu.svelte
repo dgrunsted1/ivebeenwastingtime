@@ -12,6 +12,7 @@
     export let menu;
     export let id = null;
     export let mults;
+    export let sub_recipes;
     let tab = "recipe_list";
     let grocery_list = [];
     let num_servings = 0;
@@ -22,7 +23,33 @@
     let delay_timer;
 
     onMount(async () => {
+        // console.log({sub_recipes});
         overflow_len = ($page.url.pathname == "/menu") ? `max-h-[60vh]` : `max-h-[60vh]`;
+        // if (menu.length){
+        //     for (let i = 0; i < menu.length; i++){
+        //         console.log(sub_recipes);
+        //         if (!sub_recipes || !sub_recipes.length){
+        //             console.log("if");
+        //             sub_recipes = [];
+        //             sub_recipes[menu[i].id] = [];
+        //             sub_recipes[menu[i].id].push({
+        //                 ingr_id: null,
+        //                 recipe_id: null
+        //             });
+        //             sub_recipes = sub_recipes;
+        //         }else if (!sub_recipes[menu[i].id]){
+        //             console.log("else if");
+        //             sub_recipes[menu[i].id].push({
+        //                 ingr_id: null,
+        //                 recipe_id: null
+        //             });
+        //             sub_recipes = sub_recipes;
+        //         }
+        //         console.log("end for loop", sub_recipes);
+        //     }
+            
+        // }
+        // console.log({sub_recipes});
     });
 
     afterUpdate(() => {
@@ -39,6 +66,8 @@
 
         total_time = get_total_time(menu);
 
+        update_subrecipes();
+
         if (!menu.title || menu.title == "New Menu"){
             menu.title = "New Menu";
             if (menu.length > 1) menu.title = generate_menu_title();
@@ -46,6 +75,39 @@
         
         
     });
+
+    function update_subrecipes(){
+        if (!sub_recipes){
+            sub_recipes = {};
+            for (let i = 0; i < menu.length; i++){
+                if (!sub_recipes[menu[i].id]){
+                    sub_recipes[menu[i].id] = [];
+                    sub_recipes[menu[i].id].push({ingr_id: null, recipe_id: null});
+                }
+            }
+        } else {
+            // console.log({sub_recipes});
+        }
+
+        for (let i = 0; i < menu.length; i++){
+            for (let k in sub_recipes){
+                for (let j = 0; j < sub_recipes[k].length; j++){
+                    if (k == menu[i].id && sub_recipes[k].recipe_id && sub_recipes[k].ingr_id){
+                        if (!menu[i].sub_recipe_data) menu[i].sub_recipe_data = [];
+                        for (let l = 0; l < menu.length; l++){
+                            if (menu[l].id == sub_recipes[k].recipe_id){
+                                if (!menu[i].sub_recipe_data.includes(menu[l])) menu[i].sub_recipe_data.push(menu[l]);
+                            }
+                        }
+                        menu[i].sub_recipe_data.push()
+                    }
+                    if (sub_recipes[k].recipe_id == menu[i].id){
+                        menu[i].is_sub_recipe = true;
+                    }
+                }
+            }
+        }
+    }
 
     function generate_menu_title(){
         let output = "";
@@ -162,23 +224,68 @@
     
     {#if tab == "recipe_list"}
         <div class="{overflow_len} md:max-h-[77vh] overflow-y-auto">
+            {#if menu.length}    
                 {#each menu as recipe}
-                    <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
-                        <figure class="image w-1/3 h-full">
-                            <img class="h-full" src={recipe.image} alt={recipe.title}/>
-                        </figure>
-                        <div class="servings_time_container w-2/3 ml-2.5">
-                            <p class="title text-xs bold md:text-xl">{recipe.title}</p>
-                            <p class="time text-xs">{recipe.time}</p>
-                            <div class="servings_container text-xs">
-                                servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" 
-                                            id={recipe.id} bind:value={mults[recipe.id]} 
-                                            on:input={update_mult}>
+                    {#if !recipe.is_sub_recipe}
+                        <div class="collapse-title img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
+                            <figure class="image w-1/3 h-full">
+                                <img class="h-full" src={recipe.image} alt={recipe.title}/>
+                            </figure>
+                            <div class="servings_time_container w-2/3 ml-2.5">
+                                <p class="title text-xs bold md:text-xl">{recipe.title}</p>
+                                <p class="time text-xs">{recipe.time}</p>
+                                <div class="servings_container text-xs">
+                                    servings:<input type="text" class="servings input input-bordered input-xs px-1 mr-1 w-8" 
+                                                id={recipe.id} bind:value={mults[recipe.id]} 
+                                                on:input={update_mult}>
+                                </div>
+                                <p class="description text-xs">{recipe.description}</p>
+                                {#if sub_recipes && sub_recipes[recipe.id]}
+                                    {#each sub_recipes[recipe.id] as curr}
+                                        <div class="flex flex-row items-center space-x-1">
+                                            <select bind:value={sub_recipes[recipe.id].ingr_id} class="flex select select-xs w-28">
+                                                <option value={null}>ingredient</option>
+                                                {#each recipe.expand.ingr_list as item}
+                                                    <option class="" value={item.id}>{item.ingredient}</option>
+                                                {/each}
+                                            </select>
+                                            <div class="text-xs">to swap for a</div>
+                                            <select bind:value={sub_recipes[recipe.id].recipe_id} class="select select-xs w-28">
+                                                <option value={null}>recipe</option>
+                                                {#each menu as recipe}
+                                                    <option value={recipe.id}>{recipe.title}</option>
+                                                {/each}
+                                            </select>
+                                        </div>
+                                    {/each}
+                                {/if}
                             </div>
-                            <p class="description text-xs">{recipe.description}</p>
-                        </div>
-                    </div>
+                        </div>  
+                        {#if recipe.sub_recipe_data}
+                                <div class="collapse bg-base-200 mx-7 w-auto">
+                                    <input type="radio" name="my-accordion-1" /> 
+                                    <div class="collapse-title">
+                                        show sub recipes
+                                    </div>
+                                    <div class="collapse-content"> 
+                                        {#each recipe.sub_recipe_data as sub_recipe}
+                                            <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center bg-base-300 md:bg-base-200">
+                                                <figure class="image w-1/4 h-full">
+                                                    <img class="h-full" src={sub_recipe.image} alt={sub_recipe.title}/>
+                                                </figure>
+                                                <div class="servings_time_container w-2/3 ml-2.5">
+                                                    <p class="title text-xs bold md:text-xl">{sub_recipe.title}</p>
+                                                    <p class="time text-xs">{sub_recipe.time}</p>
+                                                    <p class="description text-xs overflow-hidden">{sub_recipe.description}</p>
+                                                </div>
+                                            </div>
+                                        {/each}
+                                    </div>
+                                </div>
+                            {/if}
+                    {/if}
                 {/each}
+            {/if}
         </div>
     {:else if tab == "grocery_list"}
         <GroceryList status="none" {grocery_list}/>

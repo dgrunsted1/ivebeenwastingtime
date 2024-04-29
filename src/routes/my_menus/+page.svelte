@@ -21,6 +21,7 @@
             expand: `recipes,recipes.ingr_list`,
             sort: `-created`
         });
+        console.log({result_list});
         user_menus = result_list.items;
         loading = false;
     });
@@ -38,6 +39,7 @@
         for (let i = 0; i < user_menus.length; i++){
             if (user_menus[i].id == id){
                 modal_menu = user_menus[i];
+                console.log(user_menus[i]);
             }
         }
          if (is_mobile) my_modal_2.showModal();
@@ -357,7 +359,7 @@
             {#if modal_menu.id}
                 <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
                     <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
-                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id} on:close_modal={close_modal}/>
+                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id} on:close_modal={close_modal}/>
                 </form>
                 <form method="dialog" class="modal-backdrop">
                     <button>close</button>
@@ -375,7 +377,7 @@
     </div>
     <div id="desktop_menu" class="hidden md:flex w-1/2">
         {#if modal_menu.id}
-            <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
+            <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id}/>
         {/if}
     </div>
 </div>
