@@ -53,6 +53,7 @@
     });
 
     afterUpdate(() => {
+        console.log({sub_recipes});
         clearTimeout(delay_timer);
         grocery_list = [];
         num_servings = get_servings(menu, mults);
@@ -86,7 +87,23 @@
                 }
             }
         } else {
-            // console.log({sub_recipes});
+            // console.log(sub_recipes);
+            for (let key in sub_recipes){
+                // console.log(key);
+                let found_unset_sub_recipe = false;
+                // console.log(sub_recipes[key]);
+                for (let j = 0; j < sub_recipes[key].length; j++){
+                    // console.log(sub_recipes[key][j].ingr_id);
+                    // console.log(sub_recipes[key][j].recipe_id);
+                    if (sub_recipes[key][j].ingr_id === null || sub_recipes[key][j].recipe_id === null){
+                        found_unset_sub_recipe = true;
+                        break;
+                    }
+                }
+                if (!found_unset_sub_recipe) {
+                    sub_recipes[key].push({ingr_id: null, recipe_id: null});
+                }
+            }
         }
 
         for (let i = 0; i < menu.length; i++){
@@ -242,15 +259,15 @@
                                 <p class="description text-xs">{recipe.description}</p>
                                 {#if sub_recipes && sub_recipes[recipe.id]}
                                     {#each sub_recipes[recipe.id] as curr}
-                                        <div class="flex flex-row items-center space-x-1">
-                                            <select bind:value={sub_recipes[recipe.id].ingr_id} class="flex select select-xs w-28">
+                                        <div class="flex flex-row items-center space-x-1 w-full">
+                                            <select bind:value={sub_recipes[recipe.id].ingr_id} class="flex select select-xs w-20">
                                                 <option value={null}>ingredient</option>
                                                 {#each recipe.expand.ingr_list as item}
                                                     <option class="" value={item.id}>{item.ingredient}</option>
                                                 {/each}
                                             </select>
                                             <div class="text-xs">to swap for a</div>
-                                            <select bind:value={sub_recipes[recipe.id].recipe_id} class="select select-xs w-28">
+                                            <select bind:value={sub_recipes[recipe.id].recipe_id} class="flex select select-xs w-20">
                                                 <option value={null}>recipe</option>
                                                 {#each menu as recipe}
                                                     <option value={recipe.id}>{recipe.title}</option>
@@ -262,27 +279,27 @@
                             </div>
                         </div>  
                         {#if recipe.sub_recipe_data}
-                                <div class="collapse bg-base-200 mx-7 w-auto">
-                                    <input type="radio" name="my-accordion-1" /> 
-                                    <div class="collapse-title">
-                                        show sub recipes
-                                    </div>
-                                    <div class="collapse-content"> 
-                                        {#each recipe.sub_recipe_data as sub_recipe}
-                                            <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center bg-base-300 md:bg-base-200">
-                                                <figure class="image w-1/4 h-full">
-                                                    <img class="h-full" src={sub_recipe.image} alt={sub_recipe.title}/>
-                                                </figure>
-                                                <div class="servings_time_container w-2/3 ml-2.5">
-                                                    <p class="title text-xs bold md:text-xl">{sub_recipe.title}</p>
-                                                    <p class="time text-xs">{sub_recipe.time}</p>
-                                                    <p class="description text-xs overflow-hidden">{sub_recipe.description}</p>
-                                                </div>
-                                            </div>
-                                        {/each}
-                                    </div>
+                            <div class="collapse bg-base-200">
+                                <input type="checkbox" /> 
+                                <div class="collapse-title text-xl font-medium">
+                                show sub recipes
                                 </div>
-                            {/if}
+                                <div class="collapse-content"> 
+                                    {#each recipe.sub_recipe_data as sub_recipe}
+                                        <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center bg-base-300 md:bg-base-200">
+                                            <figure class="image w-1/4 h-full">
+                                                <img class="h-full" src={sub_recipe.image} alt={sub_recipe.title}/>
+                                            </figure>
+                                            <div class="servings_time_container w-2/3 ml-2.5">
+                                                <p class="title text-xs bold md:text-xl">{sub_recipe.title}</p>
+                                                <p class="time text-xs">{sub_recipe.time}</p>
+                                                <p class="description text-xs overflow-hidden">{sub_recipe.description}</p>
+                                            </div>
+                                        </div>
+                                    {/each}
+                                </div>
+                            </div>
+                        {/if}
                     {/if}
                 {/each}
             {/if}
