@@ -63,7 +63,7 @@
         } else {
             if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = false;
         }
-        grocery_list = get_grocery_list(menu);
+        grocery_list = get_grocery_list(menu, mults);
 
         total_time = get_total_time(menu);
 

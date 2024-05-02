@@ -118,16 +118,20 @@ function round_amount(in_amount, mult){
     return text;
   }
 
-  export const get_grocery_list = function(menu) {
+  export const get_grocery_list = function(menu, mults) {
     let grocery_list = [];
     menu = (menu.expand && menu.expand.recipes) ? menu.expand.recipes : menu;
     menu.forEach((recipe, i) => {
-        const mult = (menu.servings) ? parseFloat(menu.servings[recipe.id]) / parseFloat(recipe.servings) : 1;
+        let mult = 1;
+        if (menu.servings) mult = parseFloat(menu.servings[recipe.id]) / parseFloat(recipe.servings);
+        else if (mults[recipe.id]) mult = parseFloat(mults[recipe.id]) / parseFloat(recipe.servings);
+        
         if (recipe.expand.ingr_list) {
             for (let i = 0; i < recipe.expand.ingr_list.length; i++) {
-                recipe.expand.ingr_list[i].quantity = recipe.expand.ingr_list[i].quantity * mult;
-                recipe.expand.ingr_list[i].checked = false;
-                grocery_list.push(recipe.expand.ingr_list[i]);
+                let temp_item = {...recipe.expand.ingr_list[i]};
+                temp_item.quantity = recipe.expand.ingr_list[i].quantity * mult;
+                temp_item.checked = false;
+                grocery_list.push(temp_item);
             }
         } 
     });
