@@ -21,7 +21,6 @@
             expand: `recipes,recipes.ingr_list`,
             sort: `-created`
         });
-        console.log({result_list});
         user_menus = result_list.items;
         loading = false;
     });
@@ -39,7 +38,6 @@
         for (let i = 0; i < user_menus.length; i++){
             if (user_menus[i].id == id){
                 modal_menu = user_menus[i];
-                console.log(user_menus[i]);
             }
         }
          if (is_mobile) my_modal_2.showModal();

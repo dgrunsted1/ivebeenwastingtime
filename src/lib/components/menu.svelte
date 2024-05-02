@@ -23,37 +23,10 @@
     let delay_timer;
 
     onMount(async () => {
-        // console.log({sub_recipes});
         overflow_len = ($page.url.pathname == "/menu") ? `max-h-[60vh]` : `max-h-[60vh]`;
-        // if (menu.length){
-        //     for (let i = 0; i < menu.length; i++){
-        //         console.log(sub_recipes);
-        //         if (!sub_recipes || !sub_recipes.length){
-        //             console.log("if");
-        //             sub_recipes = [];
-        //             sub_recipes[menu[i].id] = [];
-        //             sub_recipes[menu[i].id].push({
-        //                 ingr_id: null,
-        //                 recipe_id: null
-        //             });
-        //             sub_recipes = sub_recipes;
-        //         }else if (!sub_recipes[menu[i].id]){
-        //             console.log("else if");
-        //             sub_recipes[menu[i].id].push({
-        //                 ingr_id: null,
-        //                 recipe_id: null
-        //             });
-        //             sub_recipes = sub_recipes;
-        //         }
-        //         console.log("end for loop", sub_recipes);
-        //     }
-            
-        // }
-        // console.log({sub_recipes});
     });
 
     afterUpdate(() => {
-        console.log({sub_recipes});
         clearTimeout(delay_timer);
         grocery_list = [];
         num_servings = get_servings(menu, mults);
@@ -74,7 +47,6 @@
             if (menu.length > 1) menu.title = generate_menu_title();
         }
         
-        console.log({sub_recipes});
     });
 
     function update_subrecipes(){
@@ -180,7 +152,8 @@
             "today": false,
             "title": menu.title,
             "servings": mults,
-            "made": made
+            "made": made,
+            "sub_recipes": sub_recipes
         };
         const record = await pb.collection('menus').create(data);
         id = record.id;
@@ -262,7 +235,7 @@
                                                 on:input={update_mult}>
                                 </div>
                                 <p class="description text-xs">{recipe.description}</p>
-                                {#if sub_recipes && sub_recipes[recipe.id]}
+                                {#if sub_recipes && sub_recipes[recipe.id] && $page.url.pathname == "/menu"}
                                     <div class="flex flex-col space-y-2">
                                         {#each sub_recipes[recipe.id] as curr}
                                             <div class="flex flex-row items-center space-x-1 w-full">

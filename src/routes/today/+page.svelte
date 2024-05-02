@@ -29,7 +29,7 @@
             todays_menu = result_list.items[0];
             todays_menu.expand.recipes = todays_menu.expand.recipes.sort(sort_by_made);
             if (!todays_menu.expand.grocery_list || !todays_menu.expand.grocery_list.list){
-                grocery_list = get_grocery_list(todays_menu);
+                grocery_list = get_grocery_list(todays_menu, todays_menu.servings);
                 grocery_list_id = create_grocery_list(grocery_list, todays_menu.id);
             } else {
                 grocery_list = groupBySimilarity(todays_menu.expand.grocery_list.list);
@@ -46,6 +46,7 @@
             }
             grocery_list = unchecked.concat(checked);
         }
+        console.log({todays_menu, grocery_list});
         loading = false;
     });
 
