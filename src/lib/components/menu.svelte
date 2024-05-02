@@ -242,7 +242,7 @@
             {#if menu.length}    
                 {#each menu as recipe}
                     {#if !recipe.is_sub_recipe}
-                        <div class="collapse-title img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl bg-base-300 md:bg-base-200">
+                        <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl bg-base-300 md:bg-base-200">
                             <figure class="image w-1/3 h-full">
                                 <img class="h-full" src={recipe.image} alt={recipe.title}/>
                             </figure>
