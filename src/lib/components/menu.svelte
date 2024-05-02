@@ -102,6 +102,13 @@
         }
 
         for (let i = 0; i < menu.length; i++){
+            if (!(menu[i].id in sub_recipes)){
+                sub_recipes[menu[i].id] = [];
+                sub_recipes[menu[i].id].push({ingr_id: null, recipe_id: null});
+            }
+        }
+
+        for (let i = 0; i < menu.length; i++){
             for (let k in sub_recipes){
                 for (let j = 0; j < sub_recipes[k].length; j++){
                     if (k == menu[i].id && sub_recipes[k][j].recipe_id && sub_recipes[k][j].ingr_id){
@@ -246,7 +253,7 @@
                             <figure class="image w-1/3 h-full">
                                 <img class="h-full" src={recipe.image} alt={recipe.title}/>
                             </figure>
-                            <div class="servings_time_container w-2/3 ml-2.5">
+                            <div class="servings_time_container flex flex-col w-2/3 ml-2.5 space-y-1 mb-2">
                                 <p class="title text-xs bold md:text-xl">{recipe.title}</p>
                                 <p class="time text-xs">{recipe.time}</p>
                                 <div class="servings_container text-xs">
@@ -256,31 +263,33 @@
                                 </div>
                                 <p class="description text-xs">{recipe.description}</p>
                                 {#if sub_recipes && sub_recipes[recipe.id]}
-                                    {#each sub_recipes[recipe.id] as curr}
-                                        <div class="flex flex-row items-center space-x-1 w-full">
-                                            <select bind:value={curr.ingr_id} class="flex select select-xs w-20">
-                                                <option value={null}>ingredient</option>
-                                                {#each recipe.expand.ingr_list as item}
-                                                    
-                                                    <option class="" value={item.id}>{item.ingredient}</option>
-                                                {/each}
-                                            </select>
-                                            <div class="text-xs">to swap for a</div>
-                                            <select bind:value={curr.recipe_id} class="flex select select-xs w-20">
-                                                <option value={null}>recipe</option>
-                                                {#each menu as recipe_swap}
-                                                    {#if recipe.id != recipe_swap.id}
-                                                        <option value={recipe_swap.id}>{recipe_swap.title}</option>
-                                                    {/if}
-                                                {/each}
-                                            </select>
-                                        </div>
-                                    {/each}
+                                    <div class="flex flex-col space-y-2">
+                                        {#each sub_recipes[recipe.id] as curr}
+                                            <div class="flex flex-row items-center space-x-1 w-full">
+                                                <select bind:value={curr.ingr_id} class="flex select select-xs w-20">
+                                                    <option value={null}>ingredient</option>
+                                                    {#each recipe.expand.ingr_list as item}
+                                                        
+                                                        <option class="" value={item.id}>{item.ingredient}</option>
+                                                    {/each}
+                                                </select>
+                                                <div class="text-xs">to swap for a</div>
+                                                <select bind:value={curr.recipe_id} class="flex select select-xs w-20">
+                                                    <option value={null}>recipe</option>
+                                                    {#each menu as recipe_swap}
+                                                        {#if recipe.id != recipe_swap.id}
+                                                            <option value={recipe_swap.id}>{recipe_swap.title}</option>
+                                                        {/if}
+                                                    {/each}
+                                                </select>
+                                            </div>
+                                        {/each}
+                                    </div>
                                 {/if}
                             </div>
                         </div>  
                         {#if recipe.sub_recipe_data}
-                            <div class="collapse bg-base-200">
+                            <div class="collapse bg-base-200 my-3.5 mx-5 w-auto">
                                 <input type="checkbox" /> 
                                 <div class="collapse-title text-xl font-medium">
                                 show sub recipes
