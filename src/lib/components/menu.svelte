@@ -87,20 +87,15 @@
                 }
             }
         } else {
-            // console.log(sub_recipes);
             for (let key in sub_recipes){
-                // console.log(key);
                 let found_unset_sub_recipe = false;
-                // console.log(sub_recipes[key]);
                 for (let j = 0; j < sub_recipes[key].length; j++){
-                    // console.log(sub_recipes[key][j].ingr_id);
-                    // console.log(sub_recipes[key][j].recipe_id);
                     if (sub_recipes[key][j].ingr_id === null || sub_recipes[key][j].recipe_id === null){
                         found_unset_sub_recipe = true;
                         break;
                     }
                 }
-                if (!found_unset_sub_recipe) {
+                if (!found_unset_sub_recipe && Object.keys(sub_recipes).length - 1 > sub_recipes[key].length) {
                     sub_recipes[key].push({ingr_id: null, recipe_id: null});
                 }
             }
@@ -266,14 +261,17 @@
                                             <select bind:value={curr.ingr_id} class="flex select select-xs w-20">
                                                 <option value={null}>ingredient</option>
                                                 {#each recipe.expand.ingr_list as item}
+                                                    
                                                     <option class="" value={item.id}>{item.ingredient}</option>
                                                 {/each}
                                             </select>
                                             <div class="text-xs">to swap for a</div>
                                             <select bind:value={curr.recipe_id} class="flex select select-xs w-20">
                                                 <option value={null}>recipe</option>
-                                                {#each menu as recipe}
-                                                    <option value={recipe.id}>{recipe.title}</option>
+                                                {#each menu as recipe_swap}
+                                                    {#if recipe.id != recipe_swap.id}
+                                                        <option value={recipe_swap.id}>{recipe_swap.title}</option>
+                                                    {/if}
                                                 {/each}
                                             </select>
                                         </div>
