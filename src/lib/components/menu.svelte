@@ -74,7 +74,7 @@
             if (menu.length > 1) menu.title = generate_menu_title();
         }
         
-        
+        console.log({sub_recipes});
     });
 
     function update_subrecipes(){
@@ -109,17 +109,20 @@
         for (let i = 0; i < menu.length; i++){
             for (let k in sub_recipes){
                 for (let j = 0; j < sub_recipes[k].length; j++){
-                    if (k == menu[i].id && sub_recipes[k].recipe_id && sub_recipes[k].ingr_id){
+                    if (k == menu[i].id && sub_recipes[k][j].recipe_id && sub_recipes[k][j].ingr_id){
                         if (!menu[i].sub_recipe_data) menu[i].sub_recipe_data = [];
                         for (let l = 0; l < menu.length; l++){
-                            if (menu[l].id == sub_recipes[k].recipe_id){
-                                if (!menu[i].sub_recipe_data.includes(menu[l])) menu[i].sub_recipe_data.push(menu[l]);
+                            if (menu[l].id == sub_recipes[k][j].recipe_id){
+                                if (!menu[i].sub_recipe_data.includes(menu[l])){
+                                    menu[i].sub_recipe_data.push(menu[l]);
+                                }
                             }
                         }
-                        menu[i].sub_recipe_data.push()
                     }
-                    if (sub_recipes[k].recipe_id == menu[i].id){
-                        menu[i].is_sub_recipe = true;
+                    for (let l = 0; l < sub_recipes[k].length; l++){
+                        if (sub_recipes[k][l].recipe_id == menu[i].id){
+                            menu[i].is_sub_recipe = true;
+                        }
                     }
                 }
             }
@@ -244,7 +247,7 @@
             {#if menu.length}    
                 {#each menu as recipe}
                     {#if !recipe.is_sub_recipe}
-                        <div class="collapse-title img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl h-fit md:h-52 bg-base-300 md:bg-base-200">
+                        <div class="collapse-title img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl bg-base-300 md:bg-base-200">
                             <figure class="image w-1/3 h-full">
                                 <img class="h-full" src={recipe.image} alt={recipe.title}/>
                             </figure>
@@ -260,14 +263,14 @@
                                 {#if sub_recipes && sub_recipes[recipe.id]}
                                     {#each sub_recipes[recipe.id] as curr}
                                         <div class="flex flex-row items-center space-x-1 w-full">
-                                            <select bind:value={sub_recipes[recipe.id].ingr_id} class="flex select select-xs w-20">
+                                            <select bind:value={curr.ingr_id} class="flex select select-xs w-20">
                                                 <option value={null}>ingredient</option>
                                                 {#each recipe.expand.ingr_list as item}
                                                     <option class="" value={item.id}>{item.ingredient}</option>
                                                 {/each}
                                             </select>
                                             <div class="text-xs">to swap for a</div>
-                                            <select bind:value={sub_recipes[recipe.id].recipe_id} class="flex select select-xs w-20">
+                                            <select bind:value={curr.recipe_id} class="flex select select-xs w-20">
                                                 <option value={null}>recipe</option>
                                                 {#each menu as recipe}
                                                     <option value={recipe.id}>{recipe.title}</option>
