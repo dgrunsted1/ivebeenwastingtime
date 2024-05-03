@@ -264,8 +264,8 @@
                         {#if recipe.sub_recipe_data}
                             <div class="collapse bg-base-200 my-3.5 mx-5 w-auto">
                                 <input type="checkbox" /> 
-                                <div class="collapse-title text-xl font-medium">
-                                show sub recipes
+                                <div class="collapse-title text-xs md:text-base flex items-center">
+                                    show sub recipes
                                 </div>
                                 <div class="collapse-content"> 
                                     {#each recipe.sub_recipe_data as sub_recipe}

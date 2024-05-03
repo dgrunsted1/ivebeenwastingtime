@@ -43,10 +43,16 @@
          if (is_mobile) my_modal_2.showModal();
     }
 
-    function get_servings(recipes){
+    function get_servings(recipes, sub_recipes){
+        let sub_recipe_id_list = [];
+        for (let k in sub_recipes){
+            for (let i = 0; i < sub_recipes[k].length; i++){
+                if (sub_recipes[k][i].recipe_id && !sub_recipe_id_list.includes(sub_recipes[k][i].recipe_id)) sub_recipe_id_list.push(sub_recipes[k][i].recipe_id);
+            }
+        }
         let total_serv = 0;
         for (let i = 0; i < recipes.length; i++){
-            total_serv += parseInt(recipes[i].servings);
+            if (!sub_recipe_id_list.includes(recipes[i].id)) total_serv += parseInt(recipes[i].servings);
         }
         return total_serv;
     }
@@ -341,7 +347,7 @@
                                 <div class="flex flex-row justify-evenly w-full">
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
-                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes, user_menus[i].sub_recipes)} servings</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
                                 </div>
                             </div>
