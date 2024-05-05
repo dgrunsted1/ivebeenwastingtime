@@ -65,7 +65,7 @@
     });
 
     afterUpdate(() => {
-        update_recipes_ready();
+        if (todays_menu.expand) update_recipes_ready();
     });
 
     function update_recipes_ready(){
@@ -162,7 +162,7 @@
         <div class="flex justify-center p-1">
             <h1 class="text-xl">{todays_menu.title}</h1>
         </div>
-        <div id="content" class="flex flex-col md:flex-row md:space-x-3 m-2 mt-2 border rounded-md">
+        <div id="content" class="flex flex-col md:flex-row md:space-x-3 m-2 mt-2 border rounded-md md:border-none">
             <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2">
                 <div id="recipes" class="h-[70vh] md:h-[calc(100vh-130px)] overflow-y-auto">
                     {#each todays_menu.expand.recipes as curr, i}
