@@ -22,7 +22,7 @@
             filter: `user="${$currentUser.id}" && today=True`,
         });
         todays_menu = result_menu.items[0];
-        console.log(todays_menu.sub_recipes, todays_menu.made);
+        (todays_menu.sub_recipes, todays_menu.made);
         update_recipe_ready();
     });
 
@@ -38,20 +38,27 @@
     }
 
     const update_recipe_ready = function() {
-        console.log(data.post.recipe.id);
         let curr_sub_recipes = [];
-        for (let j = 0; j < todays_menu.sub_recipes[data.post.recipe.id].length; j++) {
-            curr_sub_recipes.push(todays_menu.sub_recipes[data.post.recipe.id][j].recipe_id);
-        }
-        curr_sub_recipes = curr_sub_recipes;
-        let is_ready = true;
-        for (let i in todays_menu.made){
-            if (curr_sub_recipes.includes(i) && !todays_menu.made[i]) {
-                is_ready = false;
-                break;
+        if (todays_menu.sub_recipes){
+            for (let j = 0; j < todays_menu.sub_recipes[data.post.recipe.id].length; j++) {
+                curr_sub_recipes.push(todays_menu.sub_recipes[data.post.recipe.id][j].recipe_id);
             }
+            curr_sub_recipes = curr_sub_recipes;
+            if (curr_sub_recipes.length){
+                let is_ready = true;
+                for (let i in todays_menu.made){
+                    if (curr_sub_recipes.includes(i) && !todays_menu.made[i]) {
+                        is_ready = false;
+                        break;
+                    }
+                }
+                recipe_ready = is_ready;
+            } else {
+                recipe_ready = true;
+            }
+        } else {
+            recipe_ready = true;
         }
-        recipe_ready = is_ready;
     }
 
     const get_quantity = function(quantity){
@@ -77,7 +84,7 @@
             <div class="img_container w-full md:w-1/4">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
             </div>
-            <div class="info_container w-full md:w-1/2 flex flex-col m-1">
+            <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-1">
                 <div class="title_container mx-auto my-2">
                     <div class="title w-full text-sm md:text-xl">{data.post.recipe.title}</div>
                 </div>
@@ -99,11 +106,13 @@
                     </div>
                 </div>
                 <div class="flex justify-evenly items-center">
-                    <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                    {#if data.post.recipe.url}
+                        <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                    {/if}    
                     {#if user_logged_in}
                         <!-- <div class="w-1/3 flex justify-evenly"> -->
                             {#if recipe_ready}
-                                <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
+                                <input type="checkbox" class="checkbox checkbox-lg md:checkbox-sm" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
                             {:else}
                                 not ready
                             {/if}
