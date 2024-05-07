@@ -296,11 +296,6 @@
         }
         return 0;
     }
-
-    function close_modal(){
-        const is_mobile = (window.getComputedStyle(document.getElementById("desktop_menu")).display == "none") ? true : false;
-        if (is_mobile) my_modal_2.hideModal();
-    }
 </script>
 
 <div class="flex">
@@ -383,8 +378,8 @@
         <dialog id="my_modal_2" class="modal">
             {#if modal_menu.id}
                 <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
-                    <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
-                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id} on:close_modal={close_modal}/>
+                    <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1">x</button>
+                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id}/>
                 </form>
                 <form method="dialog" class="modal-backdrop">
                     <button>close</button>
