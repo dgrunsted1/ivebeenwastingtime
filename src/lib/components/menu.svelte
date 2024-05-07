@@ -36,11 +36,11 @@
         } else {
             if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = false;
         }
-        grocery_list = get_grocery_list(menu, mults);
+        grocery_list = get_grocery_list(menu, mults, sub_recipes);
 
         total_time = get_total_time(menu);
 
-        update_subrecipes();
+        update_sub_recipes();
 
         if (!menu.title || menu.title == "New Menu"){
             menu.title = "New Menu";
@@ -49,8 +49,9 @@
         
     });
 
-    function update_subrecipes(){
+    function update_sub_recipes(){
         if (!sub_recipes){
+            //create sub_recipes object
             sub_recipes = {};
             for (let i = 0; i < menu.length; i++){
                 if (!sub_recipes[menu[i].id]){
@@ -59,6 +60,7 @@
                 }
             }
         } else {
+            // add new sub_recipe instance if needed
             for (let key in sub_recipes){
                 let found_unset_sub_recipe = false;
                 for (let j = 0; j < sub_recipes[key].length; j++){
@@ -73,6 +75,7 @@
             }
         }
 
+        // add new instance for each recipe added to a menu
         for (let i = 0; i < menu.length; i++){
             if (!(menu[i].id in sub_recipes)){
                 sub_recipes[menu[i].id] = [];
@@ -80,9 +83,11 @@
             }
         }
 
+        // set sub_recipe values in each recipe object, data for sub_recipes, is_sub_recipe flag
         for (let i = 0; i < menu.length; i++){
             for (let k in sub_recipes){
                 for (let j = 0; j < sub_recipes[k].length; j++){
+                    // add recipe data to parent recipe object
                     if (k == menu[i].id && sub_recipes[k][j].recipe_id && sub_recipes[k][j].ingr_id){
                         if (!menu[i].sub_recipe_data) menu[i].sub_recipe_data = [];
                         for (let l = 0; l < menu.length; l++){
@@ -93,6 +98,7 @@
                             }
                         }
                     }
+                    //set an is_sub_recipe flag for each recipe
                     for (let l = 0; l < sub_recipes[k].length; l++){
                         if (sub_recipes[k][l].recipe_id == menu[i].id){
                             menu[i].is_sub_recipe = true;
@@ -218,7 +224,7 @@
     {/if}
     
     {#if tab == "recipe_list"}
-        <div class="{overflow_len} md:max-h-[77vh] overflow-y-auto">
+        <div class="{overflow_len} md:max-h-[77vh] overflow-y-auto border rounded-md md:border-none">
             {#if menu.length}    
                 {#each menu as recipe}
                     {#if !recipe.is_sub_recipe}

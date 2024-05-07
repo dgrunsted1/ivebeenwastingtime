@@ -452,7 +452,7 @@
     </div>
 </div>
 
-<div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2">
+<div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border rounded-md md:border-none">
     <div id="menu_loading" class="hidden w-full flex justify-center">
         <span class="loading loading-ring loading-lg"></span>
     </div>

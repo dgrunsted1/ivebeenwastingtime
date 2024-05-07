@@ -305,7 +305,7 @@
 
 <div class="flex">
     <div class="flex flex-col md:w-1/2">
-        <div class="flex justify-between mx-4">
+        <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
                     <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
@@ -327,7 +327,7 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
+        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto border rounded-md md:border-none">
             {#if loading}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
@@ -358,6 +358,27 @@
                     </div>
                 {/each}
             {/if}
+        </div>
+        <div class="flex md:hidden justify-between mx-4">
+            <div class="flex w-fit space-x-6 items-center">
+                <div class="form-control w-full max-w-xs">
+                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                </div>
+                <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
+            </div>
+            
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                    {#each sort_opts as opt}
+                        {#if opt == sort_val}
+                        <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                        {:else}
+                        <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                        {/if}
+                    {/each}
+                </ul>
+            </div>
         </div>
         <dialog id="my_modal_2" class="modal">
             {#if modal_menu.id}

@@ -106,7 +106,7 @@
 </script>
 <div id="main">
         {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
-            <div id="content" class="flex flex-col-reverse md:flex-row m-2 mt-0 md:space-x-3">
+            <div id="content" class="flex flex-col md:flex-row m-2 mt-0 md:space-x-3">
                 <div id="left_column" class="md:w-1/2">
                     {#if user_recipes.items}
                         <RecipeList recipes={user_recipes.items} 
