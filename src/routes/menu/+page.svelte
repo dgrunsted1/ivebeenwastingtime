@@ -105,17 +105,17 @@
     }
 </script>
 <div id="main">
-        {#if (user_recipes.items && user_recipes.items.length > 0) || loading}
+        {#if (user_recipes && user_recipes.items && user_recipes.items.length > 0) || loading}
             <div id="content" class="flex flex-col md:flex-row m-2 mt-0 md:space-x-3">
                 <div id="left_column" class="md:w-1/2">
-                    {#if user_recipes.items}
+                    <!-- {#if user_recipes.items} -->
                         <RecipeList recipes={user_recipes.items} 
                             on:update_view={update_view} on:update_edit={update_edit}
                             on:remove_from_menu={remove_from_menu}
                             on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>
-                    {:else}
-                        <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
-                    {/if}
+                    <!-- {:else}
+                        <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
+                    {/if} -->
                 </div>
                 <details class="md:hidden collapse bg-base-200 md:bg-base-100 collapse-arrow mt-1 w-full md:w-1/2">
                     <summary class="collapse-title text-xl font-medium">

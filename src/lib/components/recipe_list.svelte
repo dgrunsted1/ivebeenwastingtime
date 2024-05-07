@@ -11,7 +11,7 @@
 
     const dispatch = createEventDispatcher();
     export let recipes;
-    let display_recipes = recipes;
+    $: display_recipes = recipes;
     let curr_recipe_id = -1;
     let categories = {cuisines:[], countries:[], cats:[]};
     let selected_cats = {cuisines:[], countries:[], cats:[]};
@@ -21,12 +21,14 @@
     let update_fave_made_list = [];
     let delay_timer;
 
-    onMount(async () => {
+    afterUpdate(async () => {
+        if (!recipes) return;
         for (let i = 0; i < recipes.length; i++){
             if (!categories.cuisines.includes(recipes[i].cuisine) && recipes[i].cuisine) categories.cuisines.push(recipes[i].cuisine);
             if (!categories.countries.includes(recipes[i].country) && recipes[i].country) categories.countries.push(recipes[i].country);
             if (!categories.cats.includes(recipes[i].category) && recipes[i].category) categories.cats.push(recipes[i].category);
         }
+        
 
         categories = categories;
         display_cats = categories;
@@ -436,7 +438,7 @@
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
         <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
-        <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
+        <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
         <div class="dropdown dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
@@ -453,57 +455,60 @@
 </div>
 
 <div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border rounded-md md:border-none">
-    <div id="menu_loading" class="hidden w-full flex justify-center">
-        <span class="loading loading-ring loading-lg"></span>
-    </div>
-    {#each display_recipes as curr, i}
-        <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer" on:click={view} on:keydown={view}>
-            <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{curr.image}')"></figure>
-            <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
-                <div class="flex flex-col justify-between p-1 w-3/4">
-                    <h2 id={curr.id} class="card-title text-sm text-ellipsis overflow-hidden">{curr.title}</h2>
-                    <div class="flex w-full">
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
-                            {#if isNaN(curr.servings)}
-                                {curr.servings}
-                            {:else}
-                                {curr.servings} servings
-                            {/if}
-                        </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
-                            {#if curr.time}
-                                {curr.time}
-                            {:else}
-                                no time
-                            {/if}
-                        </div>
-                        <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
-                            {curr.expand.ingr_list.length} ingredients
+    {#if display_recipes}
+        {#each display_recipes as curr, i}
+            <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer" on:click={view} on:keydown={view}>
+                <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{display_recipes[i].image}')"></figure>
+                <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
+                    <div class="flex flex-col justify-between p-1 w-3/4">
+                        <h2 id={display_recipes[i].id} class="card-title text-sm text-ellipsis overflow-hidden">{display_recipes[i].title}</h2>
+                        <div class="flex w-full">
+                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
+                                {#if isNaN(display_recipes[i].servings)}
+                                    {display_recipes[i].servings}
+                                {:else}
+                                    {display_recipes[i].servings} servings
+                                {/if}
+                            </div>
+                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
+                                {#if display_recipes[i].time}
+                                    {display_recipes[i].time}
+                                {:else}
+                                    no time
+                                {/if}
+                            </div>
+                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
+                                {display_recipes[i].expand.ingr_list.length} ingredients
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="card-actions flex flex-col justify-center items-end content-center w-1/4">
-                    <div class="flex w-fit space-x-1">
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {curr.made ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.made = !curr.made; update_fave_made_queue(e);}}><ThumbUp/></button>
-                        <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_made_queue(e);}}><Heart/></button>
-                    </div>
-                    <div class="flex w-fit space-x-2">
-                        <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={curr.id} bind:checked={curr.checked}>
-                        <button class="recipe_btn btn w-fit p-1 btn-xs {curr.id} " on:click|stopPropagation={delete_recipe} id="{curr.id}"><DeleteIcon/></button>
+                    <div class="card-actions flex flex-col justify-center items-end content-center w-1/4">
+                        <div class="flex w-fit space-x-1">
+                            <button id={display_recipes[i].id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 made {display_recipes[i].made ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp/></button>
+                            <button id={display_recipes[i].id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {display_recipes[i].favorite ? 'bg-secondary' : ''}" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart/></button>
+                        </div>
+                        <div class="flex w-fit space-x-2">
+                            <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-sm p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
+                            <button class="recipe_btn btn w-fit p-1 btn-xs {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
+                        </div>
                     </div>
                 </div>
             </div>
+        {/each}
+        <div class="flex justify-center m-3">
+            <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
         </div>
-    {/each}
-    <div class="flex justify-center m-3">
-        <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
-    </div>
+    {:else}
+        <div id="menu_loading" class="w-full flex justify-center content-center h-full">
+            <span class="loading loading-bars loading-lg"></span>
+        </div>
+    {/if}
 </div>
 
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
         <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
-        <p class="mx-5 text-xs md:text-sm">{display_recipes.length} Recipes</p>
+        <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
         <div class="dropdown dropdown-top md:dropdown-bottom dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
