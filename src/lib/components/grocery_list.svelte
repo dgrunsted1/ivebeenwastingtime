@@ -123,7 +123,7 @@
         {/if}
     </div>
     <div class="md:mx-3">
-        <div class="grocery_list {view_size_mobile} {view_size_desktop} overflow-y-auto">
+        <div class="grocery_list {view_size_mobile} {view_size_desktop} overflow-y-auto border rounded-md md:border-none px-2">
             {#if grocery_list.length > 0}
                 {#each grocery_list as item, i}
                     {#if edit}

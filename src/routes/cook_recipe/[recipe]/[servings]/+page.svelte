@@ -1,19 +1,65 @@
 <script>
-    import { currentUser } from '/src/lib/pocketbase.js';
+    import { currentUser, pb } from '/src/lib/pocketbase.js';
     import ThumbUp from "/src/lib/icons/BigThumbUp.svelte";
     import Heart from "/src/lib/icons/BigHeart.svelte";
     import { onMount } from 'svelte';
     import { update_fave_made } from '/src/lib/save_recipe.js';
+    import { update_made } from '/src/lib/groceries.js'
+
 
     
     /** @type {import('./$types').PageData} */
     export let data;
     const scroll_size = 425;
     let user_logged_in = false;
+    let todays_menu;
+    let recipe_ready = false;
 
     onMount(async () => {
         if ($currentUser.id == data.post.recipe.user) user_logged_in = true;
+
+        const result_menu = await pb.collection('menus').getList(1, 1, {
+            filter: `user="${$currentUser.id}" && today=True`,
+        });
+        todays_menu = result_menu.items[0];
+        (todays_menu.sub_recipes, todays_menu.made);
+        update_recipe_ready();
     });
+
+    function toggle_made(e){
+        const id = e.srcElement.id;
+        if (todays_menu.made){
+            todays_menu.made[id] = !todays_menu.made[id];
+        } else {
+            todays_menu.made = {};
+            todays_menu.made[id] = true;
+        }
+        update_made(todays_menu.made, todays_menu.id);
+    }
+
+    const update_recipe_ready = function() {
+        let curr_sub_recipes = [];
+        if (todays_menu.sub_recipes){
+            for (let j = 0; j < todays_menu.sub_recipes[data.post.recipe.id].length; j++) {
+                curr_sub_recipes.push(todays_menu.sub_recipes[data.post.recipe.id][j].recipe_id);
+            }
+            curr_sub_recipes = curr_sub_recipes;
+            if (curr_sub_recipes.length){
+                let is_ready = true;
+                for (let i in todays_menu.made){
+                    if (curr_sub_recipes.includes(i) && !todays_menu.made[i]) {
+                        is_ready = false;
+                        break;
+                    }
+                }
+                recipe_ready = is_ready;
+            } else {
+                recipe_ready = true;
+            }
+        } else {
+            recipe_ready = true;
+        }
+    }
 
     const get_quantity = function(quantity){
         if (isNaN(data.post.recipe.servings) || isNaN(data.post.servings)){
@@ -38,7 +84,7 @@
             <div class="img_container w-full md:w-1/4">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
             </div>
-            <div class="info_container w-full md:w-1/2 flex flex-col m-1">
+            <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-1">
                 <div class="title_container mx-auto my-2">
                     <div class="title w-full text-sm md:text-xl">{data.post.recipe.title}</div>
                 </div>
@@ -60,12 +106,19 @@
                     </div>
                 </div>
                 <div class="flex justify-evenly items-center">
-                    <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                    {#if data.post.recipe.url}
+                        <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                    {/if}    
                     {#if user_logged_in}
-                        <div class="w-1/3 flex justify-evenly">
+                        <!-- <div class="w-1/3 flex justify-evenly"> -->
+                            {#if recipe_ready}
+                                <input type="checkbox" class="checkbox checkbox-lg md:checkbox-sm" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
+                            {:else}
+                                not ready
+                            {/if}
                             <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.made ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp/></button>
                             <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart/></button>
-                        </div>
+                        <!-- </div> -->
                     {/if}
                 </div>    
             </div>

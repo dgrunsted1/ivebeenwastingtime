@@ -43,10 +43,16 @@
          if (is_mobile) my_modal_2.showModal();
     }
 
-    function get_servings(recipes){
+    function get_servings(recipes, sub_recipes){
+        let sub_recipe_id_list = [];
+        for (let k in sub_recipes){
+            for (let i = 0; i < sub_recipes[k].length; i++){
+                if (sub_recipes[k][i].recipe_id && !sub_recipe_id_list.includes(sub_recipes[k][i].recipe_id)) sub_recipe_id_list.push(sub_recipes[k][i].recipe_id);
+            }
+        }
         let total_serv = 0;
         for (let i = 0; i < recipes.length; i++){
-            total_serv += parseInt(recipes[i].servings);
+            if (!sub_recipe_id_list.includes(recipes[i].id)) total_serv += parseInt(recipes[i].servings);
         }
         return total_serv;
     }
@@ -299,7 +305,7 @@
 
 <div class="flex">
     <div class="flex flex-col md:w-1/2">
-        <div class="flex justify-between mx-4">
+        <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
                     <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
@@ -321,7 +327,7 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto">
+        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto border rounded-md md:border-none">
             {#if loading}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
@@ -341,7 +347,7 @@
                                 <div class="flex flex-row justify-evenly w-full">
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
-                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes)} servings</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes, user_menus[i].sub_recipes)} servings</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-color px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
                                 </div>
                             </div>
@@ -353,11 +359,32 @@
                 {/each}
             {/if}
         </div>
+        <div class="flex md:hidden justify-between mx-4">
+            <div class="flex w-fit space-x-6 items-center">
+                <div class="form-control w-full max-w-xs">
+                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                </div>
+                <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
+            </div>
+            
+            <div class="dropdown dropdown-end">
+                <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
+                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                    {#each sort_opts as opt}
+                        {#if opt == sort_val}
+                        <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                        {:else}
+                        <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                        {/if}
+                    {/each}
+                </ul>
+            </div>
+        </div>
         <dialog id="my_modal_2" class="modal">
             {#if modal_menu.id}
                 <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
                     <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
-                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id} on:close_modal={close_modal}/>
+                    <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id} on:close_modal={close_modal}/>
                 </form>
                 <form method="dialog" class="modal-backdrop">
                     <button>close</button>
@@ -375,7 +402,7 @@
     </div>
     <div id="desktop_menu" class="hidden md:flex w-1/2">
         {#if modal_menu.id}
-            <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} id={modal_menu.id}/>
+            <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id}/>
         {/if}
     </div>
 </div>

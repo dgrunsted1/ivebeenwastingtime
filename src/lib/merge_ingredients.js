@@ -1,3 +1,5 @@
+import { get_parent_recipe } from '/src/lib/menu_utils.js';
+
 const conversions = {"tablespoon/teaspoon": 1/3, "teaspoon/tablespoon": 3, "cup/teaspoon": 1/48, "teaspoon/cup": 48, "cup/tablespoon": 1/16, "tablespoon/cup": 16};
 
 const weight_volume_conv = {"gram/tablespoon": 14, "tablespoon/gram": 1/14, "gram/teaspoon": 14/3, "teaspoon/gram": 3/14, "gram/cup": 224/1, "cup/gram": 1/224}
@@ -118,13 +120,22 @@ function round_amount(in_amount, mult){
     return text;
   }
 
-  export const get_grocery_list = function(menu, mults) {
+  export const get_grocery_list = function(menu, mults, sub_recipes) {
+
     let grocery_list = [];
     menu = (menu.expand && menu.expand.recipes) ? menu.expand.recipes : menu;
     menu.forEach((recipe, i) => {
         let mult = 1;
-        if (menu.servings) mult = parseFloat(menu.servings[recipe.id]) / parseFloat(recipe.servings);
-        else if (mults[recipe.id]) mult = parseFloat(mults[recipe.id]) / parseFloat(recipe.servings);
+
+        if (recipe.is_sub_recipe){
+            // get parent servings to use
+            const parent_recipe = get_parent_recipe(recipe.id, menu, sub_recipes);
+            if (menu.servings) mult = parseFloat(menu.servings[parent_recipe.id]) / parseFloat(recipe.servings);
+            else if (mults[parent_recipe.id]) mult = parseFloat(mults[parent_recipe.id]) / parseFloat(recipe.servings);
+        } else {
+            if (menu.servings) mult = parseFloat(menu.servings[recipe.id]) / parseFloat(recipe.servings);
+            else if (mults[recipe.id]) mult = parseFloat(mults[recipe.id]) / parseFloat(recipe.servings);
+        }
         
         if (recipe.expand.ingr_list) {
             for (let i = 0; i < recipe.expand.ingr_list.length; i++) {
