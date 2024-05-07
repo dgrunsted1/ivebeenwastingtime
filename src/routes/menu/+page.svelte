@@ -117,7 +117,7 @@
                         <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
                     {/if}
                 </div>
-                <details class="md:hidden collapse bg-base-200 md:bg-base-100 collapse-arrow mb-2 w-full md:w-1/2">
+                <details class="md:hidden collapse bg-base-200 md:bg-base-100 collapse-arrow mt-1 w-full md:w-1/2">
                     <summary class="collapse-title text-xl font-medium">
                         {#if menu_recipes.length > 0}
                             <div class="flex justify-around m-1 items-center">

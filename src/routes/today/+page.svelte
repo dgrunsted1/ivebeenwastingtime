@@ -155,7 +155,7 @@
         <div class="flex justify-center p-1">
             <h1 class="text-xl">{todays_menu.title}</h1>
         </div>
-        <div id="content" class="flex flex-col md:flex-row md:space-x-3 m-2 mt-2">
+        <div id="content" class="flex flex-col md:flex-row md:space-x-3 mx-2">
             <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2">
                 <div id="recipes" class="h-[70vh] md:h-[calc(100vh-130px)] overflow-y-auto border rounded-md md:border-none">
                     {#each todays_menu.expand.recipes as curr, i}
@@ -209,7 +209,7 @@
                 {/if}
             </div>
         </div>
-        <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200 md:hidden">
+        <div class="tabs tabs-boxed w-fit mx-auto flex items-center bg-base-300 md:bg-base-200 md:hidden my-1">
             <a id="recipe_list" class="tab tab-active tab-xs" on:click={switch_tab}>Recipes</a> 
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
