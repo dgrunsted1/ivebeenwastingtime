@@ -367,7 +367,7 @@
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
             
-            <div class="dropdown dropdown-end">
+            <div class="dropdown dropdown-top dropdown-end">
                 <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                     {#each sort_opts as opt}
