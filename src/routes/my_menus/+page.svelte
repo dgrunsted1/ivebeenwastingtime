@@ -299,7 +299,7 @@
 </script>
 
 <div class="flex">
-    <div class="flex flex-col md:w-1/2">
+    <div class="flex flex-col w-full md:w-1/2">
         <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
@@ -322,9 +322,9 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="max-h-[76vh] md:max-h-[84vh] overflow-y-auto border rounded-md md:border-none">
-            {#if loading}
-                <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
+        <div id="menus" class="h-[76vh] md:h-[84vh] overflow-y-auto border rounded-md md:border-none w-full">
+            {#if !user_menus.length}
+                <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl h-full w-full"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
                 {#each user_menus as curr, i}
                     <div id={user_menus[i].id} class="card md:card-side card-bordered bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={show_menu_modal} on:keypress={show_menu_modal}>
