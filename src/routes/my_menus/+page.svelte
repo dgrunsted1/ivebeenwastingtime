@@ -380,13 +380,13 @@
                 </ul>
             </div>
         </div>
-        <dialog id="my_modal_2" class="modal">
+        <dialog id="my_modal_2" class="modal max-h-[100vh]">
             {#if modal_menu.id}
                 <form method="dialog" class="modal-box max-w-full md:w-2/3 p-1">
                     <button class="btn btn-xs p-2 flex content-center fixed top-1 right-1" on:click={close_modal}>x</button>
                     <Menu title={modal_menu.title} menu={modal_menu.expand.recipes} mults={modal_menu.servings} sub_recipes={modal_menu.sub_recipes} id={modal_menu.id} on:close_modal={close_modal}/>
                 </form>
-                <form method="dialog" class="modal-backdrop">
+                <form method="dialog" class="modal-backdrop ">
                     <button>close</button>
                 </form>
             {/if}
