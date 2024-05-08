@@ -460,7 +460,7 @@
 <div id="recipes" class="h-[61vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border rounded-md md:border-none">
     {#if display_recipes}
         {#each display_recipes as curr, i}
-            <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer" on:click={view} on:keydown={view}>
+            <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer mx-1" on:click={view} on:keydown={view}>
                 <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{display_recipes[i].image}')"></figure>
                 <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
                     <div class="flex flex-col justify-between p-1 w-3/4">

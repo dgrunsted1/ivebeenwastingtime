@@ -150,55 +150,60 @@
     }
 </script>
 
-{#if todays_menu.id}
     <div id="main">
-        <div class="flex justify-center p-1">
-            <h1 class="text-xl">{todays_menu.title}</h1>
+        <div class="flex justify-center">
+            <h1 class="text-xl h-6">{todays_menu.title ? todays_menu.title : ""}</h1>
         </div>
-        <div id="content" class="flex flex-col md:flex-row md:space-x-3 mx-2">
+        <div id="content" class="flex flex-col md:flex-row md:space-x-3 md:mx-2">
             <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2">
                 <div id="recipes" class="h-[70vh] md:h-[calc(100vh-130px)] overflow-y-auto border rounded-md md:border-none">
-                    {#each todays_menu.expand.recipes as curr, i}
-                        {#if !sub_recipe_ids.includes(curr.id)}
-                            {#if todays_menu.sub_recipes}
-                                {#each todays_menu.sub_recipes[curr.id] as sub_recipe}
-                                    {#each todays_menu.expand.recipes as curr_sub_recipe, i}
-                                        {#if curr_sub_recipe.id === sub_recipe.recipe_id}
-                                            <div class="flex justify-around items-center w-full">
-                                                <SubTask/>
-                                                <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr_sub_recipe.id]) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1 w-4/5" on:click={window.location = `/cook_recipe/${curr_sub_recipe.url_id}/${todays_menu.servings[curr_sub_recipe.id]}`} on:keydown={window.location = `/cook_recipe/${curr_sub_recipe.url_id}/${todays_menu.servings[curr_sub_recipe.id]}`}>
-                                                    <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr_sub_recipe.id]) ? "blur-sm" : ""}"><img src={curr_sub_recipe.image} alt={curr_sub_recipe.title}/></figure>
-                                                    <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
-                                                        <p id={i} class="w-1/2 text-xs">{curr_sub_recipe.title}</p>
-                                                        <div class="card-actions flex flex-row justify-evenly items-center">
-                                                            <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
-                                                            <button id={curr_sub_recipe.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr_sub_recipe.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart/></button>
+                    {#if todays_menu.expand}
+                        {#each todays_menu.expand.recipes as curr, i}
+                            {#if !sub_recipe_ids.includes(curr.id)}
+                                {#if todays_menu.sub_recipes}
+                                    {#each todays_menu.sub_recipes[curr.id] as sub_recipe}
+                                        {#each todays_menu.expand.recipes as curr_sub_recipe, i}
+                                            {#if curr_sub_recipe.id === sub_recipe.recipe_id}
+                                                <div class="flex justify-around items-center w-full">
+                                                    <SubTask/>
+                                                    <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr_sub_recipe.id]) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1 w-4/5" on:click={window.location = `/cook_recipe/${curr_sub_recipe.url_id}/${todays_menu.servings[curr_sub_recipe.id]}`} on:keydown={window.location = `/cook_recipe/${curr_sub_recipe.url_id}/${todays_menu.servings[curr_sub_recipe.id]}`}>
+                                                        <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr_sub_recipe.id]) ? "blur-sm" : ""}"><img src={curr_sub_recipe.image} alt={curr_sub_recipe.title}/></figure>
+                                                        <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
+                                                            <p id={i} class="w-1/2 text-xs">{curr_sub_recipe.title}</p>
+                                                            <div class="card-actions flex flex-row justify-evenly items-center">
+                                                                <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
+                                                                <button id={curr_sub_recipe.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr_sub_recipe.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart/></button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        {/if}
-                                    {/each}
-                                {/each}
-                            {/if}
-                            <!-- <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}> -->
-                                <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr.id]) || !recipes_ready.includes(curr.id) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
-                                    <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr.id] || !recipes_ready.includes(curr.id)) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
-                                    <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
-                                        <p id={i} class="w-1/2 text-xs">{curr.title}</p>
-                                        <div class="card-actions flex flex-row justify-evenly items-center">
-                                            {#if recipes_ready.includes(curr.id)}
-                                                <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
-                                            {:else}
-                                                not ready
                                             {/if}
-                                            <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
+                                        {/each}
+                                    {/each}
+                                {/if}
+                                <!-- <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}> -->
+                                    <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr.id]) || !recipes_ready.includes(curr.id) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
+                                        <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr.id] || !recipes_ready.includes(curr.id)) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
+                                        <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
+                                            <p id={i} class="w-1/2 text-xs">{curr.title}</p>
+                                            <div class="card-actions flex flex-row justify-evenly items-center">
+                                                {#if recipes_ready.includes(curr.id)}
+                                                    <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
+                                                {:else}
+                                                    not ready
+                                                {/if}
+                                                <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            <!-- </div> -->
-                        {/if}
-                    {/each}
+                                <!-- </div> -->
+                            {/if}
+                        {/each}
+                    {:else}
+                        <div id="menu_loading" class="w-full flex justify-center content-center h-full">
+                            <span class="loading loading-bars loading-lg"></span>
+                        </div>
+                    {/if}
                 </div>
             </div>
             <div id="right_column" class="{tab == "grocery_list" ? "" : "hidden"} md:flex md:w-1/2 ml-1 mr-2">
@@ -214,7 +219,7 @@
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
     </div>
-{:else if loading}
+<!-- {:else if loading}
     <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
 {:else}
     <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
@@ -223,4 +228,4 @@
             <h3>Click </h3><a href="/my_menus" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3>to add a menu</h3>
         </div>
     </div>
-{/if}
+{/if} -->
