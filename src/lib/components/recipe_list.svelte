@@ -437,7 +437,10 @@
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
+        <div clas="flex flex-row content-center items-center">
+            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary input-xs md:input-sm" on:keydown={select_cat}/>
+            <span id="menu_loading" class="hidden loading loading-dots loading-lg align-middle"></span>
+        </div>
         <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
         <div class="dropdown dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
@@ -507,7 +510,11 @@
 
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
-        <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
+        <div class="flex w-fit space-x-2">
+            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
+            <span id="menu_loading" class="hidden loading loading-dots loading-sm md:loading-lg align-middle"></span>
+        </div>
+
         <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
         <div class="dropdown dropdown-top md:dropdown-bottom dropdown-end">
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
