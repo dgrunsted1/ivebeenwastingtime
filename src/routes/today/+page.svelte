@@ -156,7 +156,7 @@
         </div>
         <div id="content" class="flex flex-col md:flex-row md:space-x-3 md:mx-2">
             <div id="left_column" class="{tab == "recipe_list" ? "" : "hidden"}  md:w-1/2">
-                <div id="recipes" class="h-[70vh] md:h-[calc(100vh-130px)] overflow-y-auto border rounded-md md:border-none">
+                <div id="recipes" class="h-[77vh] md:h-[calc(100vh-130px)] overflow-y-auto border rounded-md md:border-none">
                     {#if todays_menu.expand}
                         {#each todays_menu.expand.recipes as curr, i}
                             {#if !sub_recipe_ids.includes(curr.id)}

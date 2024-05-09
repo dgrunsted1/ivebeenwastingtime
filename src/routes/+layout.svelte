@@ -13,8 +13,8 @@
     	];
 	</script>
 		{#if !is_homepage}
-			<div>
-				<div class="navbar bg-base-100 fixed z-10 flex content-center min-h-4">
+			<!-- <div> -->
+				<div class="navbar bg-base-100 fixed z-10 flex content-center min-h-0 h-6 md:h-9">
 					<div class="navbar-start">
 						
 						<!-- {#if $currentUser && ($currentUser.id == "67gxu7xk6x46gjy" || $currentUser.id == "n7ei4wy3vqv78ea") && $page.url.pathname != "/gallery" && $page.url.pathname != "/test_suite"}
@@ -46,11 +46,11 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			<!-- </div> -->
 		  {/if}
 		<div style="display: contents" class="relative">
 			{#if !is_homepage}
-				<div class="h-16 md:h-20"></div>
+				<div class="h-6 md:h-9"></div>
 			{/if}
 			<slot></slot>
 		</div>
