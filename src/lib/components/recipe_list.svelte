@@ -419,7 +419,7 @@
     
 </script>
 <div class="hidden md:flex flex-col w-full">
-    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-primary rounded-md p-1">
         <button id="thumb_up" class="btn {selected_cats.cats.includes("thumb_up")?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}><ThumbUp/></button> 
         <button id="heart" class="btn {selected_cats.cats.includes("heart")?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}><Heart/></button> 
         {#each display_cats.cats as cat}
@@ -453,7 +453,7 @@
     </div>
 </div>
 
-<div id="recipes" class="h-[68vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border rounded-md md:border-none">
+<div id="recipes" class="h-[68vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border border-primary rounded-md md:border-none">
     {#if display_recipes}
         {#each display_recipes as curr, i}
             <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer mx-1" on:click={view} on:keydown={view}>
@@ -525,7 +525,7 @@
             </ul>
         </div>
     </div>
-    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-accent rounded-md p-1">
+    <div class="w-full carousel carousel-center rounded-box space-x-1 border border-primary rounded-md p-1">
         <button id="thumb_up" class="btn  btn-neutral btn-xs category" on:click={select_cat}><ThumbUp color={selected_cats.cats.includes("thumb_up")?'fill-primary':'fill-black'}/></button> 
         <button id="heart" class="btn btn-xs category btn-neutral" on:click={select_cat}><Heart color={selected_cats.cats.includes("heart")?'fill-primary':'fill-black'}/></button> 
         {#each display_cats.cats as cat}
