@@ -455,21 +455,21 @@
                     <div class="flex flex-col justify-between p-1 w-[70%]">
                         <h2 id={display_recipes[i].id} class="card-title text-sm text-ellipsis overflow-hidden">{display_recipes[i].title}</h2>
                         <div class="flex w-full">
-                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
+                            <div class="text-[10px] md:text-[12px] border border-primary text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
                                 {#if isNaN(display_recipes[i].servings)}
                                     {display_recipes[i].servings}
                                 {:else}
                                     {display_recipes[i].servings} servings
                                 {/if}
                             </div>
-                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
+                            <div class="text-[10px] md:text-[12px] border border-primary text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow">
                                 {#if display_recipes[i].time}
                                     {display_recipes[i].time}
                                 {:else}
                                     no time
                                 {/if}
                             </div>
-                            <div class="text-[10px] md:text-[12px] border border-color text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
+                            <div class="text-[10px] md:text-[12px] border border-primary text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
                                 {display_recipes[i].expand.ingr_list.length} ingredients
                             </div>
                         </div>
@@ -480,7 +480,7 @@
                             <button id={display_recipes[i].id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button>
                         </div>
                         <div class="flex w-fit space-x-2">
-                            <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
+                            <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-primary checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
                             <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
                         </div>
                     </div>
