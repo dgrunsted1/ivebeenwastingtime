@@ -80,8 +80,8 @@
                 {#if recipe.url}
                     <a class="btn btn-accent btn-xs" href={recipe.url} target="_blank">original recipe</a>
                 {/if}
-                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.made} view {recipe.made ? "bg-secondary" : ""}" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp /></button>
-                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.favorite} view {recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart/></button>
+                <button class="btn btn-xs md:btn-sm p-1 btn-ghost" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp color={(recipe.made) ? "fill-primary" : "fill-accent"}/></button>
+                <button class="btn btn-xs md:btn-sm p-1 btn-ghost" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart color={(recipe.favorite) ? "fill-primary" : "fill-accent"}/></button>
                 <button class="btn btn-xs md:btn-sm btn-accent" on:click={edit_groceries}><EditIcon/></button>
             </div>
         </div>
