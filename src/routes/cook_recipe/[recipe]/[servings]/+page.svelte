@@ -1,7 +1,7 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import ThumbUp from "/src/lib/icons/BigThumbUp.svelte";
-    import Heart from "/src/lib/icons/BigHeart.svelte";
+    import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
+    import Heart from "/src/lib/icons/Heart.svelte";
     import { onMount } from 'svelte';
     import { update_fave_made } from '/src/lib/save_recipe.js';
     import { update_made } from '/src/lib/groceries.js'
@@ -116,15 +116,16 @@
                             {:else}
                                 not ready
                             {/if}
-                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.made ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp/></button>
-                            <button class="recipe_btn btn w-fit btn-sm bg-base-200 p-1 {data.post.recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart/></button>
+                            <!-- <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 made" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button> -->
+                            <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
+                            <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                         <!-- </div> -->
                     {/if}
                 </div>    
             </div>
         </div>
         <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md py-1 md:py-4">
+            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2">
@@ -139,7 +140,7 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-accent rounded-md">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md">
                 {#each data.post.recipe.directions as curr, i}
                     <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2">
                         <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
@@ -157,9 +158,9 @@
             </label>
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
-                    <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Notes" value={note.content}></textarea>
+                    <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" value={note.content}></textarea>
                 {/each}
             {/if}
-            <textarea name="notes" class="textarea textarea-bordered h-24" placeholder="Notes"></textarea>
+            <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes"></textarea>
         </div>
     </div>

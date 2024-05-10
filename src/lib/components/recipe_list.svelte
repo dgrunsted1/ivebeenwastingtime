@@ -216,7 +216,6 @@
     }
 
     function select_cat(e){
-        console.log(e.srcElement.id);
         let delay_time = (e.srcElement.tagName != "INPUT") ? 0 : 1000;
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
@@ -224,24 +223,23 @@
             let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
-                    //get info
-                    let classes = Array.from(e.srcElement.classList);
-                    let clicked = false;
-                    if (["heart", "thumb_up"].includes(e.srcElement.id)){
-                        clicked = Array.from(e.srcElement.firstChild.classList).includes('fill-black');
-                    } else {
-                        clicked = classes.includes('btn-neutral');
-                    }
-            
-                    //update btn style
-                    // update_filter_style(clicked, e);
-                    
-                    //select type of category selected
-                    let selected_cat = (["heart", "thumb_up"].includes(e.srcElement.id)) ? e.srcElement.id : e.srcElement.textContent;
-                    let type_cat = get_cat_name(classes);
-                    
-                    
-                    update_selected_cats(selected_cat, clicked, type_cat);
+                //get info
+                let classes = Array.from(e.srcElement.classList);
+                let clicked = false;
+                if (["heart", "thumb_up"].includes(e.srcElement.id)){
+                    clicked = Array.from(e.srcElement.firstChild.classList).includes('fill-black');
+                } else {
+                    clicked = classes.includes('btn-neutral');
+                }
+        
+                //update btn style
+                // update_filter_style(clicked, e);
+                
+                //select type of category selected
+                let selected_cat = (["heart", "thumb_up"].includes(e.srcElement.id)) ? e.srcElement.id : e.srcElement.textContent;
+                let type_cat = get_cat_name(classes);
+                
+                update_selected_cats(selected_cat, clicked, type_cat);
             }
             filter_recipes(search_recipes);
 
@@ -411,25 +409,20 @@
 
         }, 1000);
     }
-
-    function check_time(curr){
-        let result = curr.time.match(/^(\d+ (hrs|hr|hours|hour) \d+ (min|mins|minutes|minute)|\d+ (min|mins|minutes|minute)|\d+ (hrs|hr|hours|hour))$/);
-        return (result) ? true : false;
-    }
     
 </script>
 <div class="hidden md:flex flex-col w-full">
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-primary rounded-md p-1">
-        <button id="thumb_up" class="btn {selected_cats.cats.includes("thumb_up")?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}><ThumbUp/></button> 
-        <button id="heart" class="btn {selected_cats.cats.includes("heart")?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}><Heart/></button> 
+        <button id="thumb_up" class="btn btn-xs p-1 made flex content-center category btn-neutral" on:click={select_cat}><ThumbUp color={(selected_cats.cats.includes("thumb_up")) ? "fill-primary" : "fill-black"}/></button>
+        <button id="heart" class="btn btn-xs p-1 made flex content-center category btn-neutral" on:click={select_cat}><Heart color={(selected_cats.cats.includes("heart")) ? "fill-primary" : "fill-black"}/></button>
         {#each display_cats.cats as cat}
-            <button class="btn {selected_cats.cats.includes(cat)?'btn-secondary':'btn-primary'} btn-xs category" on:click={select_cat}>{cat}</button> 
+            <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-neutral':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 
         {/each}
         {#each display_cats.cuisines as cuisine}
-            <button class="btn {selected_cats.cuisines.includes(cuisine)?'btn-secondary':'btn-primary'} btn-xs cuisine" on:click={select_cat}>{cuisine}</button> 
+            <button id="cuisine" class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each display_cats.countries as country}
-            <button class="btn {selected_cats.countries.includes(country)?'btn-secondary':'btn-primary'} btn-xs country" on:click={select_cat}>{country}</button> 
+            <button id="country" class="btn btn-xs {selected_cats.countries.includes(country)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary country" on:click={select_cat}>{country}</button> 
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
@@ -453,7 +446,7 @@
     </div>
 </div>
 
-<div id="recipes" class="h-[68vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border border-primary rounded-md md:border-none">
+<div id="recipes" class="h-[68vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border border-primary rounded-md md:border-none py-2">
     {#if display_recipes}
         {#each display_recipes as curr, i}
             <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer mx-1" on:click={view} on:keydown={view}>
@@ -481,14 +474,14 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-actions flex flex-col justify-between items-end content-center  py-1">
+                    <div class="card-actions flex flex-col justify-evenly items-end items-center  py-1">
                         <div class="flex w-fit space-x-1">
-                            <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 made" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button>
-                            <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button>
+                            <button id={display_recipes[i].id} class="btn btn-xs  p-1 made flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button>
+                            <button id={display_recipes[i].id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button>
                         </div>
                         <div class="flex w-fit space-x-2">
                             <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-accent checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
-                            <button class="btn btn-sm md:btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
+                            <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
                         </div>
                     </div>
                 </div>
@@ -526,7 +519,7 @@
         </div>
     </div>
     <div class="w-full carousel carousel-center rounded-box space-x-1 border border-primary rounded-md p-1">
-        <button id="thumb_up" class="btn  btn-neutral btn-xs category" on:click={select_cat}><ThumbUp color={selected_cats.cats.includes("thumb_up")?'fill-primary':'fill-black'}/></button> 
+        <button id="thumb_up" class="btn btn-neutral btn-xs category" on:click={select_cat}><ThumbUp color={selected_cats.cats.includes("thumb_up")?'fill-primary':'fill-black'}/></button> 
         <button id="heart" class="btn btn-xs category btn-neutral" on:click={select_cat}><Heart color={selected_cats.cats.includes("heart")?'fill-primary':'fill-black'}/></button> 
         {#each display_cats.cats as cat}
             <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-neutral':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 

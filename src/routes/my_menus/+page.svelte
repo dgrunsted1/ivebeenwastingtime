@@ -347,7 +347,8 @@
                                 </div>
                             </div>
                             <div class="flex conten-center items-center">
-                                    <button class="recipe_btn btn w-fit btn-xs btn-primary" id={user_menus[i].id} on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                                <!-- <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" id={user_menus[i].id} on:click={delete_menu}><ThumbUp color={(recipe.made) ? "fill-primary" : "fill-black"}/></button> -->
+                                    <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
                             </div>
                         </div>
                     </div>

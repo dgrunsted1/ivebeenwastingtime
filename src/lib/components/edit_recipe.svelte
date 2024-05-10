@@ -338,8 +338,8 @@
                                 </ul>
                             </div>
                             <div class="flex w-1/2 space-x-1 justify-evenly">
-                                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.made} view {recipe.made ? "bg-secondary" : ""}" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp /></button>
-                                <button class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 {recipe.favorite} view {recipe.favorite ? "bg-secondary" : ""}" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart/></button>
+                                <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp color={(recipe.made) ? "fill-primary" : "fill-black"}/></button>
+                <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart color={(recipe.favorite) ? "fill-primary" : "fill-black"}/></button>
                             </div>
                         </div>
                     </div>

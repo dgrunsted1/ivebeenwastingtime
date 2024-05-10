@@ -172,7 +172,8 @@
                                                             <p id={i} class="w-1/2 text-xs">{curr_sub_recipe.title}</p>
                                                             <div class="card-actions flex flex-row justify-evenly items-center">
                                                                 <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
-                                                                <button id={curr_sub_recipe.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr_sub_recipe.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart/></button>
+                                                                <!-- <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button> -->
+                                                                <button id={curr_sub_recipe.id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart color={(curr_sub_recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -182,8 +183,8 @@
                                     {/each}
                                 {/if}
                                 <!-- <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}> -->
-                                    <div class="card card-bordered sm:card-side {(todays_menu.made && todays_menu.made[curr.id]) || !recipes_ready.includes(curr.id) ? "bg-base-300" : "bg-base-200"} shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
-                                        <figure class="md:w-3/5 {(todays_menu.made && todays_menu.made[curr.id] || !recipes_ready.includes(curr.id)) ? "blur-sm" : ""}"><img src={curr.image} alt={curr.title}/></figure>
+                                    <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
+                                        <figure class="md:w-3/5 "><img src={curr.image} alt={curr.title}/></figure>
                                         <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                             <p id={i} class="w-1/2 text-xs">{curr.title}</p>
                                             <div class="card-actions flex flex-row justify-evenly items-center">
@@ -192,7 +193,7 @@
                                                 {:else}
                                                     not ready
                                                 {/if}
-                                                <button id={curr.id} class="recipe_btn btn w-fit btn-xs bg-base-200 p-1 favorite {curr.favorite ? "bg-secondary" : ""}" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart/></button>
+                                                <button id={curr.id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart color={(curr.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                             </div>
                                         </div>
                                     </div>
