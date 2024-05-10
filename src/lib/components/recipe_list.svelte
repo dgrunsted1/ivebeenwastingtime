@@ -416,13 +416,13 @@
         <button id="thumb_up" class="btn btn-xs p-1 made flex content-center category btn-neutral" on:click={select_cat}><ThumbUp color={(selected_cats.cats.includes("thumb_up")) ? "fill-primary" : "fill-black"}/></button>
         <button id="heart" class="btn btn-xs p-1 made flex content-center category btn-neutral" on:click={select_cat}><Heart color={(selected_cats.cats.includes("heart")) ? "fill-primary" : "fill-black"}/></button>
         {#each display_cats.cats as cat}
-            <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-neutral':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 
+            <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-black':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 
         {/each}
         {#each display_cats.cuisines as cuisine}
-            <button id="cuisine" class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary cuisine" on:click={select_cat}>{cuisine}</button> 
+            <button id="cuisine" class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-primary text-black':'btn-neutral text-black'} cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each display_cats.countries as country}
-            <button id="country" class="btn btn-xs {selected_cats.countries.includes(country)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary country" on:click={select_cat}>{country}</button> 
+            <button id="country" class="btn btn-xs {selected_cats.countries.includes(country)?'btn-primary text-black':'btn-neutral text-black'} country" on:click={select_cat}>{country}</button> 
         {/each}
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
@@ -522,13 +522,13 @@
         <button id="thumb_up" class="btn btn-neutral btn-xs category" on:click={select_cat}><ThumbUp color={selected_cats.cats.includes("thumb_up")?'fill-primary':'fill-black'}/></button> 
         <button id="heart" class="btn btn-xs category btn-neutral" on:click={select_cat}><Heart color={selected_cats.cats.includes("heart")?'fill-primary':'fill-black'}/></button> 
         {#each display_cats.cats as cat}
-            <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-neutral':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 
+            <button id="category" class="btn btn-xs {selected_cats.cats.includes(cat)?'btn-primary text-black':'btn-neutral text-black'} category" on:click={select_cat}>{cat}</button> 
         {/each}
         {#each display_cats.cuisines as cuisine}
-            <button id="cuisine" class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary cuisine" on:click={select_cat}>{cuisine}</button> 
+            <button id="cuisine" class="btn btn-xs {selected_cats.cuisines.includes(cuisine)?'btn-primary text-black':'btn-neutral text-black'} cuisine" on:click={select_cat}>{cuisine}</button> 
         {/each}
         {#each display_cats.countries as country}
-            <button id="country" class="btn btn-xs {selected_cats.countries.includes(country)?'btn-primary text-neutral':'btn-neutral text-black'} text-primary country" on:click={select_cat}>{country}</button> 
+            <button id="country" class="btn btn-xs {selected_cats.countries.includes(country)?'btn-primary text-black':'btn-neutral text-black'} country" on:click={select_cat}>{country}</button> 
         {/each}
     </div>
 </div>
