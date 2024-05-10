@@ -322,7 +322,7 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="h-[81vh] md:h-[84vh] overflow-y-auto border rounded-md md:border-none w-full">
+        <div id="menus" class="h-[81vh] md:h-[84vh] overflow-y-auto border border-primary rounded-md md:border-none w-full">
             {#if !user_menus.length}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl h-full w-full"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
@@ -358,7 +358,7 @@
         <div class="flex md:hidden justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                    <input type="text" placeholder="Search" class="input input-bordered border-primary input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
