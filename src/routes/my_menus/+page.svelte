@@ -27,20 +27,13 @@
 
     function show_menu_modal(e){
         const is_mobile = (window.getComputedStyle(document.getElementById("desktop_menu")).display == "none") ? true : false;
-        let id = "";
-        if (e.srcElement.id){
-            id = e.srcElement.id;
-        }else if (e.srcElement.parentElement.id){
-            id = e.srcElement.parentElement.id;
-        }else if (e.srcElement.parentElement.parentElement.id){
-            id = e.srcElement.parentElement.parentElement.id;
-        }
+        let id = e.currentTarget.id;
         for (let i = 0; i < user_menus.length; i++){
             if (user_menus[i].id == id){
                 modal_menu = user_menus[i];
             }
         }
-         if (is_mobile) my_modal_2.showModal();
+        if (is_mobile) my_modal_2.showModal();
     }
 
     function get_servings(recipes, sub_recipes){
@@ -347,8 +340,7 @@
                                 </div>
                             </div>
                             <div class="flex conten-center items-center">
-                                <!-- <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" id={user_menus[i].id} on:click={delete_menu}><ThumbUp color={(recipe.made) ? "fill-primary" : "fill-black"}/></button> -->
-                                    <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                                <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
                             </div>
                         </div>
                     </div>
