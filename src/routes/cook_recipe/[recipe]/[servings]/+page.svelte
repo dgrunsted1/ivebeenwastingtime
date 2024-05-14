@@ -149,7 +149,7 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control mt-5 md:mx-5">
+        <div class="notes_container form-control md:mt-5 md:mx-5">
             <label for="notes" class="label">
                 <span class="label-text">Notes</span>
             </label>
