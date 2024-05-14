@@ -135,7 +135,7 @@
                         </div>
                     {:else}
                         <div class="grocery_item flex relative my-2 tooltip space-x-3 justify-left items-center">
-                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
+                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
                             <p class="text-xs text-left -indent-5 pl-5">{item.quantity} {item.unit} {item.ingredient}</p>
                         </div>
                     {/if}

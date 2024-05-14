@@ -171,7 +171,7 @@
                                                         <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                                             <p id={i} class="w-1/2 text-xs">{curr_sub_recipe.title}</p>
                                                             <div class="card-actions flex flex-row justify-evenly items-center">
-                                                                <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
+                                                                <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
                                                                 <!-- <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button> -->
                                                                 <button id={curr_sub_recipe.id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart color={(curr_sub_recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                                             </div>
@@ -182,22 +182,20 @@
                                         {/each}
                                     {/each}
                                 {/if}
-                                <!-- <div on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}> -->
-                                    <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
-                                        <figure class="md:w-3/5 "><img src={curr.image} alt={curr.title}/></figure>
-                                        <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
-                                            <p id={i} class="w-1/2 text-xs">{curr.title}</p>
-                                            <div class="card-actions flex flex-row justify-evenly items-center">
-                                                {#if recipes_ready.includes(curr.id)}
-                                                    <input type="checkbox" class="checkbox checkbox-md md:checkbox-sm" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
-                                                {:else}
-                                                    not ready
-                                                {/if}
-                                                <button id={curr.id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart color={(curr.favorite) ? "fill-primary" : "fill-neutral"}/></button>
-                                            </div>
+                                <div class="card card-bordered sm:card-side bg-base-200 shadow-xl max-h-24 my-1.5 mx-1 cursor-pointer" on:click={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`} on:keydown={window.location = `/cook_recipe/${curr.url_id}/${todays_menu.servings[curr.id]}`}>
+                                    <figure class="md:w-3/5 "><img src={curr.image} alt={curr.title}/></figure>
+                                    <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
+                                        <p id={i} class="w-1/2 text-xs">{curr.title}</p>
+                                        <div class="card-actions flex flex-row justify-evenly items-center">
+                                            {#if recipes_ready.includes(curr.id)}
+                                                <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
+                                            {:else}
+                                                not ready
+                                            {/if}
+                                            <button id={curr.id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart color={(curr.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                         </div>
                                     </div>
-                                <!-- </div> -->
+                                </div>
                             {/if}
                         {/each}
                     {:else}
