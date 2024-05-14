@@ -4,6 +4,7 @@
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+    import { get_servings } from '/src/lib/recipe_util.js';
 
 
     
@@ -36,19 +37,6 @@
         if (is_mobile) my_modal_2.showModal();
     }
 
-    function get_servings(recipes, sub_recipes){
-        let sub_recipe_id_list = [];
-        for (let k in sub_recipes){
-            for (let i = 0; i < sub_recipes[k].length; i++){
-                if (sub_recipes[k][i].recipe_id && !sub_recipe_id_list.includes(sub_recipes[k][i].recipe_id)) sub_recipe_id_list.push(sub_recipes[k][i].recipe_id);
-            }
-        }
-        let total_serv = 0;
-        for (let i = 0; i < recipes.length; i++){
-            if (!sub_recipe_id_list.includes(recipes[i].id)) total_serv += parseInt(recipes[i].servings);
-        }
-        return total_serv;
-    }
 
     function get_total_time(recipes){
         let total_time = 0;

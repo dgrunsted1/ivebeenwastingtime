@@ -29,7 +29,7 @@
     afterUpdate(() => {
         clearTimeout(delay_timer);
         grocery_list = [];
-        num_servings = get_servings(menu, mults);
+
         if (!menu.length){
             if (document.getElementById('save_btn')) document.getElementById('save_btn').disabled = true;
             return;
@@ -41,6 +41,8 @@
         total_time = get_total_time(menu);
 
         update_sub_recipes();
+
+        num_servings = get_servings(menu, sub_recipes, mults);
 
         if (!menu.title || menu.title == "New Menu"){
             menu.title = "New Menu";
@@ -209,19 +211,11 @@
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
     </div>
-    {#if $page.url.pathname != "/menu"}
-        <div class="flex justify-around m-1 items-center">
-            <p class="text-xs">{menu.length} recipes</p>
-            <p class="text-xs">{num_servings} servings</p>
-            <p class="text-xs">{total_time}</p>
-        </div>
-    {:else}
-        <div class="hidden md:flex justify-around m-1 items-center">
-            <p class="text-xs">{menu.length} recipes</p>
-            <p class="text-xs">{num_servings} servings</p>
-            <p class="text-xs">{total_time}</p>
-        </div>
-    {/if}
+    <div class="flex justify-around m-1 items-center">
+        <p class="text-xs">{menu.length} recipes</p>
+        <p class="text-xs">{num_servings} servings</p>
+        <p class="text-xs">{total_time}</p>
+    </div>
     
     {#if tab == "recipe_list"}
         <div class="{overflow_len} md:max-h-[77vh] overflow-y-auto border rounded-md md:border-none">

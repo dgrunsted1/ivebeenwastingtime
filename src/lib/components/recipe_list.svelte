@@ -1,8 +1,6 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    import { currentUser, pb } from '/src/lib/pocketbase';
-    import EditIcon from "/src/lib/icons/EditIcon.svelte";
-    import ViewIcon from "/src/lib/icons/ViewIcon.svelte";
+    import { pb } from '/src/lib/pocketbase';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { onMount, afterUpdate } from "svelte";
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
@@ -10,7 +8,7 @@
     import { update_fave_made } from '/src/lib/save_recipe.js';
 
     const dispatch = createEventDispatcher();
-    export let recipes;
+    export let recipes = [];
     $: display_recipes = recipes;
     let curr_recipe_id = -1;
     let categories = {cuisines:[], countries:[], cats:[]};
@@ -20,6 +18,8 @@
     $: sort_val = null;
     let update_fave_made_list = [];
     let delay_timer;
+    let search_val = "";
+
 
     afterUpdate(async () => {
         if (!recipes) return;
@@ -32,6 +32,8 @@
 
         categories = categories;
         display_cats = categories;
+
+        filter_recipes(search(search_val));
     });
 
     function check_item(e){
@@ -83,7 +85,6 @@
                 if (recipe.id != e.srcElement.id) tmp.push(recipe);
             }
             recipes = tmp;
-            filter_recipes(recipes);
         }
     }
 
@@ -220,10 +221,8 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(() => {
             document.getElementById("menu_loading").classList.remove('hidden');
-            let search_recipes = search(e.srcElement.value);
 
             if (e.srcElement.tagName != "INPUT"){
-                //get info
                 let classes = Array.from(e.srcElement.classList);
                 let clicked = false;
                 if (["heart", "thumb_up"].includes(e.srcElement.id)){
@@ -231,9 +230,6 @@
                 } else {
                     clicked = classes.includes('btn-neutral');
                 }
-        
-                //update btn style
-                // update_filter_style(clicked, e);
                 
                 //select type of category selected
                 let selected_cat = (["heart", "thumb_up"].includes(e.srcElement.id)) ? e.srcElement.id : e.srcElement.textContent;
@@ -241,7 +237,6 @@
                 
                 update_selected_cats(selected_cat, clicked, type_cat);
             }
-            filter_recipes(search_recipes);
 
             dispatch(`reset_mode`, {index: -1});
             document.getElementById("menu_loading").classList.add('hidden');
@@ -427,7 +422,7 @@
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div clas="flex flex-row content-center items-center">
-            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary input-xs md:input-sm" on:keydown={select_cat}/>
+            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary input-xs md:input-sm"  bind:value={search_val}/>
             <span id="menu_loading" class="hidden loading loading-dots loading-lg align-middle"></span>
         </div>
         <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
@@ -447,7 +442,7 @@
 </div>
 
 <div id="recipes" class="h-[68vh] md:h-[calc(100vh-160px)] overflow-y-auto space-y-2 border border-primary rounded-md md:border-none py-2">
-    {#if display_recipes}
+    {#if display_recipes.length}
         {#each display_recipes as curr, i}
             <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer mx-1" on:click={view} on:keydown={view}>
                 <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{display_recipes[i].image}')"></figure>
@@ -500,7 +495,7 @@
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div class="flex w-fit space-x-2">
-            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" on:keydown={select_cat}/>
+            <input type="text" id="search" placeholder="Search Ingredients" class="input input-bordered input-primary w-full max-w-xs input-xs md:input-sm" bind:value={search_val}/>
             <span id="menu_loading" class="hidden loading loading-dots loading-sm md:loading-lg align-middle"></span>
         </div>
 
