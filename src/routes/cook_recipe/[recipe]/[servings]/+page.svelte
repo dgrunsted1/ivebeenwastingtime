@@ -79,7 +79,7 @@
 
 </script>
 
-    <div id="cook_recipe" class="flex flex-col md:m-2 pb-3 md:pb-10">
+    <div id="cook_recipe" class="flex flex-col md:m-2 pb-1 md:pb-10">
         <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
             <div class="img_container w-full md:w-1/4">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
@@ -121,8 +121,8 @@
                 </div>    
             </div>
         </div>
-        <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md py-1 md:py-4">
+        <div class="ingr_directions_container flex flex-col md:flex-row mt-2 my-1 items-center">
+            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
                         <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
@@ -137,7 +137,7 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-4 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md cursor-pointer">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-4 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
                     <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
@@ -149,10 +149,7 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control md:mt-5 md:mx-5">
-            <label for="notes" class="label">
-                <span class="label-text">Notes</span>
-            </label>
+        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5">
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
                     <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" value={note.content}></textarea>
