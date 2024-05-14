@@ -107,7 +107,7 @@
                 </div>
                 <div class="flex justify-evenly items-center">
                     {#if data.post.recipe.url}
-                        <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                        <div class=" flex justify-center mt-1"><a class="btn btn-secondary btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
                     {/if}    
                     {#if user_logged_in}
                         {#if recipe_ready}
