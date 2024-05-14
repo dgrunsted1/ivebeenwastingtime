@@ -1,9 +1,9 @@
 <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
  width="200.000000pt" height="200.000000pt" viewBox="0 0 200.000000 200.000000"
- preserveAspectRatio="xMidYMid meet" class="w-16 h-16 primary pointer-events-none fill-current">
+ preserveAspectRatio="xMidYMid meet" class="w-16 h-16 primary pointer-events-none fill-neutral">
 
 <g transform="translate(0.000000,200.000000) scale(0.100000,-0.100000)"
-fill="#000000" stroke="none">
+ stroke="none">
 <path d="M299 1508 c-45 -25 -79 -83 -79 -133 0 -79 75 -155 154 -155 l36 0 0
 -309 c0 -272 2 -310 16 -315 9 -3 78 -6 154 -6 l139 0 22 -39 c12 -21 38 -48
 59 -60 37 -20 49 -21 450 -21 401 0 413 1 450 21 46 26 80 83 80 134 0 51 -34
