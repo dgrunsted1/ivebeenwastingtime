@@ -125,7 +125,7 @@
             <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
-                        <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
+                        <div class="ingr_row flex items-center ml-2 mr-1 md:m-2 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                             <div class="ingr_amount text-xs md:text-sm text-center">{get_quantity(ingr.quantity)}</div>
                             <div class="ingr_unit text-center text-xs md:text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-xs md:text-sm">{ingr.ingredient}</div>
@@ -140,8 +140,8 @@
             <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-4 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
                     <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
-                        <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
-                        <p class="directions flex grow m-1 md:w-4/5 h-fit text-xs md:text-sm">{curr}</p>
+                        <label for="directions" class="flex md:text-right text-xs md:text-sm whitespace-nowrap">Step {i+1}</label>
+                        <p class="directions flex grow m-1 p-1 md:w-3/5 h-fit text-xs md:text-sm border-l border-neutral">{curr}</p>
                     </div>
                     {#if data.post.recipe.directions[data.post.recipe.directions.length-1] != curr}
                             <div class="divider my-px md:my-1 "></div>
