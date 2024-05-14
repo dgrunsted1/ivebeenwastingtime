@@ -110,25 +110,22 @@
                         <div class=" flex justify-center mt-1"><a class="btn btn-accent btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
                     {/if}    
                     {#if user_logged_in}
-                        <!-- <div class="w-1/3 flex justify-evenly"> -->
-                            {#if recipe_ready}
-                                <input type="checkbox" class="checkbox checkbox-lg md:checkbox-sm" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
-                            {:else}
-                                not ready
-                            {/if}
-                            <!-- <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 made" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button> -->
-                            <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
-                            <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
-                        <!-- </div> -->
+                        {#if recipe_ready}
+                            <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
+                        {:else}
+                            not ready
+                        {/if}
+                        <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
+                        <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                     {/if}
                 </div>    
             </div>
         </div>
         <div class="ingr_directions_container flex flex-col md:flex-row m-2 md:m-2 items-center">
-            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md py-1 md:py-4">
+            <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
-                        <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2">
+                        <div class="ingr_row flex items-center mx-1 md:m-2 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                             <div class="ingr_amount text-xs md:text-sm text-center">{get_quantity(ingr.quantity)}</div>
                             <div class="ingr_unit text-center text-xs md:text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-xs md:text-sm">{ingr.ingredient}</div>
@@ -140,9 +137,9 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-2 max-h-[calc(25vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-4 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border-2 border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
-                    <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2">
+                    <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm">Step {i+1}</label>
                         <p class="directions flex grow m-1 md:w-4/5 h-fit text-xs md:text-sm">{curr}</p>
                     </div>
