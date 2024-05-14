@@ -15,7 +15,7 @@ export default {
           "neutral": "#786F68",
           "base-100": "#FCF8F4",
           "info": "#3abff8",
-          "success": "#a7f3d0",
+          "success": "#1DD781",
           "warning": "#fde68a",     
           "error": "#f87272",
           ".border-color": {
@@ -30,7 +30,7 @@ export default {
           "accent": "#CD8B76",
           "neutral": "#786F68",
           "base-100": "#262626",
-          "success": "#064e3b",
+          "success": "#1DD781",
           "warning": "#78350f",
           ".border-color": {
             "border-color": "#FCF8F4"

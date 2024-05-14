@@ -3,6 +3,8 @@
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { page } from '$app/stores';
     import EditIcon from "/src/lib/icons/EditIcon.svelte";
+    import CheckMark from "/src/lib/icons/CheckMark.svelte";
+
 
 
     export let grocery_list = [];
@@ -12,6 +14,7 @@
     let delay_timer;
     let view_size_mobile = `max-h-[calc(55vh)]`;
     let view_size_desktop = `md:max-h-[calc(100vh-235px)]`;
+    $: just_copied = false;
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){
@@ -37,6 +40,11 @@
             }
         });
         navigator.clipboard.writeText(copy_text);
+        just_copied = true;
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(function() {
+            just_copied = false;
+        }, 2000);
     }
 
     const remove_item = (qty, unit, ingr) => {
@@ -116,7 +124,13 @@
                 {#if status != "none" && $page.url.pathname == "/today"}<div id="update_status" class="text-xs">{status}</div>{/if}
                 <div id="count" class="text-xs">{grocery_list.length} Items</div>
             </div>
-            <button id="copy" class="btn btn-xs md:btn-sm btn-secondary cursor-copy" on:click={copy_to_clipboard}>copy</button>
+            <button id="copy" class="btn btn-xs md:btn-sm btn-secondary cursor-copy" on:click={copy_to_clipboard}>
+                {#if just_copied}
+                <CheckMark/>
+                {:else}
+                    copy
+                {/if}
+            </button>
             {#if status != "none"}<button id="uncheck" class="btn btn-xs md:btn-sm btn-secondary" on:click={uncheck_list}>uncheck</button>{/if}
             {#if status != "none"}<button id="reset" class="btn btn-xs md:btn-sm btn-secondary" on:click={reset_list}>reset</button>{/if}
             {#if status != "none"}<button id="edit" class="btn btn-xs md:btn-sm btn-secondary" on:click={edit_groceries}><EditIcon/></button>{/if}
@@ -135,7 +149,7 @@
                         </div>
                     {:else}
                         <div class="grocery_item flex relative my-2 tooltip space-x-3 justify-left items-center">
-                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
+                            {#if status != "none"}<input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1w" id="{item.ingredient}" bind:checked={item.checked} on:change={edit_item}>{/if}
                             <p class="text-xs text-left -indent-5 pl-5">{item.quantity} {item.unit} {item.ingredient}</p>
                         </div>
                     {/if}
