@@ -28,11 +28,11 @@
                 if (first) first = false;
                 else copy_text += "\n";
                 let first_of_sent = true;
-                Array.from(element.getElementsByTagName('input')).forEach(curr => {
+                Array.from(element.getElementsByTagName('p')).forEach(curr => {
                     if (curr.type == "checkbox") return;
                     if (!first_of_sent) copy_text += " ";
                     else first_of_sent = false;
-                    copy_text += curr.value;
+                    copy_text += curr.innerHTML;
                 });
             }
         });

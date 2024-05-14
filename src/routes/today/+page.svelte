@@ -40,7 +40,7 @@
 
             todays_menu.expand.recipes = todays_menu.expand.recipes.sort(sort_by_made);
             if (!todays_menu.expand.grocery_list || !todays_menu.expand.grocery_list.list){
-                grocery_list = get_grocery_list(todays_menu, todays_menu.servings);
+                grocery_list = get_grocery_list(todays_menu, todays_menu.servings, todays_menu.sub_recipes);
                 grocery_list_id = create_grocery_list(grocery_list, todays_menu.id);
             } else {
                 grocery_list = groupBySimilarity(todays_menu.expand.grocery_list.list);
@@ -107,7 +107,7 @@
     }
 
     async function reset_list(){
-        grocery_list = get_grocery_list(todays_menu);
+        grocery_list = get_grocery_list(todays_menu, todays_menu.servings, todays_menu.sub_recipes);
         await update_grocery_list(grocery_list, grocery_list_id);
     }
 
