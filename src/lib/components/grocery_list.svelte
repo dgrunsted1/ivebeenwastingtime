@@ -131,7 +131,7 @@
                             <input type="text" class="amount input input-bordered input-xs px-1 mr-1 w-8 text-center h-fit" bind:value={item.quantity} on:keyup={edit_item}>
                             <input type="text" class="unit input input-bordered input-xs px-1 mr-1 w-20 text-center h-fit" bind:value={item.unit} on:keyup={edit_item}>
                             <textarea class="name input input-bordered input-xs px-1 mr-1 w-3/4 h-fit" bind:value={item.ingredient} on:keyup={edit_item} on:keypress={enter_new_item} bind:this={item.input}></textarea>
-                            {#if status != "none"}<button class="btn btn-xs btn-accent" on:click={() => remove_item(item.quantity, item.unit, item.ingredient)}><DeleteIcon/></button>{/if}
+                            {#if status != "none"}<button class="btn btn-sm p-1 btn-accent" on:click={() => remove_item(item.quantity, item.unit, item.ingredient)}><DeleteIcon/></button>{/if}
                         </div>
                     {:else}
                         <div class="grocery_item flex relative my-2 tooltip space-x-3 justify-left items-center">

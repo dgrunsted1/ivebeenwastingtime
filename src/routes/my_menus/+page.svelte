@@ -284,7 +284,7 @@
         <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-sm w-36 md:w-52 max-w-xs" on:keyup={search}/>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
