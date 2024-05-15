@@ -34,6 +34,35 @@
         display_cats = categories;
 
         filter_recipes(search(search_val));
+
+        switch (sort_val) {
+            case "Least Ingredients":
+                display_recipes = display_recipes.sort(compare_ingr_amounts_asc);
+                break;
+            case "Most Ingredients":
+                display_recipes = display_recipes.sort(compare_ingr_amounts_dsc);
+                break;
+            case "Least Time":
+                display_recipes = display_recipes.sort(compare_time_amounts_asc);        
+                break;
+            case "Most Time":
+                display_recipes = display_recipes.sort(compare_time_amounts_dsc);
+                break;
+            case "Least Servings":
+                display_recipes = display_recipes.sort(compare_serving_amounts_asc);
+                break;
+            case "Most Servings":
+                display_recipes = display_recipes.sort(compare_serving_amounts_dsc);
+                break;
+            case "Least Recent":
+                display_recipes = display_recipes.sort(compare_recent_asc);
+                break;
+            case "Most Recent":
+                display_recipes = display_recipes.sort(compare_recent_dsc);
+                break;
+            default:
+                break;
+        }
     });
 
     function check_item(e){
@@ -259,34 +288,6 @@
 
     function sort_recipes(e){
         sort_val = e.srcElement.innerHTML;
-        switch (e.srcElement.innerHTML) {
-            case "Least Ingredients":
-                display_recipes = display_recipes.sort(compare_ingr_amounts_asc);
-                break;
-            case "Most Ingredients":
-                display_recipes = display_recipes.sort(compare_ingr_amounts_dsc);
-                break;
-            case "Least Time":
-                display_recipes = display_recipes.sort(compare_time_amounts_asc);        
-                break;
-            case "Most Time":
-                display_recipes = display_recipes.sort(compare_time_amounts_dsc);
-                break;
-            case "Least Servings":
-                display_recipes = display_recipes.sort(compare_serving_amounts_asc);
-                break;
-            case "Most Servings":
-                display_recipes = display_recipes.sort(compare_serving_amounts_dsc);
-                break;
-            case "Least Recent":
-                display_recipes = display_recipes.sort(compare_recent_asc);
-                break;
-            case "Most Recent":
-                display_recipes = display_recipes.sort(compare_recent_dsc);
-                break;
-            default:
-                break;
-        }
         document.activeElement.blur();
     }
 
@@ -430,11 +431,7 @@
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
-                    {#if opt == sort_val}
-                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes}>{opt}</a></li>
-                    {:else}
-                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes}>{opt}</a></li>
-                    {/if}
+                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={sort_recipes}>{opt}</a></li>
                 {/each}
             </ul>
         </div>
@@ -504,11 +501,7 @@
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
-                    {#if opt == sort_val}
-                    <li class="btn btn-xs btn-secondary"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
-                    {:else}
-                    <li class="btn btn-xs btn-primary"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
-                    {/if}
+                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
                 {/each}
             </ul>
         </div>
