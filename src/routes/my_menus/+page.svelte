@@ -303,7 +303,7 @@
             </div>
         </div>
     {#if user_menus.length > 0 || loading}
-        <div id="menus" class="h-[81vh] md:h-[84vh] overflow-y-auto border border-primary rounded-md md:border-none w-full">
+        <div id="menus" class="h-[81vh] md:h-[calc(100vh-90px)] overflow-y-auto border border-primary rounded-md md:border-none w-full">
             {#if !user_menus.length}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl h-full w-full"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
