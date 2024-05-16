@@ -12,14 +12,14 @@
     $: edit = false;
     let dispatch = createEventDispatcher();
     let delay_timer;
-    let view_size_mobile = `max-h-[calc(55vh)]`;
-    let view_size_desktop = `md:max-h-[calc(100vh-200px)]`;
+    let view_size_mobile = `max-h-[calc(55svh)]`;
+    let view_size_desktop = `md:max-h-[calc(100svh-200px)]`;
     $: just_copied = false;
 
     onMount(async () => {
         if ($page.url.pathname == "/today"){
             view_size_mobile = `max-h-[calc(71vh)]`;
-            view_size_desktop = `md:max-h-[calc(100vh-120px)]`;
+            view_size_desktop = `md:max-h-[calc(100svh-120px)]`;
         }
     });
     const copy_to_clipboard = () => {

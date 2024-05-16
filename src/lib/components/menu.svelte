@@ -218,7 +218,7 @@
     </div>
     
     {#if tab == "recipe_list"}
-        <div class="{overflow_len} md:max-h-[calc(100vh-160px)] overflow-y-auto border rounded-md md:border-none">
+        <div class="{overflow_len} md:max-h-[calc(100svh-160px)] overflow-y-auto border rounded-md md:border-none">
             {#if menu.length}    
                 {#each menu as recipe}
                     {#if !recipe.is_sub_recipe}
