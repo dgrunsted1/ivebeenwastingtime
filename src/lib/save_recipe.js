@@ -1,6 +1,6 @@
 import { pb } from '/src/lib/pocketbase';
 import { process_recipe_old } from '/src/lib/process_recipe.js'
-
+ 
 export async function save_recipe(e, recipe, user, new_note) {
     e.srcElement.disabled = true;
     e.srcElement.innerHTML = "validating";
@@ -192,3 +192,20 @@ export const update_fave = async function (id_list){
     }
     
 }
+
+export const update_notes = async function(notes_in, new_note_in, recipe_id){
+    console.log("save_recipe", "update notes");
+    console.log(notes_in, new_note_in);
+    let new_note_result = null;
+    if (new_note_in){
+        new_note_result = await pb.collection('notes').create({ "content": new_note_in });
+        const data = { "notes+": new_note_result.id };
+        const recipe_result = await pb.collection('recipes').update(recipe_id, data);
+    }
+    if (notes_in) {
+        for (let i = 0; i < notes_in.length; i++){
+            const result = pb.collection("notes").update(notes_in[i].id, { "content": notes_in[i].content });
+        }
+    }
+    return new_note_result;
+} 

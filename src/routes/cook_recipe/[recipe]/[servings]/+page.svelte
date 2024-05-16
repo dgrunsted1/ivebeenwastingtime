@@ -2,8 +2,8 @@
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
-    import { onMount } from 'svelte';
-    import { update_fave_made } from '/src/lib/save_recipe.js';
+    import { afterUpdate, onMount } from 'svelte';
+    import { update_fave_made, update_notes } from '/src/lib/save_recipe.js';
     import { update_made } from '/src/lib/groceries.js'
 
 
@@ -14,6 +14,10 @@
     let user_logged_in = false;
     let todays_menu;
     let recipe_ready = false;
+    let delay_timer;
+    let toast = {info: null, success: null, error: null};
+    let ready_update_notes = false;
+
 
     onMount(async () => {
         if ($currentUser.id == data.post.recipe.user) user_logged_in = true;
@@ -24,6 +28,18 @@
         todays_menu = result_menu.items[0];
         (todays_menu.sub_recipes, todays_menu.made);
         update_recipe_ready();
+    });
+
+    afterUpdate(async () => {
+        console.log("after update");
+        console.log(data.post.recipe.expand.notes, data.post.recipe.id)
+        if (ready_update_notes){
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(async () => {
+                const notes_result = await update_notes(data.post.recipe.expand.notes, null, data.post.recipe.id);
+            }, 2000);
+        }
+        console.log(notes_result);
     });
 
     function toggle_made(e){
@@ -75,6 +91,39 @@
 
     async function update_fave_made_pre(){
         await update_fave_made([{id: data.post.recipe.id, favorite: data.post.recipe.favorite, made: data.post.recipe.made}]);
+    }
+
+    async function update_notes_action(e){
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(async () => {
+            toast.info = "saving...";
+            const new_note = document.getElementById("new_note").value;
+            console.log(data.post.recipe.expand.notes, new_note);
+            let notes_result = null;
+            if (new_note){
+                notes_result = await update_notes(data.post.recipe.expand.notes, new_note, data.post.recipe.id);
+                if (notes_result){
+                    if (data.post.recipe.expand.notes){
+                        data.post.recipe.expand.notes.push(notes_result);
+                        data.post.recipe.expand.notes = data.post.recipe.expand.notes;
+                    } else {
+                        data.post.recipe.expand.notes = [notes_result];
+                    }
+                    document.getElementById("new_note").value = "";
+                }
+            }
+            console.log({notes_result});
+            toast.info = null;
+            if (notes_result){
+                toast.success = "saved!";
+            } else {
+                toast.error = "error saving note";
+            }
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(async () => {
+                toast.success = null;
+            }, 2000);
+        }, 3000); 
     }
 
 </script>
@@ -149,12 +198,27 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5">
+        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5 space-y-1">
+            <textarea name="notes" id="new_note" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
-                    <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" value={note.content}></textarea>
+                    <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" bind:value={note.content} on:input={ready_update_notes = true}></textarea>
                 {/each}
             {/if}
-            <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes"></textarea>
         </div>
     </div>
+    <div class="toast toast-center">
+        {#if toast.info}
+            <div class="alert alert-info">
+                <span>{toast.info}</span>
+            </div>
+        {:else if toast.success}
+            <div class="alert alert-success">
+                <span>{toast.success}</span>
+            </div>
+        {:else if toast.error}
+            <div class="alert alert-error">
+                <span>{toast.error}</span>
+            </div>
+        {/if}
+      </div>
