@@ -96,20 +96,20 @@
         delay_timer = setTimeout(async () => {
             toast.info = "saving...";
             const new_note = document.getElementById("new_note").value;
-            console.log(data.post.recipe.expand.notes, new_note);
             let notes_result = null;
             if (new_note){
                 notes_result = await update_notes(data.post.recipe.expand.notes, new_note, data.post.recipe.id);
-                console.log({notes_result});
-                    data.post.recipe.expand.notes = notes_result;
-                    document.getElementById("new_note").value = "";
+                data.post.recipe.expand.notes = notes_result;
             } else {
                 notes_result = await update_notes(data.post.recipe.expand.notes, null, data.post.recipe.id);
             }
-            // console.log({notes_result});
             toast.info = null;
             if (notes_result){
                 toast.success = "saved!";
+                e.srcElement.value = "";
+                e.srcElement.classList.toggle("hidden");
+                e.srcElement.previousElementSibling.classList.toggle("hidden");
+                document.getElementById("new_note_btn").classList.remove("hiddden");
             } else {
                 toast.error = "error saving note";
             }
@@ -123,8 +123,8 @@
     function edit_note(e){
         const el = e.currentTarget;
         el.classList.toggle("hidden");
-        console.log(el, el.nextElementSibling, el.classList);
         el.nextElementSibling.classList.toggle("hidden");
+        el.nextElementSibling.focus();
     }
 
 </script>
@@ -199,8 +199,8 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5 space-y-1">
-            <div class="btn btn-primmary" on:click={edit_note}>new note</div>
+        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5 space-y-1 flex items-center">
+            <div id="new_note_btn" class="btn btn-primary btn-xs w-26 self-end" on:click={edit_note}>new note</div>
             <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
