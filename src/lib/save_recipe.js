@@ -194,8 +194,6 @@ export const update_fave = async function (id_list){
 }
 
 export const update_notes = async function(notes_in, new_note_in, recipe_id){
-    console.log("save_recipe", "update notes");
-    console.log(notes_in, new_note_in);
     let new_note_result = null;
     if (new_note_in){
         new_note_result = await pb.collection('notes').create({ "content": new_note_in });
@@ -204,8 +202,20 @@ export const update_notes = async function(notes_in, new_note_in, recipe_id){
     }
     if (notes_in) {
         for (let i = 0; i < notes_in.length; i++){
-            const result = pb.collection("notes").update(notes_in[i].id, { "content": notes_in[i].content });
+            if (!notes_in[i].content){
+                await pb.collection('notes').delete(notes_in[i].id);
+                notes_in.splice(i, 1);
+            } else {
+                const result = pb.collection("notes").update(notes_in[i].id, { "content": notes_in[i].content });
+                if (!result){
+                    new_note_result = null;
+                }
+            }
         }
     }
-    return new_note_result;
+    if (new_note_result){
+        return notes_in.unshift(new_note_result);
+    } else {
+        return [new_note_result];
+    }
 } 

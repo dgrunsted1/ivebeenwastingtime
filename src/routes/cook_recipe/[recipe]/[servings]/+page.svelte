@@ -16,7 +16,6 @@
     let recipe_ready = false;
     let delay_timer;
     let toast = {info: null, success: null, error: null};
-    let ready_update_notes = false;
 
 
     onMount(async () => {
@@ -28,19 +27,18 @@
         todays_menu = result_menu.items[0];
         (todays_menu.sub_recipes, todays_menu.made);
         update_recipe_ready();
+        sort_notes();
     });
 
-    afterUpdate(async () => {
-        console.log("after update");
-        console.log(data.post.recipe.expand.notes, data.post.recipe.id)
-        if (ready_update_notes){
-            clearTimeout(delay_timer);
-            delay_timer = setTimeout(async () => {
-                const notes_result = await update_notes(data.post.recipe.expand.notes, null, data.post.recipe.id);
-            }, 2000);
+    function sort_notes(){
+        const notes = data.post.recipe.expand.notes;
+        if (notes){
+            notes.sort(function(a, b) {
+                return new Date(a.updated) - new Date(b.updated);
+            });
+            data.post.recipe.expand.notes = notes
         }
-        console.log(notes_result);
-    });
+    }
 
     function toggle_made(e){
         const id = e.srcElement.id;
@@ -102,17 +100,13 @@
             let notes_result = null;
             if (new_note){
                 notes_result = await update_notes(data.post.recipe.expand.notes, new_note, data.post.recipe.id);
-                if (notes_result){
-                    if (data.post.recipe.expand.notes){
-                        data.post.recipe.expand.notes.push(notes_result);
-                        data.post.recipe.expand.notes = data.post.recipe.expand.notes;
-                    } else {
-                        data.post.recipe.expand.notes = [notes_result];
-                    }
+                console.log({notes_result});
+                    data.post.recipe.expand.notes = notes_result;
                     document.getElementById("new_note").value = "";
-                }
+            } else {
+                notes_result = await update_notes(data.post.recipe.expand.notes, null, data.post.recipe.id);
             }
-            console.log({notes_result});
+            // console.log({notes_result});
             toast.info = null;
             if (notes_result){
                 toast.success = "saved!";
@@ -123,7 +117,14 @@
             delay_timer = setTimeout(async () => {
                 toast.success = null;
             }, 2000);
-        }, 3000); 
+        }, 5000); 
+    }
+
+    function edit_note(e){
+        const el = e.currentTarget;
+        el.classList.toggle("hidden");
+        console.log(el, el.nextElementSibling, el.classList);
+        el.nextElementSibling.classList.toggle("hidden");
     }
 
 </script>
@@ -199,10 +200,12 @@
             </div>
         </div>
         <div class="notes_container form-control mt-1 md:mt-5 md:mx-5 space-y-1">
-            <textarea name="notes" id="new_note" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
+            <div class="btn btn-primmary" on:click={edit_note}>new note</div>
+            <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
-                    <textarea name="notes" class="textarea textarea-bordered border-primary h-24" placeholder="Notes" bind:value={note.content} on:input={ready_update_notes = true}></textarea>
+                    <p class="m-2" on:click={edit_note}>{note.content}</p>
+                    <textarea name="notes" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" bind:value={note.content} on:input={update_notes_action}></textarea>
                 {/each}
             {/if}
         </div>
