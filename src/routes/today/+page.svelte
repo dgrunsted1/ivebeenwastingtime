@@ -218,13 +218,3 @@
             <a id="grocery_list" class="tab tab-xs" on:click={switch_tab}>Grocery List</a>
         </div>
     </div>
-<!-- {:else if loading}
-    <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto   md:text-4xl mt-[30vh] max-w-5xl"><span class="loading loading-bars loading-lg"></span></div>
-{:else}
-    <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-5xl">
-        <h2>You have no menu selected</h2>
-        <div class="flex flex-row items-center space-x-1">
-            <h3>Click </h3><a href="/my_menus" class="btn btn-primary btn-sm p-2 flex content-center">here</a><h3>to add a menu</h3>
-        </div>
-    </div>
-{/if} -->

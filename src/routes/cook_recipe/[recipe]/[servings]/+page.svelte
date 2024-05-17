@@ -129,7 +129,7 @@
 
 </script>
 
-    <div id="cook_recipe" class="flex flex-col md:m-2 pb-1 md:pb-10">
+    <div id="cook_recipe" class="flex flex-col md:m-2 pb-4 md:pb-10">
         <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
             <div class="img_container w-full md:w-1/4">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
@@ -157,7 +157,7 @@
                 </div>
                 <div class="flex justify-evenly items-center">
                     {#if data.post.recipe.url}
-                        <div class=" flex justify-center mt-1"><a class="btn btn-secondary btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
+                        <div class=" flex justify-center mt-1"><a class="btn btn-secondary btn-xs md:btn-sm" href={data.post.recipe.url} target="_blank">original recipe</a></div>
                     {/if}    
                     {#if user_logged_in}
                         {#if recipe_ready}
@@ -175,7 +175,7 @@
             <div id="ingredient_list" class="flex flex-col h-fit w-full md:w-2/5 m-2 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md py-1 md:py-4">
                 {#each data.post.recipe.expand.ingr_list as ingr}
                     {#if ingr}
-                        <div class="ingr_row flex items-center ml-2 mr-1 md:m-2 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
+                        <div class="ingr_row flex items-center ml-2 md:ml-4 mr-1 gap-x-1 md:gap-x-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                             <div class="ingr_amount text-xs md:text-sm text-center">{get_quantity(ingr.quantity)}</div>
                             <div class="ingr_unit text-center text-xs md:text-sm">{ingr.unit ? ingr.unit : ""}</div>
                             <div class="ingr_name text-center text-xs md:text-sm">{ingr.ingredient}</div>
@@ -191,7 +191,7 @@
                 {#each data.post.recipe.directions as curr, i}
                     <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm whitespace-nowrap">Step {i+1}</label>
-                        <p class="directions flex grow m-1 p-1 md:w-3/5 h-fit text-xs md:text-sm border-l border-neutral">{curr}</p>
+                        <p class="directions flex grow m-1 p-1 md:w-3/5 h-fit text-xs md:text-sm border-l border-neutral md:pl-3">{curr}</p>
                     </div>
                     {#if data.post.recipe.directions[data.post.recipe.directions.length-1] != curr}
                             <div class="divider my-px md:my-1 "></div>
@@ -199,13 +199,13 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control m-1 md:mt-5 md:mx-5 space-y-1 flex items-center">
+        <div class="notes_container form-control m-2 md:mt-5 md:mx-5 space-y-2 flex items-center">
             <div id="new_note_btn" class="btn btn-primary btn-xs w-26 self-end" on:click={edit_note}>new note</div>
-            <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
+            <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24 w-full md:w-1/2" placeholder="Notes" on:input={update_notes_action}></textarea>
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
-                    <p class="m-2" on:click={edit_note}>{note.content}</p>
-                    <textarea name="notes" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" bind:value={note.content} on:input={update_notes_action}></textarea>
+                    <p class="m-2 text-xs md:text-base" on:click={edit_note}>{note.content}</p>
+                    <textarea name="notes" class="hidden textarea textarea-bordered border-primary h-24 w-full md:w-1/2" placeholder="Notes" bind:value={note.content} on:input={update_notes_action}></textarea>
                 {/each}
             {/if}
         </div>
