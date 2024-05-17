@@ -199,7 +199,7 @@
                 {/each}
             </div>
         </div>
-        <div class="notes_container form-control mt-1 md:mt-5 md:mx-5 space-y-1 flex items-center">
+        <div class="notes_container form-control m-1 md:mt-5 md:mx-5 space-y-1 flex items-center">
             <div id="new_note_btn" class="btn btn-primary btn-xs w-26 self-end" on:click={edit_note}>new note</div>
             <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24" placeholder="Notes" on:input={update_notes_action}></textarea>
             {#if data.post.recipe.expand.notes}
