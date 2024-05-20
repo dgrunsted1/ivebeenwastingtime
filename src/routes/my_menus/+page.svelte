@@ -1,6 +1,6 @@
 <script>
     import { currentUser, pb } from '/src/lib/pocketbase.js';
-    import { onMount } from 'svelte';
+    import { afterUpdate, onMount } from 'svelte';
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
@@ -14,6 +14,7 @@
     $: sort_val = null;
     let delay_timer;
     let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
+    let search_val = "";
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -24,6 +25,10 @@
         });
         user_menus = result_list.items;
         loading = false;
+    });
+
+    afterUpdate(async () => {
+        search();
     });
 
     function show_menu_modal(e){
@@ -100,7 +105,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(async () => {
             document.getElementById("user_menus_length").innerHTML = `<span class="loading loading-dots loading-xs"></span>`;
-            let search_str = e.srcElement.value;
+            let search_str = search_val;
             let recipe_ids = [];
             if (search_str == ""){
                 const result_list = await pb.collection('menus').getList(1, 250, {
@@ -284,7 +289,11 @@
         <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-sm w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                    <!-- <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-sm w-36 md:w-52 max-w-xs" on:keyup={search}/> -->
+                    <label class="input input-bordered input-primary input-sm flex items-center py-0 pl-0 pr-0">
+                        <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" on:keyup={search} bind:value={search_val}/>
+                        <div class="h-full w-8 text-center text-middle" on:click={() => {search_val = ""}}>X</div>
+                    </label>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
@@ -335,10 +344,14 @@
                 {/each}
             {/if}
         </div>
-        <div class="flex md:hidden justify-between mx-4">
+        <div class="flex md:hidden justify-between">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="text" placeholder="Search" class="input input-bordered border-primary input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/>
+                    <!-- <input type="text" placeholder="Search" class="input input-bordered border-primary input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/> -->
+                    <label class="input input-bordered input-primary input-xs flex items-center py-0 pl-0 pr-0">
+                        <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
+                        <div class="h-full w-8 text-center" on:click={() => {search_val = ""}}>x</div>
+                    </label>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
