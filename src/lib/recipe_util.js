@@ -1,5 +1,4 @@
 export const get_servings = function(recipes, sub_recipes, mults){
-    console.log(recipes, mults, sub_recipes);
     let sub_recipe_id_list = [];
     for (let k in sub_recipes){
         for (let i = 0; i < sub_recipes[k].length; i++){

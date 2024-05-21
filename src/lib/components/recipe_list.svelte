@@ -423,10 +423,7 @@
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div clas="flex flex-row content-center items-center">
-            <label class="input input-bordered input-primary input-sm flex items-center py-0 pl-0 pr-0">
-                <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
-                <div class="h-full w-8 text-center text-middle" on:click={() => {search_val = ""}}>X</div>
-            </label>
+            <input type="search" class="input-bordered input-primary input-sm input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
             <span id="menu_loading" class="hidden loading loading-dots loading-lg align-middle"></span>
         </div>
         <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
@@ -495,10 +492,7 @@
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div class="flex w-fit space-x-2 my-1">
-            <label class="input input-bordered input-primary input-xs flex items-center py-0 pl-0 pr-0">
-                <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
-                <div class="h-full w-8 text-center" on:click={() => {search_val = ""}}>x</div>
-            </label>
+            <input type="search" class="input-bordered input-primary input-xs input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
             <span id="menu_loading" class="hidden loading loading-dots loading-sm md:loading-lg align-middle"></span>
         </div>
 

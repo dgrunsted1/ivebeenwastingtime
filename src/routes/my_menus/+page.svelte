@@ -11,10 +11,10 @@
     $: user_menus = [];
     $: modal_menu = [];
     $: loading = true;
-    $: sort_val = null;
+    $: sort_val = "Most Recent";
     let delay_timer;
     let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
-    let search_val = "";
+    $: search_val = "";
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -27,10 +27,6 @@
         loading = false;
     });
 
-    afterUpdate(async () => {
-        search();
-    });
-
     function show_menu_modal(e){
         const is_mobile = (window.getComputedStyle(document.getElementById("desktop_menu")).display == "none") ? true : false;
         let id = e.currentTarget.id;
@@ -41,7 +37,6 @@
         }
         if (is_mobile) my_modal_2.showModal();
     }
-
 
     function get_total_time(recipes){
         let total_time = 0;
@@ -101,10 +96,10 @@
         return output;
     }
 
-    async function search(e){
+    async function search(){
         clearTimeout(delay_timer);
         delay_timer = setTimeout(async () => {
-            document.getElementById("user_menus_length").innerHTML = `<span class="loading loading-dots loading-xs"></span>`;
+            loading = true;
             let search_str = search_val;
             let recipe_ids = [];
             if (search_str == ""){
@@ -113,6 +108,7 @@
                     expand: `recipes,recipes.ingr_list`
                 });
                 user_menus = result_list.items;
+                sort_menus();
                 return;
             }
             const result_ingr = await pb.collection('ingredients').getList(1, 250, {
@@ -138,14 +134,21 @@
                 filter: `title ~ '${search_str}'${recipe_id_string}`,
                 expand: `recipes,recipes.ingr_list`
             });
+            if (result_menu.items.length == 0){
+                alert("No results found");
+                sort_val = "";
+                // search();
+                return;
+            }
             user_menus = result_menu.items;
-            document.getElementById("user_menus_length").innerHTML = user_menus.length;
+            sort_menus();
+            loading = false;
         }, 1000);
     }
 
-    function sort_menus(e){
-        sort_val = e.srcElement.innerHTML;
-        switch (e.srcElement.innerHTML) {
+    function sort_menus(){
+        loading = true;
+        switch (sort_val) {
             case "Least Recipes":
                 user_menus = user_menus.sort(compare_recipe_amounts_asc);
                 break;
@@ -180,7 +183,7 @@
                 break;
         }
         document.activeElement.blur();
-
+        loading = false;
     }
 
     function compare_recipe_amounts_asc(a, b){
@@ -289,11 +292,7 @@
         <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <!-- <input type="text" placeholder="Search" class="input input-bordered input-xs md:input-sm w-36 md:w-52 max-w-xs" on:keyup={search}/> -->
-                    <label class="input input-bordered input-primary input-sm flex items-center py-0 pl-0 pr-0">
-                        <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" on:keyup={search} bind:value={search_val}/>
-                        <div class="h-full w-8 text-center text-middle" on:click={() => {search_val = ""}}>X</div>
-                    </label>
+                    <input type="search" class=" input input-sm input-primary " placeholder="Search" on:keyup={search} on:click={search} bind:value={search_val}/>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
@@ -303,9 +302,9 @@
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                     {#each sort_opts as opt}
                         {#if opt == sort_val}
-                        <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                        <li class="btn btn-xs btn-secondary"><a>{opt}</a></li>
                         {:else}
-                        <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                        <li class="btn btn-xs btn-primary"><a on:click={(e) => {sort_val = e.currentTarget.innerHTML; sort_menus();}}>{opt}</a></li>
                         {/if}
                     {/each}
                 </ul>
@@ -313,7 +312,7 @@
         </div>
     {#if user_menus.length > 0 || loading}
         <div id="menus" class="h-[81vh] md:h-[calc(100svh-90px)] overflow-y-auto border border-primary rounded-md md:border-none w-full">
-            {#if !user_menus.length}
+            {#if loading}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl h-full w-full"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
                 {#each user_menus as curr, i}
@@ -347,11 +346,7 @@
         <div class="flex md:hidden justify-between">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <!-- <input type="text" placeholder="Search" class="input input-bordered border-primary input-xs md:input-md w-36 md:w-52 max-w-xs" on:keyup={search}/> -->
-                    <label class="input input-bordered input-primary input-xs flex items-center py-0 pl-0 pr-0">
-                        <input type="text" class=" input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
-                        <div class="h-full w-8 text-center" on:click={() => {search_val = ""}}>x</div>
-                    </label>
+                    <input type="search" class=" input input-xs input-primary pl-1 pr-1" placeholder="Search" on:keyup={search} on:click={search} bind:value={search_val}/>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
@@ -361,9 +356,9 @@
                 <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                     {#each sort_opts as opt}
                         {#if opt == sort_val}
-                        <li class="btn btn-xs btn-secondary"><a on:click={sort_menus}>{opt}</a></li>
+                        <li class="btn btn-xs btn-secondary"><a>{opt}</a></li>
                         {:else}
-                        <li class="btn btn-xs btn-primary"><a on:click={sort_menus}>{opt}</a></li>
+                        <li class="btn btn-xs btn-primary"><a on:click={(e) => {sort_val = e.currentTarget.innerHTML; sort_menus();}}>{opt}</a></li>
                         {/if}
                     {/each}
                 </ul>
