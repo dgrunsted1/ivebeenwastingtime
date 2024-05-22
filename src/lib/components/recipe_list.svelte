@@ -20,10 +20,11 @@
     let update_fave_made_list = [];
     let delay_timer;
     let search_val = "";
-
+    let loading = false;
 
     afterUpdate(async () => {
-        if (!recipes) return;
+        loading = true;
+        if (!recipes.length) return;
         for (let i = 0; i < recipes.length; i++){
             if (!categories.cuisines.includes(recipes[i].cuisine) && recipes[i].cuisine) categories.cuisines.push(recipes[i].cuisine);
             if (!categories.countries.includes(recipes[i].country) && recipes[i].country) categories.countries.push(recipes[i].country);
@@ -33,8 +34,8 @@
 
         categories = categories;
         display_cats = categories;
-
-        filter_recipes(search(search_val));
+        let found_recipes = search(search_val);
+        filter_recipes(found_recipes);
 
         switch (sort_val) {
             case "Least Ingredients":
@@ -64,6 +65,7 @@
             default:
                 break;
         }
+        loading = false;
     });
 
     function check_item(e){
@@ -490,9 +492,13 @@
         <div class="flex justify-center m-3">
             <a class="btn btn-primary btn-xs" href="/add_recipe">Add New Recipes</a>
         </div>
-    {:else}
+    {:else if loading}
         <div id="menu_loading" class="w-full flex justify-center content-center h-full">
             <span class="loading loading-bars loading-lg"></span>
+        </div>
+    {:else}
+        <div class="w-full flex justify-center items-center h-full">
+            no results
         </div>
     {/if}
 </div>
