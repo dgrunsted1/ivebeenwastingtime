@@ -16,6 +16,7 @@
     let delay_timer;
     let sort_opts = ["Least Recipes", "Most Recipes", "Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
     $: search_val = "";
+    $: no_results_found = false;
 
     onMount(async () => {
         if (!$currentUser) window.location.href = "/login";
@@ -98,9 +99,11 @@
     }
 
     async function search(){
+        no_results_found = false;
+        loading = true;
         clearTimeout(delay_timer);
         delay_timer = setTimeout(async () => {
-            loading = true;
+            
             let search_str = search_val;
             let recipe_ids = [];
             if (search_str == ""){
@@ -136,9 +139,9 @@
                 expand: `recipes,recipes.ingr_list`
             });
             if (result_menu.items.length == 0){
-                alert("No results found");
-                sort_val = "";
-                // search();
+                loading = false;
+                no_results_found = true;
+                user_menus = [];
                 return;
             }
             user_menus = result_menu.items;
@@ -318,9 +321,15 @@
                 </ul>
             </div>
         </div>
-    {#if user_menus.length > 0 || loading}
+    {#if user_menus.length > 0 || loading || no_results_found}
         <div id="menus" class="h-[81vh] md:h-[calc(100svh-90px)] overflow-y-auto border border-primary rounded-md md:border-none w-full">
-            {#if loading}
+            {#if no_results_found}
+                <div class="flex flex-col justify-center items-center space-y-5 bg-base-200 mx-2 md:mx-auto p-16 border-2 border-base-300 rounded-md shadow-md  md:text-4xl mt-[30vh] max-w-md">
+                    <div class="w-full flex justify-center content-center h-full">
+                        no results
+                    </div>
+                </div>
+            {:else if loading}
                 <div class="text-center flex flex-col justify-center items-center space-y-5 mx-2 md:mx-auto md:text-4xl h-full w-full"><span class="loading loading-bars loading-lg"></span></div>
             {:else}
                 {#each user_menus as curr, i}
