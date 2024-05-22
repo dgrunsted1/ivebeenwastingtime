@@ -5,6 +5,7 @@
     import { onMount, afterUpdate } from "svelte";
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
+    import Clear from "/src/lib/icons/Clear.svelte";
     import { update_fave_made } from '/src/lib/save_recipe.js';
 
     const dispatch = createEventDispatcher();
@@ -423,7 +424,14 @@
     </div>
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div clas="flex flex-row content-center items-center">
-            <input type="search" class="input-bordered input-primary input-sm input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
+            <label class="input input-bordered input-sm input-primary flex items-center gap-2 pr-2">
+                <input type="text" class="input h-full p-0" placeholder="Search" bind:value={search_val}/>
+                <div class="w-5" on:click={()=>{search_val = ""}}>
+                    {#if search_val}
+                        <Clear size="w-4 h-4"/>
+                    {/if}
+                </div>
+            </label>
             <span id="menu_loading" class="hidden loading loading-dots loading-lg align-middle"></span>
         </div>
         <p class="mx-5 text-xs md:text-sm">{display_recipes ? display_recipes.length+" Recipes" : ""}</p>
@@ -492,7 +500,14 @@
 <div class="flex flex-col md:hidden">
     <div class="form-control flex flex-row justify-between w-full items-center">
         <div class="flex w-fit space-x-2 my-1">
-            <input type="search" class="input-bordered input-primary input-xs input h-full pl-1 pr-1" placeholder="Search" bind:value={search_val}/>
+            <label class="input input-bordered input-xs input-primary flex items-center gap-2 pr-0">
+                <input type="text" class="input h-full p-0" placeholder="Search" bind:value={search_val}/>
+                <div class="w-5" on:click={()=>{search_val = ""}}>
+                    {#if search_val}
+                        <Clear size="w-3 h-3"/>
+                    {/if}
+                </div>
+            </label>
             <span id="menu_loading" class="hidden loading loading-dots loading-sm md:loading-lg align-middle"></span>
         </div>
 

@@ -4,6 +4,7 @@
     import Menu from "/src/lib/components/menu.svelte";
     import { merge } from '/src/lib/merge_ingredients.js';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
+    import Clear from "/src/lib/icons/Clear.svelte";
     import { get_servings } from '/src/lib/recipe_util.js';
 
 
@@ -292,7 +293,14 @@
         <div class="hidden md:flex justify-between mx-4">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="search" class=" input input-sm input-primary " placeholder="Search" on:keyup={search} on:click={search} bind:value={search_val}/>
+                    <label class="input input-bordered input-sm input-primary flex items-center gap-2 pr-2">
+                        <input type="text" class="input h-full p-0" placeholder="Search" on:keyup={search} bind:value={search_val}/>
+                        <div class="w-5" on:click={()=>{search_val = ""; search();}}>
+                            {#if search_val}
+                                <Clear size="w-4 h-4"/>
+                            {/if}
+                        </div>
+                    </label>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
@@ -346,7 +354,14 @@
         <div class="flex md:hidden justify-between">
             <div class="flex w-fit space-x-6 items-center">
                 <div class="form-control w-full max-w-xs">
-                    <input type="search" class=" input input-xs input-primary pl-1 pr-1" placeholder="Search" on:keyup={search} on:click={search} bind:value={search_val}/>
+                    <label class="input input-bordered input-xs input-primary flex items-center gap-2 pr-0">
+                        <input type="text" class="input h-full p-0" placeholder="Search" on:keyup={search} bind:value={search_val}/>
+                        <div class="w-5" on:click={()=>{search_val = ""; search();}}>
+                            {#if search_val}
+                                <Clear size="w-3 h-3"/>
+                            {/if}
+                        </div>
+                    </label>
                 </div>
                 <div class="w-full flex space-x-1 text-xs"><div id="user_menus_length">{user_menus.length}</div><div>Menus</div></div>
             </div>
