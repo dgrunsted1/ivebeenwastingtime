@@ -6,6 +6,7 @@
     import { process_recipe_old } from '/src/lib/process_recipe.js';
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
+    import Edit from "/src/lib/icons/EditIcon.svelte";
 
 
     export let recipe;
@@ -257,16 +258,18 @@
     <div class="img_info_container flex flex-col md:flex-row w-full content-center justify-around">
         <div class="img_container flex md:w-1/2 content-center">
             <div class="w-full flex flex-col space-y-2">
-                <div class="w-full flex flex-col">
+                <div class="w-full flex flex-col relative">
                     {#if recipe.image}
-                        <img src={recipe.image} alt={recipe.title} class="self-center rounded"/>
+                        <img src={recipe.image} alt={recipe.title} class="max-h-52 md:max-h-96 rounded-xl m-auto"/>
+                        <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 self-center md:h-10 opacity-0 z-10" on:change={update_image_upload} multiple/>
+                        <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 self-center"><Edit/></button>
                     {:else}
                         {#if !show_alert}
                             <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>
                         {/if}
                         <p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p>
-                        <div id="status"></div>
                     {/if}
+                    <div id="status"></div>
                 </div>
                 <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
             </div>
