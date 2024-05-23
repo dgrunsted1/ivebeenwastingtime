@@ -214,7 +214,11 @@ export const update_notes = async function(notes_in, new_note_in, recipe_id){
         }
     }
     if (new_note_result){
-        notes_in.unshift(new_note_result);
+        if (notes_in){
+            notes_in.unshift(new_note_result);
+        } else {
+            notes_in = [new_note_result];
+        }
         return notes_in;
     } else {
         return [new_note_result];
