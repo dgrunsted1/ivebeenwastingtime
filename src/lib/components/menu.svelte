@@ -6,6 +6,7 @@
     import { get_grocery_list } from '/src/lib/merge_ingredients.js';
     import { get_servings, get_total_time } from '/src/lib/recipe_util.js';
     import { createEventDispatcher } from 'svelte';
+    import Plus from "/src/lib/icons/Plus.svelte";
 
 
 
@@ -194,6 +195,11 @@
         dispatch('update_mult', {id: e.srcElement.id, mult: e.srcElement.value});
     }
 
+    function show_subrecipe_selector(e){
+        e.currentTarget.classList.add("hidden");
+        e.currentTarget.nextElementSibling.classList.remove("hidden");
+    }
+
 </script>
 
 <div id="menu" class="h-3/4 md:h-full w-full cursor-default">
@@ -238,7 +244,8 @@
                                 {#if sub_recipes && sub_recipes[recipe.id] && $page.url.pathname == "/menu"}
                                     <div class="flex flex-col space-y-2">
                                         {#each sub_recipes[recipe.id] as curr}
-                                            <div class="flex flex-row items-center space-x-1 w-full">
+                                            <div class="btn btn-xs btn-primary px-0 w-6 h-fit" on:click={show_subrecipe_selector}><Plus/></div>
+                                            <div class="hidden flex flex-row items-center space-x-1 w-full">
                                                 <select bind:value={curr.ingr_id} class="flex select select-xs w-20">
                                                     <option value={null}>ingredient</option>
                                                     {#each recipe.expand.ingr_list as item}
