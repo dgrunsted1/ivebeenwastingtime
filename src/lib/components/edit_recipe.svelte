@@ -153,8 +153,8 @@
         recipe.expand.notes = output;
     }
 
-    const update_image_upload = async () => {
-        const fileList = event.target.files;
+    const update_image_upload = async (e) => {
+        const fileList = e.currentTarget.files;
         let too_big = [];
         let success_cnt = 0;
         for (let file of fileList) {
@@ -163,7 +163,10 @@
             }else {
                 document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">uploading ${file.name}</p>`;
                 let result = await uploadImage(file);
-                if (result.id) success_cnt++;
+                if (result.id){
+                    success_cnt++;
+                    recipe.image = `https://db.ivebeenwastingtime.com/api/files/${result.collectionId}/${result.id}/${result.file}`;
+                }
             }
         }
         document.getElementById("status").innerHTML = `<p class="m-auto w-4/5 text-center">uploaded ${success_cnt}/${fileList.length} successfully</p>`;
@@ -180,8 +183,9 @@
     async function uploadImage(file) {
         let formData = new FormData();
         formData.append('file', file);
-        formData.append("album", curr_album);
+        formData.append("album", "recipes");
         const record = await pb.collection('photos').create(formData);
+        console.log(record);
         return record;
     }
 
@@ -261,6 +265,7 @@
                             <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>
                         {/if}
                         <p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p>
+                        <div id="status"></div>
                     {/if}
                 </div>
                 <input placeholder="Link to image" name="url" type="text" class="input input-bordered input-xs w-full text-center input-accent" bind:value={recipe.image}/>
