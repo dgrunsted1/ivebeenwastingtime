@@ -137,10 +137,10 @@
 
     <div id="cook_recipe" class="flex flex-col md:m-2 pb-4 md:pb-10">
         <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
-            <div class="img_container w-full md:w-1/4 relative">
+            <div class="img_container w-full flex flex-col relative">
                 <img src={data.post.recipe.image} alt={data.post.recipe.title} class="max-h-52 md:max-h-96 rounded-xl m-auto"/>
-                <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 right-5 md:h-10 opacity-0 z-10" on:change={new_recipe_image}/>
-                <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 right-5"><Edit/></button>
+                <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 self-center md:h-10 opacity-0 z-10" on:change={new_recipe_image}/>
+                <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 self-center"><Edit/></button>
             </div>
             <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-1">
                 <div class="title_container mx-auto my-2">
