@@ -2,10 +2,11 @@
     import { currentUser, pb } from '/src/lib/pocketbase.js';
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
+    import Edit from "/src/lib/icons/EditIcon.svelte";
     import { afterUpdate, onMount } from 'svelte';
     import { update_fave_made, update_notes } from '/src/lib/save_recipe.js';
     import { update_made } from '/src/lib/groceries.js'
-
+    import { update_image_upload, update_recipe_image } from '/src/lib/save_recipe.js';
 
     
     /** @type {import('./$types').PageData} */
@@ -127,12 +128,19 @@
         el.nextElementSibling.focus();
     }
 
+    async function new_recipe_image(e){
+        data.post.recipe.image = await update_image_upload(e);
+        update_recipe_image(data.post.recipe.image, data.post.recipe.id);
+    }
+
 </script>
 
     <div id="cook_recipe" class="flex flex-col md:m-2 pb-4 md:pb-10">
         <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
-            <div class="img_container w-full md:w-1/4">
-                <img src={data.post.recipe.image} alt={data.post.recipe.title} class=""/>
+            <div class="img_container w-full md:w-1/4 relative">
+                <img src={data.post.recipe.image} alt={data.post.recipe.title} class="max-h-52 md:max-h-96 rounded-xl m-auto"/>
+                <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 right-5 md:h-10 opacity-0 z-10" on:change={new_recipe_image}/>
+                <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 right-5"><Edit/></button>
             </div>
             <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-1">
                 <div class="title_container mx-auto my-2">
@@ -153,6 +161,17 @@
                     <div class="servings text-center w-1/3 text-xs md:text-sm">
                         servings
                         <div>{data.post.servings}</div>
+                    </div>
+                </div>
+                <div class="misc flex justify-evenly">
+                    <div class="author_container text-center w-1/3 text-xs md:text-sm">
+                        <div class="cat">{data.post.recipe.category}</div>
+                    </div>
+                    <div class="time_container text-center w-1/3 text-xs md:text-sm">
+                        <div class="cuisine">{data.post.recipe.cuisine}</div>
+                    </div>
+                    <div class="servings text-center w-1/3 text-xs md:text-sm">
+                        <div class="country">{data.post.recipe.country}</div>
                     </div>
                 </div>
                 <div class="flex justify-evenly items-center">

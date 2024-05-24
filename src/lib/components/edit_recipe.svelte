@@ -2,7 +2,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { createEventDispatcher,afterUpdate, onMount } from 'svelte';
     import { page } from '$app/stores';
-    import { save_recipe } from '/src/lib/save_recipe.js';
+    import { save_recipe, update_image_upload } from '/src/lib/save_recipe.js';
     import { process_recipe_old } from '/src/lib/process_recipe.js';
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
@@ -154,42 +154,6 @@
         recipe.expand.notes = output;
     }
 
-    const update_image_upload = async (e) => {
-        const fileList = e.currentTarget.files;
-        let too_big = [];
-        let success_cnt = 0;
-        for (let file of fileList) {
-            if (file.size > 5242880){
-                too_big.push(file.name);
-            }else {
-                document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">uploading ${file.name}</p>`;
-                let result = await uploadImage(file);
-                if (result.id){
-                    success_cnt++;
-                    recipe.image = `https://db.ivebeenwastingtime.com/api/files/${result.collectionId}/${result.id}/${result.file}`;
-                }
-            }
-        }
-        document.getElementById("status").innerHTML = `<p class="m-auto w-4/5 text-center">uploaded ${success_cnt}/${fileList.length} successfully</p>`;
-        let first = true;
-        for (let curr of too_big){
-            if (first){
-                document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">These files were too big:</p>`;
-                first = false;
-            }
-            document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">${curr}</p>`;
-        }
-    }
-
-    async function uploadImage(file) {
-        let formData = new FormData();
-        formData.append('file', file);
-        formData.append("album", "recipes");
-        const record = await pb.collection('photos').create(formData);
-        console.log(record);
-        return record;
-    }
-
     function get_local_time(utc_code){
         const event = new Date(utc_code);
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -261,11 +225,11 @@
                 <div class="w-full flex flex-col relative">
                     {#if recipe.image}
                         <img src={recipe.image} alt={recipe.title} class="max-h-52 md:max-h-96 rounded-xl m-auto"/>
-                        <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 self-center md:h-10 opacity-0 z-10" on:change={update_image_upload} multiple/>
+                        <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 self-center md:h-10 opacity-0 z-10" on:change={async(e) => {recipe.image = await update_image_upload(e)}}/>
                         <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 self-center"><Edit/></button>
                     {:else}
                         {#if !show_alert}
-                            <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={update_image_upload} multiple/>
+                            <input type="file" name="photo" id="photo" class="absolute max-w-[605px] w-23/25 h-[225px] opacity-0" on:change={async(e) => {recipe.image = await update_image_upload(e)}}/>
                         {/if}
                         <p class="h-52 text-center text-xl border-dashed border-2 border-primary">Drag your files here or click to browse</p>
                     {/if}

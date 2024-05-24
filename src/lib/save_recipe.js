@@ -224,3 +224,48 @@ export const update_notes = async function(notes_in, new_note_in, recipe_id){
         return [new_note_result];
     }
 } 
+
+export const update_image_upload = async (e) => {
+    const fileList = e.currentTarget.files;
+    let too_big = [];
+    let success_cnt = 0;
+    for (let file of fileList) {
+        if (file.size > 5242880){
+            too_big.push(file.name);
+        }else {
+            if (document.getElementById("status")) document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">uploading ${file.name}</p>`;
+            let result = await uploadImage(file);
+            if (result.id){
+                success_cnt++;
+                return `https://db.ivebeenwastingtime.com/api/files/${result.collectionId}/${result.id}/${result.file}`;
+            }
+        }
+    }
+    if (document.getElementById("status")) document.getElementById("status").innerHTML = `<p class="m-auto w-4/5 text-center">uploaded ${success_cnt}/${fileList.length} successfully</p>`;
+    let first = true;
+    for (let curr of too_big){
+        if (first){
+            if (document.getElementById("status")) document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">These files were too big:</p>`;
+            first = false;
+        }
+        if (document.getElementById("status")) document.getElementById("status").innerHTML += `<p class="m-auto w-4/5 text-center">${curr}</p>`;
+    }
+}
+
+async function uploadImage(file) {
+    let formData = new FormData();
+    formData.append('file', file);
+    formData.append("album", "recipes");
+    const record = await pb.collection('photos').create(formData);
+    return record;
+}
+
+export const update_recipe_image = async function(image, recipe_id){
+    if (image){
+        const data = { "image": image };
+        const recipe_result = await pb.collection('recipes').update(recipe_id, data);
+        return recipe_result;
+    } else {
+        return null;
+    }
+}
