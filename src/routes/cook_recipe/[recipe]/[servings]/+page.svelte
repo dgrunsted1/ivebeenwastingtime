@@ -183,7 +183,7 @@
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                     {/if}
-                    <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal();}}><Edit/></button>
+                    <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal(); document.getElementById('modal_content').classList.remove('hidden');}}><Edit/></button>
                 </div>    
             </div>
         </div>
@@ -241,11 +241,13 @@
             </div>
         {/if}
       </div>
-    <dialog id="my_modal_3" class="modal">
-        <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <EditRecipe recipe={data.post.recipe} on:update_recipe={(e) => {data.post.recipe = e.detail.recipe}}/>
-        </div>
-    </dialog>
+        <dialog id="my_modal_3" class="modal">
+            <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh] z-0">
+                <form method="dialog">
+                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={() => {document.getElementById('modal_content').classList.add('hidden')}}>✕</button>
+                </form>
+                <div id="modal_content" class="hidden">
+                    <EditRecipe recipe={data.post.recipe} on:update_recipe={(e) => {data.post.recipe = e.detail.recipe}}/>
+                </div>
+            </div>
+        </dialog>
