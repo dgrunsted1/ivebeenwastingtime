@@ -7,6 +7,7 @@
     import { update_fave_made, update_notes } from '/src/lib/save_recipe.js';
     import { update_made } from '/src/lib/groceries.js'
     import { update_image_upload, update_recipe_image } from '/src/lib/save_recipe.js';
+    import EditRecipe from "/src/lib/components/edit_recipe.svelte";
 
     
     /** @type {import('./$types').PageData} */
@@ -137,12 +138,10 @@
 
     <div id="cook_recipe" class="flex flex-col md:m-2 pb-4 md:pb-10">
         <div class="img_info_container flex flex-col md:flex-row items-center justify-center">
-            <div class="img_container w-full flex flex-col relative">
-                <img src={data.post.recipe.image} alt={data.post.recipe.title} class="max-h-52 md:max-h-96 rounded-xl m-auto"/>
-                <input type="file" name="photo" id="photo" class="w-8 md:w-10 absolute bottom-5 self-center md:h-10 opacity-0 z-10" on:change={new_recipe_image}/>
-                <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10 absolute bottom-5 self-center"><Edit/></button>
+            <div class="img_container w-full md:w-auto flex flex-col">
+                <img src={data.post.recipe.image} alt={data.post.recipe.title} class="max-h-52 max-w-52 md:max-w-96 md:max-h-96 rounded-xl m-auto"/>
             </div>
-            <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-1">
+            <div class="info_container w-full md:w-1/2 flex flex-col m-1 space-y-2 md:space-y-4">
                 <div class="title_container mx-auto my-2">
                     <div class="title w-full text-sm md:text-xl">{data.post.recipe.title}</div>
                 </div>
@@ -151,16 +150,13 @@
                 </div>
                 <div class="misc flex justify-evenly">
                     <div class="author_container text-center w-1/3 text-xs md:text-sm">
-                        <label for="auth">Author</label>
                         <div class="auth">{data.post.recipe.author}</div>
                     </div>
                     <div class="time_container text-center w-1/3 text-xs md:text-sm">
-                        <label for="time">Time</label>
                         <div class="time">{data.post.recipe.time}</div>
                     </div>
                     <div class="servings text-center w-1/3 text-xs md:text-sm">
-                        servings
-                        <div>{data.post.servings}</div>
+                        <div>{data.post.servings} servings</div>
                     </div>
                 </div>
                 <div class="misc flex justify-evenly">
@@ -187,6 +183,7 @@
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                     {/if}
+                    <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal();}}><Edit/></button>
                 </div>    
             </div>
         </div>
@@ -244,3 +241,11 @@
             </div>
         {/if}
       </div>
+    <dialog id="my_modal_3" class="modal">
+        <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh]">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <EditRecipe recipe={data.post.recipe} on:update_recipe={(e) => {data.post.recipe = e.detail.recipe}}/>
+        </div>
+    </dialog>

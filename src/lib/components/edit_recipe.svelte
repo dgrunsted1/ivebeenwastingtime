@@ -83,7 +83,8 @@
         save = false;
         reset_checks();
         document.getElementById("new_note").value = "";
-        save_recipe(e, recipe, $currentUser, document.getElementById("new_note").value);
+        const recipe_result = await save_recipe(e, recipe, $currentUser, document.getElementById("new_note").value);
+        dispatch("update_recipe", {recipe: recipe_result});
     }
 
     function reset_checks(){
@@ -213,7 +214,7 @@
 </script>
 
 <div id="recipe" class="flex flex-col">
-    <button class="btn btn-xs btn-ghost absolute left-4 top-2" on:click={done_editing}>done</button>
+    {#if $page.url.pathname == "/menu"}<button class="btn btn-xs btn-ghost absolute left-4 top-2" on:click={done_editing}>done</button>{/if}
     <div class="save_btn_container flex flex-col items-center mb-5 mt-1">
         <button class="save_btn btn btn-secondary btn-xs md:btn-md w-1/3" disabled="true" on:click={save_recipe_v2}>
             save recipe
@@ -311,7 +312,7 @@
                             </div>
                             <div class="flex w-1/2 space-x-1 justify-evenly">
                                 <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" on:click={()=>{recipe.made = !recipe.made}}><ThumbUp color={(recipe.made) ? "fill-primary" : "fill-black"}/></button>
-                <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart color={(recipe.favorite) ? "fill-primary" : "fill-black"}/></button>
+                                <button class="btn btn-xs md:btn-sm p-1 btn-ghost flex content-center" on:click={()=>{recipe.favorite = !recipe.favorite}}><Heart color={(recipe.favorite) ? "fill-primary" : "fill-black"}/></button>
                             </div>
                         </div>
                     </div>
