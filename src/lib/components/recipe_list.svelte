@@ -148,24 +148,30 @@
             return;
         }
         let has_heart_or_thumb = (selected_cats.cats.includes("heart") || selected_cats.cats.includes("thumb_up"));
-        for (let i = 0; i < selected_cats.cats.length; i++){
-            for (let j = 0; j < recipes.length; j++){
-                if (["heart","thumb_up"].includes(selected_cats.cats[i])){
-                    if (selected_cats.cats[i] == "heart" && recipes[j].favorite){
+        if (selected_cats.cats.length){
+            for (let i = 0; i < selected_cats.cats.length; i++){
+                for (let j = 0; j < recipes.length; j++){
+                    if (["heart","thumb_up"].includes(selected_cats.cats[i])){
+                        if (selected_cats.cats[i] == "heart" && recipes[j].favorite){
+                            if (recipes[j].cuisine && !output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
+                            if (recipes[j].category && !output.cats.includes(recipes[j].category)) output.cats.push(recipes[j].category);
+                            if (recipes[j].cuisine && !output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
+                        } else if (selected_cats.cats[i] == "thumb_up" && recipes[j].made) {
+                            if (recipes[j].cuisine && !output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
+                            if (recipes[j].category && !output.cats.includes(recipes[j].category)) output.cats.push(recipes[j].category);
+                            if (recipes[j].country && !output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
+                        }
+                    }else if (recipes[j].category == selected_cats.cats[i]){
                         if (recipes[j].cuisine && !output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
-                        if (recipes[j].category && !output.cats.includes(recipes[j].category)) output.cats.push(recipes[j].category);
-                        if (recipes[j].cuisine && !output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
-                    } else if (selected_cats.cats[i] == "thumb_up" && recipes[j].made) {
-                        if (recipes[j].cuisine && !output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
-                        if (recipes[j].category && !output.cats.includes(recipes[j].category)) output.cats.push(recipes[j].category);
                         if (recipes[j].country && !output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
                     }
-                }else if (recipes[j].category == selected_cats.cats[i]){
-                    if (recipes[j].cuisine && !output.cuisines.includes(recipes[j].cuisine)) output.cuisines.push(recipes[j].cuisine);
-                    if (recipes[j].country && !output.countries.includes(recipes[j].country)) output.countries.push(recipes[j].country);
                 }
             }
+        } else {
+            output.countries = categories.countries;
+            output.cuisines = categories.cuisines;
         }
+        
         if (!has_heart_or_thumb) output.cats = categories.cats;
         display_cats = output;
     }
