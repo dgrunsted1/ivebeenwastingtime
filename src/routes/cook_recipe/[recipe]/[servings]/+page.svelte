@@ -8,6 +8,7 @@
     import { update_made } from '/src/lib/groceries.js'
     import { update_image_upload, update_recipe_image } from '/src/lib/save_recipe.js';
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
+    import Timer from "/src/lib/components/timer.svelte";
 
     
     /** @type {import('./$types').PageData} */
@@ -18,6 +19,9 @@
     let recipe_ready = false;
     let delay_timer;
     let toast = {info: null, success: null, error: null};
+    $: timers = {};
+    // let interval = setInterval(updateTimer, 1000);
+    // $: if (count === 0) clearInterval(interval);
 
 
     onMount(async () => {
@@ -27,10 +31,26 @@
             filter: `user="${$currentUser.id}" && today=True`,
         });
         todays_menu = result_menu.items[0];
-        (todays_menu.sub_recipes, todays_menu.made);
         update_recipe_ready();
         sort_notes();
+        set_timers();
     });
+
+    function set_timers(){
+        for (let i = 0; i < data.post.recipe.directions.length; i++){
+            let timeMatch = data.post.recipe.directions[i].match(/(\d+) (minutes|hours|minute|hour|mins|min|hr|hrs)/);
+            if (timeMatch) {
+                if (timeMatch[2] === 'minutes' || timeMatch[2] === 'minute' ||
+                    timeMatch[2] === 'min' || timeMatch[2] === 'mins') {
+                    timers[i] = timeMatch[1] * 60;
+                } else {
+                    timers[i] = timeMatch[1] * 60 * 60;
+                }
+            } else {
+                timers[i] = 0;
+            }
+        }
+    }
 
     function sort_notes(){
         const notes = data.post.recipe.expand.notes;
@@ -203,12 +223,19 @@
                 {/each}
             </div>
         
-            <div class="flex flex-col directions_list md:w-3/5 h-fit md:gap-y-8 p-1 md:p-4 max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
+            <div class="flex flex-col directions_list md:w-3/5 h-fit  max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
-                    <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
+                <div class="flex justify-between items-center w-full">
+                    <div class="step flex items-center justify-left gap-x-1 md:gap-x-3 md:mx-2 p-1 w-fit" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm whitespace-nowrap">Step {i+1}</label>
-                        <p class="directions flex grow m-1 p-1 md:w-3/5 h-fit text-xs md:text-sm border-l border-neutral md:pl-3">{curr}</p>
+                        <p class="directions flex m-1 p-1 text-xs md:text-sm border-l border-neutral md:pl-3 {timers[i] ? "w-64 md:w-full" : ""}">{curr}</p>
                     </div>
+                    {#if timers[i]}
+                    <div class="my-1 flex md:w-1/5">
+                        <Timer countdown={timers[i]}/>
+                    </div>
+                    {/if}
+                </div>
                     {#if data.post.recipe.directions[data.post.recipe.directions.length-1] != curr}
                             <div class="divider my-px md:my-1 "></div>
                     {/if}
