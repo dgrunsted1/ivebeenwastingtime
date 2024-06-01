@@ -231,7 +231,7 @@
                         <p class="directions flex m-1 p-1 text-xs md:text-sm border-l border-neutral md:pl-3 {timers[i] ? "w-64 md:w-full" : ""}">{curr}</p>
                     </div>
                     {#if timers[i]}
-                    <div class="my-1 flex md:w-1/5">
+                    <div class="my-1 flex md:w-1/5 max-w-[150px]">
                         <Timer countdown={timers[i]}/>
                     </div>
                     {/if}

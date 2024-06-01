@@ -85,7 +85,7 @@
   <div class="flex flex-col justify-evenly pr-1 w-full">
     <svg viewBox="-50 -50 100 100" class="w-full">
       <title>Remaining seconds: {count}</title>
-      <g fill="none" stroke="currentColor" stroke-width="2">
+      <g fill="none" stroke="currentColor" stroke-width="6">
         <circle stroke="currentColor" r="46" />
         <path stroke="hsl(252, 100%, 75%)" d="M 0 -46 a 46 46 0 0 0 0 92 46 46 0 0 0 0 -92" pathLength="1" stroke-dasharray="1" stroke-dashoffset={$offset} />
       </g>
