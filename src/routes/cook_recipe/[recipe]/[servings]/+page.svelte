@@ -34,7 +34,6 @@
         update_recipe_ready();
         sort_notes();
         set_timers();
-        console.log(timers);
     });
 
     function set_timers(){
@@ -43,7 +42,6 @@
             if (timeMatch) {
                 if (timeMatch[2] === 'minutes' || timeMatch[2] === 'minute' ||
                     timeMatch[2] === 'min' || timeMatch[2] === 'mins') {
-                    console.log(timeMatch[1], timeMatch[1] * 60);
                     timers[i] = timeMatch[1] * 60;
                 } else {
                     timers[i] = timeMatch[1] * 60 * 60;
@@ -227,14 +225,15 @@
         
             <div class="flex flex-col directions_list md:w-3/5 h-fit  max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
-                <div class="flex">
-                    <div class="step flex items-center justify-center gap-x-1 md:gap-x-3 md:mx-2 p-1 md:p-4" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
+                <div class="flex justify-between items-center w-full">
+                    <div class="step flex items-center justify-left gap-x-1 md:gap-x-3 md:mx-2 p-1 w-fit" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm whitespace-nowrap">Step {i+1}</label>
-                        <p class="directions flex grow m-1 p-1 md:w-3/5 h-fit text-xs md:text-sm border-l border-neutral md:pl-3">{curr}</p>
-                        
+                        <p class="directions flex m-1 p-1 text-xs md:text-sm border-l border-neutral md:pl-3 {timers[i] ? "w-64 md:w-full" : ""}">{curr}</p>
                     </div>
                     {#if timers[i]}
+                    <div class="my-1 flex md:w-1/5">
                         <Timer countdown={timers[i]}/>
+                    </div>
                     {/if}
                 </div>
                     {#if data.post.recipe.directions[data.post.recipe.directions.length-1] != curr}
