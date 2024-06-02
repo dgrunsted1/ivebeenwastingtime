@@ -7,6 +7,7 @@
     const dispatch = createEventDispatcher();
   
     export let countdown;
+    let audio;
   
     let now = Date.now();
     let end = now + countdown * 1000;
@@ -15,6 +16,7 @@
     $: h = Math.floor(count / 3600);
     $: m = Math.floor((count - h * 3600) / 60);
     $: s = count - h * 3600 - m * 60;
+    $: if (count === 0) audio.play();
   
     function updateTimer() {
       now = Date.now();
@@ -154,6 +156,7 @@
         </button>
       {/if}
     </div>
+    <audio src="https://freesound.org/data/previews/536/536420_4921277-lq.mp3" bind:this={audio} muted="" playsinline=""></audio>
 </div>
   
   <style>
