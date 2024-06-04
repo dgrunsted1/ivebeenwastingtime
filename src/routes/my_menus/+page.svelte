@@ -5,7 +5,7 @@
     import { merge } from '/src/lib/merge_ingredients.js';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import Clear from "/src/lib/icons/Clear.svelte";
-    import { get_servings } from '/src/lib/recipe_util.js';
+    import { get_servings, format_date, delete_menu, get_total_time_menu } from '/src/lib/recipe_util.js';
 
 
     
@@ -38,64 +38,6 @@
             }
         }
         if (is_mobile) my_modal_2.showModal();
-    }
-
-    function get_total_time(recipes){
-        let total_time = 0;
-        let mins = 0;
-        for (let i = 0; i < recipes.length; i++){
-            let min_result = recipes[i].time.match(/(\d+) [mins|minutes]/);
-            if (min_result){
-                mins += parseInt(min_result[1]);
-            }
-
-            let hr_result = recipes[i].time.match(/(\d+) [hrs|hours|hour|hr]/);
-            if (hr_result){
-                mins += parseInt(hr_result[1]) * 60;
-            }
-        }
-        let total_mins = mins;
-        let hours = parseInt(mins/60);
-        mins = mins % 60;
-        total_time = hours + " hrs " + mins + " mins";
-        return {display: total_time, val: total_mins};
-    }
-
-    async function delete_menu(e){
-        if (confirm("Are you sure you want to delete this recipe?")) {
-            await pb.collection('menus').delete(e.srcElement.id);
-            let tmp_menus = [];
-            for (let i = 0; i < user_menus.length; i++){
-                if (user_menus[i].id != e.srcElement.id) tmp_menus.push(user_menus[i]);
-            }
-            user_menus = tmp_menus;
-        }
-    }
-
-    function format_date(in_date){
-        const day_names = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-        let output = "";
-        let menu_date = new Date(in_date);
-        let menu_day = menu_date.getDate();
-        let menu_month = menu_date.getMonth();
-        let menu_year = menu_date.getFullYear();
-        let today = new Date();
-        if (menu_year == today.getFullYear()){
-            if (menu_month == today.getMonth()){
-                if (menu_day == today.getDate()){
-                    output = "Today";
-                } else if (today.getDate() - menu_day < 7){
-                    output = day_names[menu_date.getDay()];
-                } else {
-                    output = menu_date.toLocaleDateString(undefined, {month: 'short', day: 'numeric' });
-                }
-            } else {
-                output = menu_date.toLocaleDateString(undefined, {month: 'short', day: 'numeric' });
-            } 
-        } else {
-            output = menu_date.toLocaleDateString(undefined, {year: '2-digit', month: 'short', day: 'numeric' });
-        }
-        return output;
     }
 
     async function search(){
@@ -251,20 +193,20 @@
     }
 
     function compare_time_amounts_asc(a, b){
-        if ( get_total_time(a.expand.recipes).val < get_total_time(b.expand.recipes).val ){
+        if ( get_total_time_menu(a.expand.recipes).val < get_total_time_menu(b.expand.recipes).val ){
             return -1;
         }
-        if ( get_total_time(a.expand.recipes).val > get_total_time(b.expand.recipes).val ){
+        if ( get_total_time_menu(a.expand.recipes).val > get_total_time_menu(b.expand.recipes).val ){
             return 1;
         }
         return 0;
     }
 
     function compare_time_amounts_dsc(a, b){
-        if ( get_total_time(a.expand.recipes).val > get_total_time(b.expand.recipes).val ){
+        if ( get_total_time_menu(a.expand.recipes).val > get_total_time_menu(b.expand.recipes).val ){
             return -1;
         }
-        if ( get_total_time(a.expand.recipes).val < get_total_time(b.expand.recipes).val ){
+        if ( get_total_time_menu(a.expand.recipes).val < get_total_time_menu(b.expand.recipes).val ){
             return 1;
         }
         return 0;
@@ -349,11 +291,11 @@
                                     <p class="text-center text-[10px] xl:text-[12px] border border-primary px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tl rounded-bl">{user_menus[i].expand.recipes.length} recipes</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-primary px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{merge(user_menus[i].expand.recipes).grocery_list.length} ingredients</p>
                                     <p class="text-center text-[10px] xl:text-[12px] border border-primary px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden">{get_servings(user_menus[i].expand.recipes, user_menus[i].sub_recipes)} servings</p>
-                                    <p class="text-center text-[10px] xl:text-[12px] border border-primary px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{get_total_time(user_menus[i].expand.recipes).display}</p>
+                                    <p class="text-center text-[10px] xl:text-[12px] border border-primary px-1 text-ellipsis whitespace-nowrap text-nowrap overflow-hidden rounded-tr rounded-br">{get_total_time_menu(user_menus[i].expand.recipes).display}</p>
                                 </div>
                             </div>
                             <div class="flex conten-center items-center">
-                                <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                                <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={async (e) => {user_menus = await delete_menu(e, user_menus);}}><DeleteIcon/></button>
                             </div>
                         </div>
                     </div>

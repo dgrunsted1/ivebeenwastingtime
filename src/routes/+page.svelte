@@ -1,5 +1,7 @@
 <script>
-export let data;
+    import { currentUser } from '/src/lib/pocketbase.js';
+    
+    export let data;
 </script>
 
 <div id="main" class="w-full flex flex-col">
@@ -29,6 +31,12 @@ export let data;
             <p class="md:text-2xl">Add recipes here</p>
             <a href="/add_recipe" class="btn btn-primary md:btn-lg">add recipe</a>
         </div>
+        {#if $currentUser}
+            <div class="flex justify-evenly items-center m-5 md:m-24 space-x-3">
+                <a href="/{$currentUser.username}" class="btn btn-primary md:btn-lg">My Profile</a>
+                <p class="md:text-2xl">Manage how others can view your recipes</p>
+            </div>
+        {/if}
     </div>
     
 </div>

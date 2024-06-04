@@ -108,7 +108,7 @@
         {#if (user_recipes && user_recipes.items && user_recipes.items.length > 0) || loading}
             <div id="content" class="flex flex-col md:flex-row  md:m-2 mt-0 md:space-x-3 md:w-full">
                 <div id="left_column" class="md:w-1/2">
-                    <RecipeList recipes={user_recipes.items} 
+                    <RecipeList recipes={user_recipes.items}
                         on:update_view={update_view} on:update_edit={update_edit}
                         on:remove_from_menu={remove_from_menu}
                         on:add_to_menu={add_to_menu} on:reset_mode={reset_mode}/>

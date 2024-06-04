@@ -9,8 +9,14 @@
 			{href:"/today", display: "Today"},
 			{href:"/my_menus", display: "My Menus"},
 			{href:"/menu", display: "Create Menu"},
-			{href:"/add_recipe", display: "Add Recipe"}
+			{href:"/add_recipe", display: "Add Recipe"},
+			// {href:`/${$currentUser.username}`, display: "My Profile"}
     	];
+		if ($currentUser) {
+			page_links.push({href:`/${$currentUser.username}`, display: "My Profile"});
+		} else {
+			page_links.push({href:"/login", display: "My Profile"});
+		}
 	</script>
 		{#if !is_homepage}
 			<!-- <div> -->

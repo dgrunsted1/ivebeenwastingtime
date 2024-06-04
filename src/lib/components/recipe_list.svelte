@@ -1,12 +1,13 @@
 <script>
     import { createEventDispatcher } from 'svelte';
-    import { pb } from '/src/lib/pocketbase';
     import DeleteIcon from "/src/lib/icons/DeleteIcon.svelte";
     import { onMount, afterUpdate } from "svelte";
     import ThumbUp from "/src/lib/icons/ThumbUp.svelte";
     import Heart from "/src/lib/icons/Heart.svelte";
     import Clear from "/src/lib/icons/Clear.svelte";
     import { update_fave_made } from '/src/lib/save_recipe.js';
+    import { page } from '$app/stores';
+    import { currentUser, pb } from '/src/lib/pocketbase';
 
     const dispatch = createEventDispatcher();
     export let recipes = [];
@@ -482,16 +483,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="card-actions flex flex-col justify-evenly items-end items-center  py-1">
-                        <div class="flex w-fit space-x-1">
-                            <button id={display_recipes[i].id} class="btn btn-xs  p-1 made flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button>
-                            <button id={display_recipes[i].id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button>
+                    {#if $page.url.pathname == '/menu' || ($currentUser && `/${$currentUser.username}` == $page.url.pathname)}
+                        <div class="card-actions flex flex-col justify-evenly items-end items-center  py-1">
+                            <div class="flex w-fit space-x-1">
+                                <button id={display_recipes[i].id} class="btn btn-xs  p-1 made flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].made = !display_recipes[i].made; update_fave_made_queue(e);}}><ThumbUp color={(display_recipes[i].made) ? "fill-primary" : "fill-neutral"}/></button>
+                                <button id={display_recipes[i].id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button>
+                            </div>
+                            <div class="flex w-fit space-x-2">
+                                <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-primary checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
+                                <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
+                            </div>
                         </div>
-                        <div class="flex w-fit space-x-2">
-                            <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-primary checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
-                            <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
-                        </div>
-                    </div>
+                    {/if}
                 </div>
             </div>
         {/each}
