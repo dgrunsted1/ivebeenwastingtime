@@ -78,14 +78,19 @@
                 }
             }
         }
-        let max;
-        console.log(recipe_counts);
-        for (let i = 0; recipe_counts.length; i ++){
-            if(!max || recipe_counts[recipe_counts[i]] > max){
-                max = recipe_counts[i];
+        let max = {id: null, value: 0};
+        for (const [key, value] of Object.entries(recipe_counts)) {
+            if(!max.id || recipe_counts[key] > max.value){
+                max.id = key;
+                max.value = value;
             }
         }
-        console.log(max);
+        for (let i = 0; i < data.post.recipes.length; i++) {
+            if(data.post.recipes[i].id == max.id){
+                return data.post.recipes[i].title;
+            }
+        }
+        return null;
     }
 </script>
 <div class="flex flex-col items-center">
