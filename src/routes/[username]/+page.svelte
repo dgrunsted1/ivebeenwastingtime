@@ -62,7 +62,30 @@
             let date = new Date(recipe.created);
             return date > new Date(Date.now() - 1000 * 60 * 60 * 24 * 30 * 6);
         });
-        console.log(recipes_added_per_week.length);
+        console.log(recipes_in_last_6_months.length);
+        let recipes_per_week = recipes_in_last_6_months.length / 26;
+        return recipes_per_week.toFixed(1);
+    }
+
+    function most_used_recipe(){
+        let recipe_counts = {};
+        for (let i = 0; i < data.post.menus.length; i++) {
+            for (let j = 0; j < data.post.menus[i].expand.recipes.length; j++) {
+                if (recipe_counts[data.post.menus[i].expand.recipes[j].id]){
+                    recipe_counts[data.post.menus[i].expand.recipes[j].id]++;
+                } else {
+                    recipe_counts[data.post.menus[i].expand.recipes[j].id] = 1;
+                }
+            }
+        }
+        let max;
+        console.log(recipe_counts);
+        for (let i = 0; recipe_counts.length; i ++){
+            if(!max || recipe_counts[recipe_counts[i]] > max){
+                max = recipe_counts[i];
+            }
+        }
+        console.log(max);
     }
 </script>
 <div class="flex flex-col items-center">
@@ -97,10 +120,13 @@
         </div>
         <div class="flex space-x-5 content-center w-full">
             <div>
-                you average {menus_per_week()} new menu{(menus_per_week() != 1 )? "s" : ""} per week
+                {menus_per_week()} menu{(menus_per_week() != 1 )? "s" : ""} / week
             </div>
             <div>
-                {recipes_added_per_week()}
+                {recipes_added_per_week()} recipe{(recipes_added_per_week() != 1 )? "s" : ""} / week
+            </div>
+            <div>
+                you love {most_used_recipe()}
             </div>
         </div>
     </div>
