@@ -7,7 +7,7 @@
 
 	
 	// if the api (like in this example) just have a simple numeric pagination
-    let page = 0;
+    let page = 1;
 	// but most likely, you'll have to store a token to fetch the next page
 	let nextUrl = '';
 
@@ -198,7 +198,7 @@
         else selected_author = e.currentTarget.value;
     }
     if (e.currentTarget.value == "null") e.currentTarget.value = null;
-    page = 0; 
+    page = 1; 
     data = []; 
     newBatch = [];
     await fetchData();
@@ -222,7 +222,7 @@
         loading = true;
         sort_val = e.srcElement.innerHTML;
         newBatch = [];
-        page = 0; 
+        page = 1; 
         data = []; 
         newBatch = [];
         await fetchData();
@@ -246,7 +246,7 @@
 
 <main class="flex flex-col w-full justify-center items-center">
   <h4>See what others are cooking</h4>
-  <div class="flex w-full justify-center flex-col md:flex-row mt-2 space-y-2">
+  <div class="flex w-full justify-center flex-col md:flex-row mt-2 space-y-1 md:space-y-2">
     <div class="flex flex-row md:flex-col mx-1 space-x-1 md:space-x-0 md:space-y-2">
         <select bind:value={selected_category} on:change={select_cat} class="select select-sm select-bordered border-primary w-full max-w-xs pl-1">
             <option value={null}>category</option>
@@ -274,11 +274,11 @@
         </select>
 
     </div>
-    <div class="flex flex-col w-full md:w-3/4 max-w-3xl space-y-2">
-        <div class="flex justify-between items-center">
-            <div class="form-control max-w-xs">
+    <div class="flex flex-col w-full md:w-3/4 max-w-3xl space-y-1 md:space-y-2">
+        <div class="flex justify-between items-center mx-1">
+            <div class="form-control md:w-auto md:max-w-xs">
                 <label class="input input-bordered input-sm input-primary flex items-center gap-2 pr-0">
-                    <input type="text" class="input h-full p-0" placeholder="Search" on:keyup={update_search} bind:value={search_val}/>
+                    <input type="text" class="input h-full p-0 w-28" placeholder="Search" on:keyup={update_search} bind:value={search_val}/>
                     <div class="w-5" on:click={()=>{search_val = ""; update_search();}}>
                         {#if search_val}
                             <Clear size="w-3 h-3"/>
@@ -286,7 +286,7 @@
                     </div>
                 </label>
             </div>
-            <div class="mx-1">{(total_recipes_num > max_results) ? max_results : total_recipes_num} recipes</div>
+            <div class="mx-1 text-xs md:text-base">{(total_recipes_num > max_results) ? max_results : total_recipes_num} recipes</div>
             <div class="dropdown dropdown-end">
                   <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">{sort_val}</label>
                   <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
@@ -296,7 +296,7 @@
                   </ul>
               </div>
         </div>
-      <ul class="flex flex-col w-full max-w-3xl space-y-4 h-[calc(100svh-155px)] md:h-[calc(100svh-125px)] overflow-y-auto">
+      <ul class="flex flex-col w-full max-w-3xl space-y-2 md:space-y-4 h-[calc(100svh-155px)] md:h-[calc(100svh-125px)] overflow-y-auto">
           {#each data as item}
               <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered border-primary cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
                   <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{item.image}')"></figure>
