@@ -49,7 +49,7 @@
                 sort: get_sort()
             });
             console.log("recipes", recipes.items);
-            recipes_have_more = page >= recipes.totalPages; 
+            recipes_have_more = page < recipes.totalPages; 
             const ingr_recipes = await get_ingr_recipes(search_val);
 
             console.log("ingr recipes",ingr_recipes.items);
@@ -83,8 +83,8 @@
                 expand: `notes, ingr_list`,
                 sort: get_sort()
             });
-            console.log(`${recipes.totalItems} - ${recipes.items.length} - ${page} * ${page_size}`, recipes.totalItems - recipes.items.length - page * page_size)
-            recipes_have_more = page >= recipes.totalPages; 
+            console.log(page, recipes.totalPages);
+            recipes_have_more = page < recipes.totalPages; 
             console.log({recipes_have_more});
             total_recipes_num = recipes.totalItems;
             newBatch = recipes.items;
@@ -97,7 +97,7 @@
             filter: `ingredient~"${search_val}"`,
             sort: `-created`
         });
-        ingr_has_more = page >= ingredients.totalPages;
+        ingr_has_more = page < ingredients.totalPages;
         console.log(`${ingredients.totalItems} - ${ingredients.items.length} - ${page} * ${page_size}`, ingredients.totalItems - ingredients.items.length - page * page_size)
 
         console.log({ingredients}, ingredients.items.length);
@@ -293,7 +293,7 @@
                   </ul>
               </div>
         </div>
-      <ul class="flex flex-col w-full max-w-3xl space-y-4 h-[calc(100svh-220px)] md:h-[calc(100svh-125px)] overflow-y-auto">
+      <ul class="flex flex-col w-full max-w-3xl space-y-4 h-[calc(100svh-155px)] md:h-[calc(100svh-125px)] overflow-y-auto">
           {#each data as item}
               <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered border-primary cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
                   <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{item.image}')"></figure>
