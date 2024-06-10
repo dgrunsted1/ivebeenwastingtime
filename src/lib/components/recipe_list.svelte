@@ -7,6 +7,7 @@
     import Heart from "/src/lib/icons/Heart.svelte";
     import Clear from "/src/lib/icons/Clear.svelte";
     import { update_fave_made } from '/src/lib/save_recipe.js';
+    import { sort_recipes } from '/src/lib/sort.js';
 
     const dispatch = createEventDispatcher();
     export let recipes = [];
@@ -15,7 +16,7 @@
     let categories = {cuisines:[], countries:[], cats:[]};
     let selected_cats = {cuisines:[], countries:[], cats:[]};
     $: display_cats = {cuisines:[], countries:[], cats:[]};
-    let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
+    let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Most Recent"];
     $: sort_val = null;
     let update_fave_made_list = [];
     let delay_timer;
@@ -37,34 +38,7 @@
         let found_recipes = search(search_val);
         filter_recipes(found_recipes);
 
-        switch (sort_val) {
-            case "Least Ingredients":
-                display_recipes = display_recipes.sort(compare_ingr_amounts_asc);
-                break;
-            case "Most Ingredients":
-                display_recipes = display_recipes.sort(compare_ingr_amounts_dsc);
-                break;
-            case "Least Time":
-                display_recipes = display_recipes.sort(compare_time_amounts_asc);        
-                break;
-            case "Most Time":
-                display_recipes = display_recipes.sort(compare_time_amounts_dsc);
-                break;
-            case "Least Servings":
-                display_recipes = display_recipes.sort(compare_serving_amounts_asc);
-                break;
-            case "Most Servings":
-                display_recipes = display_recipes.sort(compare_serving_amounts_dsc);
-                break;
-            case "Least Recent":
-                display_recipes = display_recipes.sort(compare_recent_asc);
-                break;
-            case "Most Recent":
-                display_recipes = display_recipes.sort(compare_recent_dsc);
-                break;
-            default:
-                break;
-        }
+        display_recipes = sort_recipes(sort_val, display_recipes);
         loading = false;
     });
 
@@ -295,108 +269,9 @@
         return recipes_with_ingr;
     }
 
-    function sort_recipes(e){
+    function update_sort(e){
         sort_val = e.srcElement.innerHTML;
         document.activeElement.blur();
-    }
-
-    function compare_ingr_amounts_asc(a, b){
-        if ( a.expand.ingr_list.length < b.expand.ingr_list.length ){
-            return -1;
-        }
-        if ( a.expand.ingr_list.length > b.expand.ingr_list.length ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_ingr_amounts_dsc(a, b){
-        if ( a.expand.ingr_list.length > b.expand.ingr_list.length ){
-            return -1;
-        }
-        if ( a.expand.ingr_list.length < b.expand.ingr_list.length ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_time_amounts_asc(a, b){
-        if ( get_total_time(a).val > 0 && get_total_time(a).val < get_total_time(b).val ){
-            return -1;
-        }
-        if ( get_total_time(a).val > get_total_time(b).val && get_total_time(b).val > 0 ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_time_amounts_dsc(a, b){
-        if ( get_total_time(a).val > get_total_time(b).val ){
-            return -1;
-        }
-        if ( get_total_time(a).val < get_total_time(b).val ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function get_total_time(recipe){
-        let total_time = 0;
-        let mins = 0;
-        let min_result = recipe.time.match(/(\d+) [mins|minutes]/);
-        if (min_result){
-            mins += parseInt(min_result[1]);
-        }
-
-        let hr_result = recipe.time.match(/(\d+) [hrs|hours|hour|hr]/);
-        if (hr_result){
-            mins += parseInt(hr_result[1]) * 60;
-        }
-        let total_mins = mins;
-        let hours = parseInt(mins/60);
-        mins = mins % 60;
-        total_time = hours + " hrs " + mins + " mins";
-        return {display: total_time, val: total_mins};
-    }
-
-    function compare_serving_amounts_asc(a, b){
-        if ( parseInt(a.servings) < parseInt(b.servings) ){
-            return -1;
-        }
-        if ( parseInt(a.servings) > parseInt(b.servings) ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_serving_amounts_dsc(a, b){
-        if ( parseInt(a.servings) > parseInt(b.servings) ){
-            return -1;
-        }
-        if ( parseInt(a.servings) < parseInt(b.servings) ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_recent_asc(a, b){
-        if ( a.created < b.created ){
-            return -1;
-        }
-        if ( a.created > b.created ){
-            return 1;
-        }
-        return 0;
-    }
-
-    function compare_recent_dsc(a, b){
-        if ( a.created > b.created ){
-            return -1;
-        }
-        if ( a.created < b.created ){
-            return 1;
-        }
-        return 0;
     }
 
     function update_fave_made_queue(e){
@@ -447,7 +322,7 @@
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
-                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={sort_recipes}>{opt}</a></li>
+                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={update_sort}>{opt}</a></li>
                 {/each}
             </ul>
         </div>
@@ -528,7 +403,7 @@
             <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">Sort</label>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
                 {#each sort_opts as opt}
-                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={sort_recipes} on:keydown={sort_recipes}>{opt}</a></li>
+                    <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={update_sort} on:keydown={update_sort}>{opt}</a></li>
                 {/each}
             </ul>
         </div>

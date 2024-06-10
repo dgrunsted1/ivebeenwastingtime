@@ -202,8 +202,8 @@
                         {/if}
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
+                        <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal(); document.getElementById('modal_content').classList.remove('hidden');}}><Edit/></button>
                     {/if}
-                    <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal(); document.getElementById('modal_content').classList.remove('hidden');}}><Edit/></button>
                 </div>    
             </div>
         </div>
@@ -243,8 +243,10 @@
             </div>
         </div>
         <div class="notes_container form-control m-2 md:mt-5 md:mx-5 space-y-2 flex items-center">
-            <div id="new_note_btn" class="btn btn-primary btn-xs w-26 self-end" on:click={edit_note}>new note</div>
-            <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24 w-full md:w-1/2" placeholder="Notes" on:input={update_notes_action}></textarea>
+            {#if user_logged_in}
+                <div id="new_note_btn" class="btn btn-primary btn-xs w-26 self-end" on:click={edit_note}>new note</div>
+                <textarea name="notes" id="new_note" class="hidden textarea textarea-bordered border-primary h-24 w-full md:w-1/2" placeholder="Notes" on:input={update_notes_action}></textarea>
+            {/if}
             {#if data.post.recipe.expand.notes}
                 {#each data.post.recipe.expand.notes as note, i}
                     <p class="m-2 text-xs md:text-base" on:click={edit_note}>{note.content}</p>
