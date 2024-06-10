@@ -114,7 +114,12 @@
                 for (let j = 0; j < ingredients.items[i].expand.recipe.length; j++){
                     
                     if (!ingr_recipes.includes(ingredients.items[i].expand.recipe[j]) && !recipe_ids.includes(ingredients.items[i].expand.recipe[j].id)){
-                        ingr_recipes.push(ingredients.items[i].expand.recipe[j]);
+                        if ((!selected_category || ingredients.items[i].expand.recipe[j].category == selected_category) &&
+                            (!selected_country || ingredients.items[i].expand.recipe[j].country == selected_country) &&
+                            (!selected_cuisine || ingredients.items[i].expand.recipe[j].cuisine == selected_cuisine) &&
+                            (!selected_author || ingredients.items[i].expand.recipe[j].author == selected_author)){
+                            ingr_recipes.push(ingredients.items[i].expand.recipe[j]);
+                        }
                     }
                 }
             }
@@ -296,7 +301,7 @@
                   </ul>
               </div>
         </div>
-      <ul class="flex flex-col w-full max-w-3xl space-y-2 md:space-y-4 h-[calc(100svh-155px)] md:h-[calc(100svh-125px)] overflow-y-auto">
+      <ul class="flex flex-col w-full max-w-3xl space-y-2 md:space-y-4 h-[calc(100svh-135px)] md:h-[calc(100svh-125px)] overflow-y-auto">
           {#each data as item}
               <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered border-primary cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
                   <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{item.image}')"></figure>
