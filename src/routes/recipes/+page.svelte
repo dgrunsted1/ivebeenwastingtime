@@ -3,6 +3,7 @@
     import { pb } from '/src/lib/pocketbase.js';
     import InfiniteScroll from "/src/lib/components/infinite_scroll.svelte";
     import Clear from "/src/lib/icons/Clear.svelte";
+    import {sort_recipes} from "/src/lib/sort.js";
 
 	
 	// if the api (like in this example) just have a simple numeric pagination
@@ -36,23 +37,25 @@
     $: no_results = false;
     $: sort_val = "Most Recent";
     $: search_val = "";
+    $: max_results = 0;
     
     let total_recipes_num = 0;
 	
 	async function fetchData() {
-        console.log("fetching data ----------------------------------------------");
+        
         if (search_val){
+            
             //get recipes with title
             const recipes = await pb.collection('recipes').getList(page, page_size/2, {
                 filter: get_filter(),
                 expand: `notes, ingr_list`,
                 sort: get_sort()
             });
-            console.log("recipes", recipes.items);
+            
             recipes_have_more = page < recipes.totalPages; 
             const ingr_recipes = await get_ingr_recipes(search_val);
 
-            console.log("ingr recipes",ingr_recipes.items);
+            
             // compile both lists of recipes
             let final_recipes = [];
             let final_recipe_ids = [];
@@ -68,7 +71,7 @@
                     final_recipes.push(ingr_recipes.items[i]);
                 }
             }
-            console.log({final_recipes});
+            
             if (!final_recipes && has_more){
                 page++;
                 fetchData();
@@ -83,9 +86,9 @@
                 expand: `notes, ingr_list`,
                 sort: get_sort()
             });
-            console.log(page, recipes.totalPages);
+            
             recipes_have_more = page < recipes.totalPages; 
-            console.log({recipes_have_more});
+            
             total_recipes_num = recipes.totalItems;
             newBatch = recipes.items;
         }
@@ -94,22 +97,22 @@
     async function get_ingr_recipes(){
         const ingredients = await pb.collection('ingredients').getList(page, page_size, {
             expand: `recipe, recipe.ingr_list`,
-            filter: `ingredient~"${search_val}"`,
+            filter: `ingredient~"${search_val}" && recipe:length > 0`,
             sort: `-created`
         });
         ingr_has_more = page < ingredients.totalPages;
-        console.log(`${ingredients.totalItems} - ${ingredients.items.length} - ${page} * ${page_size}`, ingredients.totalItems - ingredients.items.length - page * page_size)
+        
 
-        console.log({ingredients}, ingredients.items.length);
+        
 
         const recipe_ids = getUniqueIds(data, 'id');
 
         let ingr_recipes = [];
         for (let i = 0; i < ingredients.items.length; i++){
             if (ingredients.items[i].expand.recipe){
-                console.log(ingredients.items[i].expand);
+                
                 for (let j = 0; j < ingredients.items[i].expand.recipe.length; j++){
-                    console.log(ingr_recipes.includes(ingredients.items[i].expand.recipe[j]), recipe_ids.includes(ingredients.items[i].expand.recipe[j].id));
+                    
                     if (!ingr_recipes.includes(ingredients.items[i].expand.recipe[j]) && !recipe_ids.includes(ingredients.items[i].expand.recipe[j].id)){
                         ingr_recipes.push(ingredients.items[i].expand.recipe[j]);
                     }
@@ -165,8 +168,8 @@
 	
 	onMount(async ()=> {
 		// load first batch onMount
-		fetchData();
-        
+		await fetchData();
+        max_results = total_recipes_num;
         categories = await pb.collection('categories').getFullList();
         countries = await pb.collection('countries').getFullList();
         cuisines = await pb.collection('cuisines').getFullList();
@@ -174,10 +177,10 @@
         loading = false;
 	});
 
-  $: data = [
+  $: data = sort_recipes(sort_val, [
 		...data,
     ...newBatch
-  ];
+  ]);
 
   async function select_cat(e){
     loading = true;
@@ -208,7 +211,7 @@
   }
 
   async function load_more(){
-    console.log("load_more func");
+    
     loading = true;
     page++;
     await fetchData();
@@ -231,7 +234,7 @@
         clearTimeout(delay_timer);
         delay_timer = setTimeout(async () => {
             loading = true;
-            page = 0; 
+            page = 1; 
             data = []; 
             newBatch = [];
             await fetchData();
@@ -283,7 +286,7 @@
                     </div>
                 </label>
             </div>
-            <div class="mx-1">{total_recipes_num} recipes</div>
+            <div class="mx-1">{(total_recipes_num > max_results) ? max_results : total_recipes_num} recipes</div>
             <div class="dropdown dropdown-end">
                   <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">{sort_val}</label>
                   <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
