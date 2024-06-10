@@ -1,7 +1,9 @@
 <script>
-	import {onMount} from "svelte";
+	import {afterUpdate, onMount} from "svelte";
     import { pb } from '/src/lib/pocketbase.js';
     import InfiniteScroll from "/src/lib/components/infinite_scroll.svelte";
+    import Clear from "/src/lib/icons/Clear.svelte";
+
 	
 	// if the api (like in this example) just have a simple numeric pagination
     let page = 0;
@@ -17,6 +19,7 @@
     let countries = [];
     let cuisines = [];
     let authors = [];
+    let sort_opts = ["Least Ingredients", "Most Ingredients", "Least Servings", "Most Servings", "Least Time", "Most Time", "Most Recent", "Least Recent"];
     let web_sites = [];
     let delay_timer;
 
@@ -27,24 +30,138 @@
     $: selected_author = null;
 
     $: loading = true;
+    $: recipes_have_more = true;
+    $: ingr_has_more = true;
+    $: has_more = recipes_have_more || ingr_has_more;
+    $: no_results = false;
+    $: sort_val = "Most Recent";
+    $: search_val = "";
     
     let total_recipes_num = 0;
 	
 	async function fetchData() {
-        let filter = "";
-        if (selected_category) filter += `category="${selected_category}"`;
-        if (selected_country) filter += (!filter) ? `country="${selected_country}"` : ` && country="${selected_country}"`;
-        if (selected_cuisine) filter += (!filter) ? `cuisine="${selected_cuisine}"` : `&& cuisine="${selected_cuisine}"`;
-        if (selected_author) filter += (!filter) ? `author="${selected_author}"` : `&& author="${selected_author}"`;
+        console.log("fetching data ----------------------------------------------");
+        if (search_val){
+            //get recipes with title
+            const recipes = await pb.collection('recipes').getList(page, page_size/2, {
+                filter: get_filter(),
+                expand: `notes, ingr_list`,
+                sort: get_sort()
+            });
+            console.log("recipes", recipes.items);
+            recipes_have_more = page >= recipes.totalPages; 
+            const ingr_recipes = await get_ingr_recipes(search_val);
 
-        const response = await pb.collection('recipes').getList(page, page_size, {
-            filter: filter,
-            expand: `notes, ingr_list`,
+            console.log("ingr recipes",ingr_recipes.items);
+            // compile both lists of recipes
+            let final_recipes = [];
+            let final_recipe_ids = [];
+            for (let i = 0; i < recipes.items.length; i++){
+                if (!final_recipe_ids.includes(recipes.items[i].id)){
+                    final_recipe_ids.push(recipes.items[i].id);
+                    final_recipes.push(recipes.items[i]);
+                }
+            }
+            for (let i = 0; i < ingr_recipes.items.length; i++){
+                if (!final_recipe_ids.includes(ingr_recipes.items[i].id)){
+                    final_recipe_ids.push(ingr_recipes.items[i].id);
+                    final_recipes.push(ingr_recipes.items[i]);
+                }
+            }
+            console.log({final_recipes});
+            if (!final_recipes && has_more){
+                page++;
+                fetchData();
+            }
+            total_recipes_num = ingr_recipes.totalItems ? ingr_recipes.totalItems : recipes.totalItems;
+            if (final_recipes.length > total_recipes_num) total_recipes_num = final_recipes.length;
+            newBatch = final_recipes;
+        } else {
+            ingr_has_more = false;
+            const recipes = await pb.collection('recipes').getList(page, page_size, {
+                filter: get_filter(),
+                expand: `notes, ingr_list`,
+                sort: get_sort()
+            });
+            console.log(`${recipes.totalItems} - ${recipes.items.length} - ${page} * ${page_size}`, recipes.totalItems - recipes.items.length - page * page_size)
+            recipes_have_more = page >= recipes.totalPages; 
+            console.log({recipes_have_more});
+            total_recipes_num = recipes.totalItems;
+            newBatch = recipes.items;
+        }
+	};
+
+    async function get_ingr_recipes(){
+        const ingredients = await pb.collection('ingredients').getList(page, page_size, {
+            expand: `recipe, recipe.ingr_list`,
+            filter: `ingredient~"${search_val}"`,
             sort: `-created`
         });
-        total_recipes_num = response.totalItems;
-		newBatch = response.items;
-	};
+        ingr_has_more = page >= ingredients.totalPages;
+        console.log(`${ingredients.totalItems} - ${ingredients.items.length} - ${page} * ${page_size}`, ingredients.totalItems - ingredients.items.length - page * page_size)
+
+        console.log({ingredients}, ingredients.items.length);
+
+        const recipe_ids = getUniqueIds(data, 'id');
+
+        let ingr_recipes = [];
+        for (let i = 0; i < ingredients.items.length; i++){
+            if (ingredients.items[i].expand.recipe){
+                console.log(ingredients.items[i].expand);
+                for (let j = 0; j < ingredients.items[i].expand.recipe.length; j++){
+                    console.log(ingr_recipes.includes(ingredients.items[i].expand.recipe[j]), recipe_ids.includes(ingredients.items[i].expand.recipe[j].id));
+                    if (!ingr_recipes.includes(ingredients.items[i].expand.recipe[j]) && !recipe_ids.includes(ingredients.items[i].expand.recipe[j].id)){
+                        ingr_recipes.push(ingredients.items[i].expand.recipe[j]);
+                    }
+                }
+            }
+        }
+
+        if (ingr_recipes) return {items: ingr_recipes, totalItems: ingredients.totalItems};
+        else return {items: [], totalItems: 0};
+    }
+
+    function getUniqueIds(objects, idKey) {
+        // Create a new Set to store unique IDs
+        const uniqueIdSet = new Set();
+
+        // Filter the objects and add their IDs to the Set
+        const uniqueObjects = objects.filter(obj => {
+            const id = obj[idKey];
+            if (!uniqueIdSet.has(id)) {
+            uniqueIdSet.add(id);
+            return true;
+            }
+            return false;
+        });
+
+        // Map the unique objects to their IDs
+        const uniqueIds = uniqueObjects.map(obj => obj[idKey]);
+
+        return uniqueIds;
+    }
+
+    function get_filter(){
+        let output = "";
+        if (selected_category) output += `category="${selected_category}"`;
+        if (selected_country) output += (!output) ? `country="${selected_country}"` : ` && country="${selected_country}"`;
+        if (selected_cuisine) output += (!output) ? `cuisine="${selected_cuisine}"` : `&& cuisine="${selected_cuisine}"`;
+        if (selected_author) output += (!output) ? `author="${selected_author}"` : `&& author="${selected_author}"`;
+        if (['Least Time', 'Most Time'].includes(sort_val)) output += (!output) ? `time_new!=0` : `&& time_new!=0`;
+        if (search_val) output += (!output) ? `title~"${search_val}"` : `&& title~"${search_val}"`;
+        return output;
+    }
+
+    function get_sort(){
+        if (sort_val == "Least Recent") return `+created`;
+        else if (sort_val == "Most Ingredients") return `-ingr_num`;
+        else if (sort_val == "Least Servings") return `+servings`;
+        else if (sort_val == "Most Servings") return `-servings`;
+        else if (sort_val == "Least Time") return `+time_new`;
+        else if (sort_val == "Most Time") return `-time_new`;
+        else if (sort_val == "Least Ingredients") return `+ingr_num`;
+        else  return `-created`;
+    }
 	
 	onMount(async ()=> {
 		// load first batch onMount
@@ -55,7 +172,7 @@
         cuisines = await pb.collection('cuisines').getFullList();
         authors = await pb.collection('authors').getFullList();
         loading = false;
-	})
+	});
 
   $: data = [
 		...data,
@@ -64,7 +181,6 @@
 
   async function select_cat(e){
     loading = true;
-    console.log(e.currentTarget.value == "null");
     if (e.currentTarget.firstChild.innerHTML == 'category') {
         if (e.currentTarget.value == "null") selected_category = null;
         else selected_category = e.currentTarget.value;
@@ -84,6 +200,11 @@
     newBatch = [];
     await fetchData();
     loading = false;
+    if (!newBatch.length){
+        no_results = true;
+    } else {
+        no_results = false;
+    }
   }
 
   async function load_more(){
@@ -93,31 +214,56 @@
     await fetchData();
     loading = false;
   }
+
+    async function update_sort(e){
+        loading = true;
+        sort_val = e.srcElement.innerHTML;
+        newBatch = [];
+        page = 0; 
+        data = []; 
+        newBatch = [];
+        await fetchData();
+        loading = false;
+        document.activeElement.blur();
+    }
+
+    async function update_search(e){
+        clearTimeout(delay_timer);
+        delay_timer = setTimeout(async () => {
+            loading = true;
+            page = 0; 
+            data = []; 
+            newBatch = [];
+            await fetchData();
+            loading = false;
+            document.activeElement.blur();
+        }, 2000);
+    }
 </script>
 
 <main class="flex flex-col w-full justify-center items-center">
   <h4>See what others are cooking</h4>
   <div class="flex w-full justify-center flex-col md:flex-row mt-2 space-y-2">
-    <div class="flex flex-row md:flex-col mx-1 space-x-1">
-        <select bind:value={selected_category} on:change={select_cat} class="select select-sm select-bordered w-full max-w-xs pl-1">
+    <div class="flex flex-row md:flex-col mx-1 space-x-1 md:space-x-0 md:space-y-2">
+        <select bind:value={selected_category} on:change={select_cat} class="select select-sm select-bordered border-primary w-full max-w-xs pl-1">
             <option value={null}>category</option>
             {#each categories as curr}
                 <option>{curr.id}</option>
             {/each}
         </select>
-        <select bind:value={selected_country} on:change={select_cat} class="select select-sm select-bordered w-full max-w-xs pl-1">
+        <select bind:value={selected_country} on:change={select_cat} class="select select-sm select-bordered border-primary w-full max-w-xs pl-1">
             <option value={null}>country</option>
             {#each countries as curr}
                 <option>{curr.id}</option>
             {/each}
         </select>
-        <select bind:value={selected_cuisine} on:change={select_cat} class="select select-sm select-bordered w-full max-w-xs pl-1">
+        <select bind:value={selected_cuisine} on:change={select_cat} class="select select-sm select-bordered border-primary w-full max-w-xs pl-1">
             <option value={null}>cuisine</option>
             {#each cuisines as curr}
                 <option>{curr.id}</option>
             {/each}
         </select>
-        <select bind:value={selected_author} on:change={select_cat} class="select select-sm select-bordered w-full max-w-xs pl-1">
+        <select bind:value={selected_author} on:change={select_cat} class="select select-sm select-bordered border-primary w-full max-w-xs pl-1">
             <option value={null}>author</option>
             {#each authors as curr}
                 <option>{curr.id}</option>
@@ -126,10 +272,30 @@
 
     </div>
     <div class="flex flex-col w-full md:w-3/4 max-w-3xl space-y-2">
-      <div class="mx-1">{total_recipes_num} total recipes</div>
-      <ul class="flex flex-col w-full max-w-3xl space-y-4 h-[calc(100svh-220px)] md:h-[calc(100svh-85px)] overflow-y-auto">
+        <div class="flex justify-between items-center">
+            <div class="form-control max-w-xs">
+                <label class="input input-bordered input-sm input-primary flex items-center gap-2 pr-0">
+                    <input type="text" class="input h-full p-0" placeholder="Search" on:keyup={update_search} bind:value={search_val}/>
+                    <div class="w-5" on:click={()=>{search_val = ""; update_search();}}>
+                        {#if search_val}
+                            <Clear size="w-3 h-3"/>
+                        {/if}
+                    </div>
+                </label>
+            </div>
+            <div class="mx-1">{total_recipes_num} recipes</div>
+            <div class="dropdown dropdown-end">
+                  <label tabindex="0" class="btn m-1 btn-primary btn-xs md:btn-sm">{sort_val}</label>
+                  <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-max bg-primary">
+                      {#each sort_opts as opt}
+                          <li class="btn btn-xs {opt == sort_val ? 'btn-neutral': 'btn-primary'}"><a on:click={update_sort}>{opt}</a></li>
+                      {/each}
+                  </ul>
+              </div>
+        </div>
+      <ul class="flex flex-col w-full max-w-3xl space-y-4 h-[calc(100svh-220px)] md:h-[calc(100svh-125px)] overflow-y-auto">
           {#each data as item}
-              <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
+              <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered border-primary cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
                   <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{item.image}')"></figure>
                   <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
                       <div class="flex flex-col justify-between p-1 w-[70%]">
@@ -157,9 +323,12 @@
                   </div>
               </div>
           {/each}
-          <span class=" loading loading-dots loading-md mx-7 self-center"></span>
+          <span class="{loading ? "" : "hidden"} loading loading-dots loading-md mx-7 self-center"></span>
+          <div class="{no_results ? "" : "hidden"} w-full flex justify-center items-center h-full">
+                no results
+            </div>
           <InfiniteScroll
-          hasMore={(newBatch.length == page_size)}
+          hasMore={has_more}
           threshold={100}
           on:loadMore={load_more} />
       </ul>

@@ -25,6 +25,7 @@ export async function save_recipe(e, recipe, user, new_note) {
         "description": recipe.description,
         "author": recipe.author,
         "time": recipe.time,
+        "time_new": get_mins(recipe.time),
         "directions": JSON.stringify(recipe.directions),
         "servings": recipe.servings,
         "image": recipe.image,
@@ -32,6 +33,7 @@ export async function save_recipe(e, recipe, user, new_note) {
         "cuisine": recipe.cuisine,
         "country": recipe.country,
         "ingr_list": ingr_ids,
+        "ingr_num": ingr_ids.length,
         "url_id": await get_url_id(recipe),
         "made": recipe.made,
         "favorite": recipe.favorite
@@ -52,6 +54,20 @@ export async function save_recipe(e, recipe, user, new_note) {
     
     e.srcElement.innerHTML = "saved";
     return recipe;
+}
+
+function get_mins(time_in){
+    let mins = 0;
+    let min_result = time_in.match(/(\d+) [mins|minutes]/);
+    if (min_result){
+        mins += parseInt(min_result[1]);
+    }
+
+    let hr_result = time_in.match(/(\d+) [hrs|hours|hour|hr]/);
+    if (hr_result){
+        mins += parseInt(hr_result[1]) * 60;
+    }
+    return mins;
 }
 
 async function get_ingr_ids(recipe){
