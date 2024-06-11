@@ -75,8 +75,6 @@
 
     const update_recipe_ready = function() {
         let curr_sub_recipes = [];
-        console.log(todays_menu.sub_recipes);
-        console.log(data.post.recipe.id);
         if (todays_menu.sub_recipes && todays_menu.sub_recipes[data.post.recipe.id]){
             for (let j = 0; j < todays_menu.sub_recipes[data.post.recipe.id].length; j++) {
                 curr_sub_recipes.push(todays_menu.sub_recipes[data.post.recipe.id][j].recipe_id);
