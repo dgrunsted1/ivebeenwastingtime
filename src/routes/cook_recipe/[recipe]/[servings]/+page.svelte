@@ -23,13 +23,15 @@
 
 
     onMount(async () => {
-        if ($currentUser.id == data.post.recipe.user) user_logged_in = true;
+        if ($currentUser && $currentUser.id == data.post.recipe.user) {
+            user_logged_in = true;
 
-        const result_menu = await pb.collection('menus').getList(1, 1, {
-            filter: `user="${$currentUser.id}" && today=True`,
-        });
-        todays_menu = result_menu.items[0];
-        update_recipe_ready();
+            const result_menu = await pb.collection('menus').getList(1, 1, {
+                filter: `user="${$currentUser.id}" && today=True`,
+            });
+            todays_menu = result_menu.items[0];
+            update_recipe_ready();
+        }
         sort_notes();
         set_timers();
     });
