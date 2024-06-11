@@ -270,13 +270,15 @@
             </div>
         {/if}
       </div>
-        <dialog id="my_modal_3" class="modal">
-            <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh] z-0">
-                <form method="dialog">
-                    <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={() => {document.getElementById('modal_content').classList.add('hidden')}}>✕</button>
-                </form>
-                <div id="modal_content" class="hidden">
-                    <EditRecipe recipe={data.post.recipe} on:update_recipe={(e) => {data.post.recipe = e.detail.recipe}}/>
+      {#if user_logged_in}
+            <dialog id="my_modal_3" class="modal">
+                <div class="modal-box max-w-full md:w-2/3 p-1 h-[80vh] z-0">
+                    <form method="dialog">
+                        <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2" on:click={() => {document.getElementById('modal_content').classList.add('hidden')}}>✕</button>
+                    </form>
+                    <div id="modal_content" class="hidden">
+                        <EditRecipe recipe={data.post.recipe} on:update_recipe={(e) => {data.post.recipe = e.detail.recipe}}/>
+                    </div>
                 </div>
-            </div>
-        </dialog>
+            </dialog>
+        {/if}
