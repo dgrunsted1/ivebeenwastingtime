@@ -4,13 +4,16 @@
 		import "../input.css";
 		$: is_homepage = ($page.url.pathname == "/") ? true : false; 
 
-    	let page_links = [
+    	let page_links = ($currentUser) ? [
 			{href:"/gallery", display: "Gallery"},
 			{href:"/today", display: "Today"},
 			{href:"/recipes", display: "Recipes"},
 			{href:"/my_menus", display: "My Menus"},
 			{href:"/menu", display: "Create Menu"},
 			{href:"/add_recipe", display: "Add Recipe"}
+    	] : [
+			{href:"/gallery", display: "Gallery"},
+			{href:"/recipes", display: "Recipes"},
     	];
 	</script>
 		{#if !is_homepage}

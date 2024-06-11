@@ -1,9 +1,11 @@
 <script>
 	import {afterUpdate, onMount} from "svelte";
-    import { pb } from '/src/lib/pocketbase.js';
+    import { pb, currentUser } from '/src/lib/pocketbase.js';
     import InfiniteScroll from "/src/lib/components/infinite_scroll.svelte";
     import Clear from "/src/lib/icons/Clear.svelte";
     import {sort_recipes} from "/src/lib/sort.js";
+    import Plus from "/src/lib/icons/Plus.svelte";
+    import CheckMark from "/src/lib/icons/CheckMark.svelte";
 
 	
 	// if the api (like in this example) just have a simple numeric pagination
@@ -38,6 +40,7 @@
     $: sort_val = "Most Recent";
     $: search_val = "";
     $: max_results = 0;
+    $: just_copied = false;
     
     let total_recipes_num = 0;
 	
@@ -247,6 +250,46 @@
             document.activeElement.blur();
         }, 2000);
     }
+
+    async function add_recipe(e){
+        if (!$currentUser){
+            if (window.confirm("you must login to add this recipe to your list. Do you want to sign in?")) {
+                window.open(`login`, "Thanks for Visiting!");
+            }
+        }else {
+            const recipe_to_add = data.filter((curr) => curr.id == e.currentTarget.id)[0];
+            console.log({recipe_to_add});
+            const recipe_in = {
+                "title": recipe_to_add.title,
+                "description": recipe_to_add.description,
+                "url": recipe_to_add.url,
+                "author": recipe_to_add.author,
+                "time": recipe_to_add.time,
+                "directions": recipe_to_add.directions,
+                "user": $currentUser.id,
+                "image": recipe_to_add.image,
+                "servings": recipe_to_add.servings,
+                "cuisine": recipe_to_add.cuisine,
+                "country": recipe_to_add.country,
+                "notes": recipe_to_add.notes,
+                "ingr_list": recipe_to_add.ingr_list,
+                "category": recipe_to_add.category,
+                "url_id": recipe_to_add.url_id,
+                "made": false,
+                "favorite": false,
+                "time_new": recipe_to_add.time_new,
+                "ingr_num": recipe_to_add.ingr_num
+            };
+            console.log({recipe_in});
+            let recipe_result = await pb.collection('recipes').create(recipe_in);
+            console.log({recipe_result});
+            just_copied = true;
+            clearTimeout(delay_timer);
+            delay_timer = setTimeout(function() {
+                just_copied = false;
+            }, 2000);
+        }
+    }
 </script>
 
 <main class="flex flex-col w-full justify-center items-center">
@@ -284,7 +327,7 @@
             <div class="form-control md:w-auto md:max-w-xs">
                 <label class="input input-bordered input-sm input-primary flex items-center gap-2 pr-0">
                     <input type="text" class="input h-full p-0 w-28" placeholder="Search" on:keyup={update_search} bind:value={search_val}/>
-                    <div class="w-5" on:click={()=>{search_val = ""; update_search();}}>
+                    <div class="w-5" on:click={()=>{search_val = ""; update_search();}} on:keydown={()=>{search_val = ""; update_search();}}>
                         {#if search_val}
                             <Clear size="w-3 h-3"/>
                         {/if}
@@ -306,9 +349,9 @@
               <div class="card card-side bg-base-200 shadow-xl h-24 card-bordered border-primary cursor-pointer mx-1" on:keydown={window.location = `/cook_recipe/${item.url_id}/${item.servings}`} on:click={window.location = `/cook_recipe/${item.url_id}/${item.servings}`}>
                   <figure class="w-1/4 bg-cover bg-no-repeat bg-center" style="background-image: url('{item.image}')"></figure>
                   <div class="card-body h-full flex flex-row p-1 w-3/4 justify-between">
-                      <div class="flex flex-col justify-between p-1 w-[70%]">
+                      <div class="flex flex-col justify-between p-1 md:p-3 w-full">
                           <h2 id={item.id} class="card-title text-sm text-ellipsis overflow-hidden">{item.title}</h2>
-                          <div class="flex w-full">
+                          <div class="flex w-full items-center">
                               <div class="text-[10px] md:text-[12px] border border-primary text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tl rounded-bl">
                                   {#if isNaN(item.servings)}
                                       {item.servings}
@@ -326,6 +369,15 @@
                               <div class="text-[10px] md:text-[12px] border border-primary text-ellipsis whitespace-nowrap overflow-hidden h-fit px-1 text-nowrap text-center basis-12 grow rounded-tr rounded-br">
                                   {item.expand.ingr_list.length} ingredients
                               </div>
+                              {#if !$currentUser || $currentUser.id != item.user}
+                                <div id={item.id} class="btn btn-primary btn-xs w-6 ml-2 p-0" on:click|stopPropagation={add_recipe} on:keydown|stopPropagation={add_recipe}>
+                                    {#if just_copied}
+                                        <CheckMark/>
+                                    {:else}
+                                        <Plus/>
+                                    {/if}
+                                </div>
+                              {/if}
                           </div>
                       </div>
                   </div>
