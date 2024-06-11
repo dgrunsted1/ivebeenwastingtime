@@ -20,8 +20,6 @@
     let delay_timer;
     let toast = {info: null, success: null, error: null};
     $: timers = {};
-    // let interval = setInterval(updateTimer, 1000);
-    // $: if (count === 0) clearInterval(interval);
 
 
     onMount(async () => {
