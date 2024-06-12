@@ -172,7 +172,6 @@
                                                             <p id={i} class="w-1/2 text-xs">{curr_sub_recipe.title}</p>
                                                             <div class="card-actions flex flex-row justify-evenly items-center">
                                                                 <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={curr_sub_recipe.id} bind:checked={todays_menu.made[curr_sub_recipe.id]} on:click|stopPropagation={toggle_made}>
-                                                                <!-- <button id={display_recipes[i].id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{display_recipes[i].favorite = !display_recipes[i].favorite; update_fave_made_queue(e);}}><Heart color={(display_recipes[i].favorite) ? "fill-primary" : "fill-neutral"}/></button> -->
                                                                 <button id={curr_sub_recipe.id} class="btn btn-xs md:btn-sm p-1 favorite" on:click|stopPropagation={(e)=>{curr_sub_recipe.favorite = !curr_sub_recipe.favorite; update_fave_queue(e);}}><Heart color={(curr_sub_recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                                             </div>
                                                         </div>

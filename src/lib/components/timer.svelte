@@ -22,10 +22,10 @@
       now = Date.now();
     }
   
-    let interval;
+    let interval = setInterval(updateTimer, 1000);
     $: if (count === 0) clearInterval(interval);
   
-    let isPaused = true;
+    let isPaused = false;
     let isResetting;
     const duration = 1000;
   

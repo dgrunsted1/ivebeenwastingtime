@@ -42,12 +42,12 @@
             if (timeMatch) {
                 if (timeMatch[2] === 'minutes' || timeMatch[2] === 'minute' ||
                     timeMatch[2] === 'min' || timeMatch[2] === 'mins') {
-                    timers[i] = timeMatch[1] * 60;
+                    timers[i] = {sec: timeMatch[1] * 60, show: false};
                 } else {
-                    timers[i] = timeMatch[1] * 60 * 60;
+                    timers[i] = {sec: timeMatch[1] * 60 * 60, show: false};
                 }
             } else {
-                timers[i] = 0;
+                timers[i] = {sec: 0, show: false};
             }
         }
     }
@@ -154,6 +154,28 @@
         update_recipe_image(data.post.recipe.image, data.post.recipe.id);
     }
 
+    function formatTime(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+
+        let timeString = '';
+
+        if (hours > 0) {
+            timeString += `${hours} hr${hours > 1 ? 's' : ''} `;
+        }
+
+        if (minutes > 0) {
+            timeString += `${minutes} min${minutes > 1 ? 's' : ''} `;
+        }
+
+        if (secs > 0) {
+            timeString += `${secs} sec${secs > 1 ? 's' : ''}`;
+        }
+
+        return timeString.trim();
+    }
+
 </script>
 
     <div id="cook_recipe" class="flex flex-col md:m-2 pb-4 md:pb-10">
@@ -225,15 +247,17 @@
         
             <div class="flex flex-col directions_list md:w-3/5 h-fit  max-h-[calc(33vh)] md:max-h-[calc(64vh)] overflow-y-auto border border-primary rounded-md cursor-pointer">
                 {#each data.post.recipe.directions as curr, i}
-                <div class="flex justify-between items-center w-full">
+                <div class="flex justify-between items-center mr-2">
                     <div class="step flex items-center justify-left gap-x-1 md:gap-x-3 md:mx-2 p-1 w-fit" on:click={(e) => {e.currentTarget.classList.toggle('blur'); }}>
                         <label for="directions" class="flex md:text-right text-xs md:text-sm whitespace-nowrap">Step {i+1}</label>
-                        <p class="directions flex m-1 p-1 text-xs md:text-sm border-l border-neutral md:pl-3 {timers[i] ? "w-64 md:w-full" : ""}">{curr}</p>
+                        <p class="directions flex m-1 p-1 text-xs md:text-sm border-l border-neutral md:pl-3 {timers[i] && timers[i].sec ? "w-64 md:w-full" : ""}">{curr}</p>
                     </div>
-                    {#if timers[i]}
-                    <div class="my-1 flex md:w-1/5 max-w-[150px]">
-                        <Timer countdown={timers[i]}/>
-                    </div>
+                    {#if timers[i] && timers[i].show}
+                        <div class="my-1 flex md:w-1/5 max-w-[150px]">
+                            <Timer countdown={timers[i].sec}/>
+                        </div>
+                    {:else if timers[i] && timers[i].sec}
+                        <div id={i} class="btn btn-xs md:btn-sm btn-primary my-1" on:click={(e)=>{timers[e.currentTarget.id].show = true}}>{formatTime(timers[i].sec)}</div>
                     {/if}
                 </div>
                     {#if data.post.recipe.directions[data.post.recipe.directions.length-1] != curr}
