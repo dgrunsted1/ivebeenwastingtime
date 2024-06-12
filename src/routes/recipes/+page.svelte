@@ -120,7 +120,8 @@
                         if ((!selected_category || ingredients.items[i].expand.recipe[j].category == selected_category) &&
                             (!selected_country || ingredients.items[i].expand.recipe[j].country == selected_country) &&
                             (!selected_cuisine || ingredients.items[i].expand.recipe[j].cuisine == selected_cuisine) &&
-                            (!selected_author || ingredients.items[i].expand.recipe[j].author == selected_author)){
+                            (!selected_author || ingredients.items[i].expand.recipe[j].author == selected_author) &&
+                            ingredients.items[i].expand.recipe[j]){
                             ingr_recipes.push(ingredients.items[i].expand.recipe[j]);
                         }
                     }
@@ -160,6 +161,7 @@
         if (selected_author) output += (!output) ? `author="${selected_author}"` : `&& author="${selected_author}"`;
         if (['Least Time', 'Most Time'].includes(sort_val)) output += (!output) ? `time_new!=0` : `&& time_new!=0`;
         if (search_val) output += (!output) ? `title~"${search_val}"` : `&& title~"${search_val}"`;
+        output += (!output) ? `made=true` : `&& made=true`;
         return output;
     }
 
@@ -178,10 +180,10 @@
 		// load first batch onMount
 		await fetchData();
         max_results = total_recipes_num;
-        categories = await pb.collection('categories').getFullList();
-        countries = await pb.collection('countries').getFullList();
-        cuisines = await pb.collection('cuisines').getFullList();
-        authors = await pb.collection('authors').getFullList();
+        categories = await pb.collection('categories').getFullList({sort: `+id`});
+        countries = await pb.collection('countries').getFullList({sort: `+id`});
+        cuisines = await pb.collection('cuisines').getFullList({sort: `+id`});
+        authors = await pb.collection('authors').getFullList({sort: `+id`});
         loading = false;
 	});
 
