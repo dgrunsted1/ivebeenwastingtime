@@ -16,7 +16,7 @@
 			{href:"/recipes", display: "Recipes"},
     	];
 	</script>
-		{#if !is_homepage}
+		<!-- {#if !is_homepage} -->
 			<!-- <div> -->
 				<div class="navbar bg-base-100 fixed z-10 flex content-center min-h-0 h-6 md:h-9">
 					<div class="navbar-start">
@@ -47,7 +47,7 @@
 					</div>
 				</div>
 			<!-- </div> -->
-		  {/if}
+		  <!-- {/if} -->
 		<div style="display: contents" class="relative">
 			{#if !is_homepage}
 				<div class="h-6 md:h-9"></div>
