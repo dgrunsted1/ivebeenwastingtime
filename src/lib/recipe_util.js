@@ -31,3 +31,13 @@ export const get_total_time = function(recipes){
     total_time = hours + "hrs " + mins + "mins";
     return total_time;
 }
+
+export const log_menu = async function(menu_id, user_id){
+    const data = {
+        "menu": menu_id,
+        "user": user_id,
+        "complete": false
+    };
+    
+    const record = await pb.collection('menu_log').create(data);
+}

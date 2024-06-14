@@ -30,13 +30,29 @@ export const update_made = async function(made, id){
     };
     
     const record = await pb.collection('menus').update(id, data);
-
+    let all_made = true;
     for (const [key, val] of Object.entries(made)){
         if (val){
             const ingr_data = {
                 "made": true
             };
             const ingr_record = await pb.collection('recipes').update(key, ingr_data);
+        } else {
+            all_made = false;
         }
     }
+    if (all_made) await pb.collection('menu_log').update
+}
+
+export const log_made = async function(recipe_id, user_id){
+    const data = {
+        "recipe": recipe_id,
+        "user": user_id
+    };
+    
+    const record = await pb.collection('recipe_log').create(data);
+    if (record.code != 200){
+        return false;
+    }
+    return true;
 }

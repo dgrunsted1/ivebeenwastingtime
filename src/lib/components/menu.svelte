@@ -4,7 +4,7 @@
     import { currentUser, pb } from '/src/lib/pocketbase';
     import { page } from '$app/stores';
     import { get_grocery_list } from '/src/lib/merge_ingredients.js';
-    import { get_servings, get_total_time } from '/src/lib/recipe_util.js';
+    import { get_servings, get_total_time, log_menu } from '/src/lib/recipe_util.js';
     import { createEventDispatcher } from 'svelte';
     import Plus from "/src/lib/icons/Plus.svelte";
 
@@ -164,24 +164,32 @@
             "made": made,
             "sub_recipes": sub_recipes
         };
+        console.log({data});
         const record = await pb.collection('menus').create(data);
-        id = record.id;
-        await set_todays_menu();
-        e.srcElement.innerHTML = 'save menu';
-        e.srcElement.disabled = true;
-        window.location.href = "/today";
+        if (record.code){
+            alert("error creating menu");
+        } else {
+            await set_todays_menu();
+            console.log(record.id, $currentUser.id);
+            await log_menu(record.id, $currentUser.id);
+            e.srcElement.innerHTML = 'save menu';
+            e.srcElement.disabled = true;
+            window.location.href = "/today";
+        }
     }
     
     async function set_todays_menu(e){
+        console.log("set todays menu")
         const resultList = await pb.collection('menus').getList(1, 1, {
             filter: `user = '${$currentUser.id}' && today = True`,
             expand: `grocery_list`
         });
+        console.log({result});
         if (resultList.items.length){
             const false_record = await pb.collection('menus').update(resultList.items[0].id, { "today": false, grocery_list: null });
             if (resultList.items[0].grocery_list){
                 const grocery_list_id = resultList.items[0].grocery_list;
-                const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { "menu": null, active: false });
+                const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { active: false });
             }
         }
         const true_record = await pb.collection('menus').update(id, { "today": true });
@@ -228,8 +236,8 @@
             {#if menu.length}    
                 {#each menu as recipe}
                     {#if !recipe.is_sub_recipe}
-                        <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl bg-base-300 md:bg-base-200">
-                            <figure class="image w-1/3 h-full">
+                        <div class="card card-bordered card-side flex flex-row w-auto items-center my-3.5 mx-3 shadow-xl bg-base-300 md:bg-base-200">
+                            <figure class="image w-1/3 h-36">
                                 <img class="h-full" src={recipe.image} alt={recipe.title}/>
                             </figure>
                             <div class="servings_time_container flex flex-col w-2/3 ml-2.5 space-y-1 mb-2">
@@ -276,7 +284,7 @@
                                 </div>
                                 <div class="collapse-content"> 
                                     {#each recipe.sub_recipe_data as sub_recipe}
-                                        <div class="img_serv_container card card-bordered card-side flex flex-row w-auto items-center bg-base-300 md:bg-base-200">
+                                        <div class="card card-bordered card-side flex flex-row w-auto items-center bg-base-300 md:bg-base-200">
                                             <figure class="image w-1/4 h-full">
                                                 <img class="h-full" src={sub_recipe.image} alt={sub_recipe.title}/>
                                             </figure>
