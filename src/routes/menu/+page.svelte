@@ -104,9 +104,9 @@
         mults[e.detail.id] = e.detail.mult;
     }
 </script>
-<div id="main">
+<div id="main" class="p-1 md:p-3">
         {#if (user_recipes && user_recipes.items && user_recipes.items.length > 0) || loading}
-            <div id="content" class="flex flex-col md:flex-row  md:m-2 mt-0 md:space-x-3 md:w-full">
+            <div id="content" class="flex flex-col md:flex-row   mt-0 md:space-x-3 md:w-full">
                 <div id="left_column" class="md:w-1/2">
                     <RecipeList recipes={user_recipes.items} 
                         on:update_view={update_view} on:update_edit={update_edit}
@@ -133,7 +133,7 @@
                         {/if}
                     </div>
                 </details>
-                <div id="right_column" class="hidden md:flex w-full md:w-1/2">
+                <div id="right_column" class="hidden md:flex md:w-1/2">
                     {#if menu_recipes}
                         <Menu title="New Menu" menu={menu_recipes} {mults} {page} on:update_mult={update_mult}/>
                     {:else}

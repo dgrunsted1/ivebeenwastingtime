@@ -5,7 +5,7 @@
     import Edit from "/src/lib/icons/EditIcon.svelte";
     import { afterUpdate, onMount } from 'svelte';
     import { update_fave_made, update_notes } from '/src/lib/save_recipe.js';
-    import { update_made } from '/src/lib/groceries.js'
+    import { update_made, log_made } from '/src/lib/groceries.js'
     import { update_image_upload, update_recipe_image } from '/src/lib/save_recipe.js';
     import EditRecipe from "/src/lib/components/edit_recipe.svelte";
     import Timer from "/src/lib/components/timer.svelte";
@@ -70,6 +70,7 @@
             todays_menu.made = {};
             todays_menu.made[id] = true;
         }
+        if (todays_menu.made[id]) log_made(id, $currentUser.id);
         update_made(todays_menu.made, todays_menu.id);
     }
 

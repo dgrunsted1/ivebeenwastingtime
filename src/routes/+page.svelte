@@ -8,5 +8,4 @@ export let data;
             <h1>ivebeenwastingtime</h1>
         </div>
     </div>
-    
 </div>

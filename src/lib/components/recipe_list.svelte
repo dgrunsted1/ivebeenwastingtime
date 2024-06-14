@@ -364,7 +364,7 @@
                         </div>
                         <div class="flex w-fit space-x-2">
                             <input type="checkbox" on:click|self|stopPropagation={check_item} class="checkbox checkbox-primary checkbox-lg p-1" id={display_recipes[i].id} bind:checked={display_recipes[i].checked}>
-                            <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id="{display_recipes[i].id}"><DeleteIcon/></button>
+                            <button class="btn btn-sm p-1 btn-accent {display_recipes[i].id} " on:click|stopPropagation={delete_recipe} id={display_recipes[i].id}><DeleteIcon/></button>
                         </div>
                     </div>
                 </div>

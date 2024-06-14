@@ -4,7 +4,7 @@
     import GroceryList from "/src/lib/components/grocery_list.svelte";
     import { page } from '$app/stores';
     import { get_grocery_list, groupBySimilarity } from '/src/lib/merge_ingredients.js'
-    import { update_grocery_list, create_grocery_list, update_made } from '/src/lib/groceries.js'
+    import { update_grocery_list, create_grocery_list, update_made, log_made } from '/src/lib/groceries.js'
     import Heart from "/src/lib/icons/Heart.svelte";
     import SubTask from "/src/lib/icons/subtask.svelte";
     import { update_fave } from '/src/lib/save_recipe.js';
@@ -111,7 +111,7 @@
         await update_grocery_list(grocery_list, grocery_list_id);
     }
 
-    function toggle_made(e){
+    async function toggle_made(e){
         const id = e.srcElement.id;
         if (todays_menu.made){
             todays_menu.made[id] = !todays_menu.made[id];
@@ -119,6 +119,7 @@
             todays_menu.made = {};
             todays_menu.made[id] = true;
         }
+        if (todays_menu.made[id]) log_made(id, $currentUser.id);
         update_made(todays_menu.made, todays_menu.id);
     }
 
