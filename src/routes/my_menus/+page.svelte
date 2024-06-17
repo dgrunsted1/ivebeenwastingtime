@@ -62,12 +62,14 @@
     }
 
     async function delete_menu(e){
-        if (confirm("Are you sure you want to delete this recipe?")) {
+        let tmp_menus = [];
+        let menu;
+        for (let i = 0; i < user_menus.length; i++){
+            if (user_menus[i].id != e.srcElement.id) tmp_menus.push(user_menus[i]);
+            else menu = user_menus[i];
+        }
+        if (menu && confirm(`Are you sure you want to delete your ${menu.title} menu?`)) {
             await pb.collection('menus').delete(e.srcElement.id);
-            let tmp_menus = [];
-            for (let i = 0; i < user_menus.length; i++){
-                if (user_menus[i].id != e.srcElement.id) tmp_menus.push(user_menus[i]);
-            }
             user_menus = tmp_menus;
         }
     }
@@ -353,7 +355,7 @@
                                 </div>
                             </div>
                             <div class="flex conten-center items-center">
-                                <button class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
+                                <button id={user_menus[i].id} class="btn btn-sm p-1 btn-accent"  on:click|stopPropagation={delete_menu}><DeleteIcon/></button>
                             </div>
                         </div>
                     </div>

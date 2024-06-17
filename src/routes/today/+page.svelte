@@ -56,12 +56,24 @@
                 }
             }
             grocery_list = unchecked.concat(checked);
+            console.log("recipes", todays_menu.expand.recipes);
+            console.log("todays_menu.made", todays_menu.made);
+            for (let i = 0; i < todays_menu.expand.recipes.length; i++){
+                if (!todays_menu.made){
+                    todays_menu.made = {};
+                }
+                if (!todays_menu.made[todays_menu.expand.recipes[i].id]){
+                    todays_menu.made[todays_menu.expand.recipes[i].id] = false;
+                }
+            }
+            console.log("todays_menu.made2", todays_menu.made);
         }
         loading = false;
     });
 
     afterUpdate(() => {
         if (todays_menu.expand) update_recipes_ready();
+        console.log(recipes_ready);
     });
 
     function update_recipes_ready(){
@@ -187,11 +199,11 @@
                                     <div class="card-body max-h-full flex flex-row p-2 items-center w-full">
                                         <p id={i} class="w-1/2 text-xs">{curr.title}</p>
                                         <div class="card-actions flex flex-row justify-evenly items-center">
-                                            {#if recipes_ready.includes(curr.id)}
-                                                <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
-                                            {:else}
-                                                not ready
-                                            {/if}
+                                                {#if recipes_ready.includes(curr.id)}
+                                                    <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={curr.id} bind:checked={todays_menu.made[curr.id]} on:click|stopPropagation={toggle_made}>
+                                                {:else}
+                                                    not ready
+                                                {/if}
                                             <button id={curr.id} class="btn btn-xs p-1 favorite flex content-center" on:click|stopPropagation={(e)=>{curr.favorite = !curr.favorite; update_fave_queue(e);}}><Heart color={(curr.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                                         </div>
                                     </div>

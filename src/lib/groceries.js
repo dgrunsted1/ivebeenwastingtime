@@ -40,3 +40,17 @@ export const update_made = async function(made, id){
         }
     }
 }
+
+
+export const log_made = async function(recipe_id, user_id){
+    const data = {
+        "recipe": recipe_id,
+        "user": user_id
+    };
+    
+    const record = await pb.collection('recipe_log').create(data);
+    if (record.code != 200){
+        return false;
+    }
+    return true;
+}

@@ -166,10 +166,8 @@
         };
         const record = await pb.collection('menus').create(data);
         id = record.id;
-        await set_todays_menu();
         e.srcElement.innerHTML = 'save menu';
         e.srcElement.disabled = true;
-        window.location.href = "/today";
     }
     
     async function set_todays_menu(e){
@@ -184,7 +182,8 @@
                 const grocery_list_record = await pb.collection('groceries').update(grocery_list_id, { "menu": null, active: false });
             }
         }
-        const true_record = await pb.collection('menus').update(id, { "today": true });
+        const true_record = await pb.collection('menus').update(id, { "made": null, "grocer_list":null, "today": true });
+        window.location.href = "/today";
     }
 
     function close_modal(){
