@@ -126,7 +126,7 @@
                         {/if}
                     </summary>
                     <div id="right_column" class="collapse-content w-full">
-                        {#if menu_recipes}
+                        {#if menu_recipes.length}
                             <Menu title="New Menu" menu={menu_recipes} {mults} {page} on:update_mult={update_mult}/>
                         {:else}
                             <h2>select recipes to add to your menu</h2>
@@ -134,7 +134,7 @@
                     </div>
                 </details>
                 <div id="right_column" class="hidden md:flex md:w-1/2">
-                    {#if menu_recipes}
+                    {#if menu_recipes.length}
                         <Menu title="New Menu" menu={menu_recipes} {mults} {page} on:update_mult={update_mult}/>
                     {:else}
                         <h2>select recipes to add to your menu</h2>
