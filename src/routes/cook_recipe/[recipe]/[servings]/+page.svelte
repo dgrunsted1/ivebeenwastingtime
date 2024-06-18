@@ -219,13 +219,19 @@
                     {/if}    
                     {#if user_logged_in}
                         {#if recipe_ready}
-                            <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
+                            {#if todays_menu.made && todays_menu.made[data.post.recipe.id]}
+                                <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={data.post.recipe.id} bind:checked={todays_menu.made[data.post.recipe.id]} on:click|stopPropagation={toggle_made}>
+                            {:else}
+                                <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={data.post.recipe.id} on:click|stopPropagation={log_made(data.post.recipe.id, $currentUser.id)}>
+                            {/if}
                         {:else}
                             not ready
                         {/if}
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost made flex content-center" on:click={()=>{data.post.recipe.made = !data.post.recipe.made; update_fave_made_pre();}}><ThumbUp color={(data.post.recipe.made) ? "fill-primary" : "fill-neutral"}/></button>
                         <button class="btn btn-xs md:btn-sm p-1 btn-ghost favorite flex content-center" on:click={()=>{data.post.recipe.favorite = !data.post.recipe.favorite; update_fave_made_pre();}}><Heart color={(data.post.recipe.favorite) ? "fill-primary" : "fill-neutral"}/></button>
                         <button class="btn btn-xs md:btn-sm btn-secondary w-8 md:w-10" on:click={() => {my_modal_3.showModal(); document.getElementById('modal_content').classList.remove('hidden');}}><Edit/></button>
+                    {:else if $currentUser}
+                        <input type="checkbox" class="checkbox checkbox-primary checkbox-lg p-1" id={data.post.recipe.id} on:click|stopPropagation={log_made(data.post.recipe.id, $currentUser.id)}>
                     {/if}
                 </div>    
             </div>
