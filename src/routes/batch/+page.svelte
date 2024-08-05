@@ -89,6 +89,144 @@ const compare_ingr_recipes = async function (){
     }
 }
 
+const migrate_recipes = async function(){
+    const recipes = await pb.collection('recipes').getFullList({expand: 'ingr_list'});
+    console.log("recipes in", recipes.length, {recipes});
+    for (let i = 0; i < recipes.length; i++){
+        // const recipe_was_uploaded = await pb.collection('recipes_strict').getFirstListItem(`title="${recipes[i].title}" && author="${recipes[i].author}"`);
+        // if (recipe_was_uploaded.items && recipe_was_uploaded.items.length > 0){
+        //     console.log("recipe was uploaded");
+        //     continue;
+        // }
+        const data = {
+            "title": recipes[i].title,
+            "description": recipes[i].description,
+            "original_web_page": recipes[i].url,
+            "author": recipes[i].author,
+            "time_in_min": recipes[i].time_new,
+            "directions": recipes[i].directions,
+            "user": recipes[i].user,
+            "main_image": recipes[i].image,
+            "servings": recipes[i].servings_new,
+            "cuisine_country": (recipes[i].cuisine) ? recipes[i].cuisine : (recipes[i].country) ? recipes[i].country : "",
+            "url_id": recipes[i].url_id,
+            "made": recipes[i].made,
+            "favorite": recipes[i].favorite,
+            "active": true
+        };
+        console.log({data})
+        const new_strict_recipe = await pb.collection('recipes_strict').create(data);
+        console.log(new_strict_recipe);
+        if (new_strict_recipe.code > 200){
+            console.log("error uploading recipe");
+        } else {
+            let ingr_ids = [];
+            for (let j = 0; j < recipes[i].expand.ingr_list.length; j++){
+                const ingr = recipes[i].expand.ingr_list[j];
+                if (ingr.ingredient == ""){
+                    continue;
+                }
+                const ingr_data = {
+                    "name": ingr.ingredient,
+                    "qty": ingr.quantity,
+                    "unit": ingr.unit,
+                    "active": true,
+                    "recipe": new_strict_recipe.id
+                };
+                console.log({ingr_data})
+                const new_ingr = await pb.collection('ingredients_strict').create(ingr_data);
+                if (new_ingr.code > 200){
+                    console.log("error uploading ingr");
+                } else {
+                    ingr_ids.push(new_ingr.id);
+                }
+            }
+
+            if (ingr_ids.length > 0){
+                const ingr_id_data = {
+                    "ingr_list": ingr_ids
+                };
+                console.log({ingr_id_data})
+                const updated_ingr_ids_in_recipe = await pb.collection('recipes_strict').update(new_strict_recipe.id, ingr_id_data);
+                console.log(updated_ingr_ids_in_recipe);
+            }
+        }
+    }
+}
+
+const migrate_menus = async function(){
+    const menus = await pb.collection('menus').getFullList({expand: 'grocery_list, recipes, recipes.ingr_list'});
+    console.log("menus in", menus.length, {menus});
+    for (let i = 0; i < menus.length; i++){
+        let made = {};
+        console.log(menus[i].made);
+        if (menus[i].made){
+            made = menus.made;
+        } else {
+            let filter = "";
+            for (let j = 0; j < menus[i].expand.recipes.length; j++){
+                if (filter != "") {
+                    filter += " || ";
+                }
+                if (menus[i].expand.recipes[j].title) {
+                    filter += `title="${menus[i].expand.recipes[j].title}"`;
+                }
+            }
+            const strict_recipes = await pb.collection('recipes_strict').getFirstListItem(filter);
+            made[`${strict_recipes.id}`] = false;
+        }
+        console.log({made});
+        const data = {
+            "title": menus[i].title ? menus[i].title : "new menu",
+            "owner": menus[i].user,
+            "shared_users": [],
+            "active": true,
+            "todays_menu": menus[i].today,
+            "servings": menus[i].servings,
+            "description": menus[i].description,
+            "notes": menus[i].notes,
+            "made": made,
+        };
+        console.log({new_strict_menu})
+        const new_strict_menu = await pb.collection('menus_strict').create(data);
+        if (new_strict_menu.code > 200){
+            console.log("error uploading recipe");
+        } else {
+            let ingr_ids = [];
+            for (let k = 0; k < menus[i].expand.recipes; k++)
+            for (let j = 0; j < recipes[i].expand.ingr_list.length; j++){
+                const ingr = recipes[i].expand.ingr_list[j];
+                if (ingr.ingredient == ""){
+                    continue;
+                }
+                const ingr_data = {
+                    "name": ingr.ingredient,
+                    "qty": ingr.quantity,
+                    "unit": ingr.unit,
+                    "active": true,
+                    "recipe": new_strict_menu.id
+                };
+                console.log({ingr_data})
+                const new_ingr = await pb.collection('ingredients_strict').create(ingr_data);
+                if (new_ingr.code > 200){
+                    console.log("error uploading ingr");
+                } else {
+                    ingr_ids.push(new_ingr.id);
+                }
+            }
+
+            if (ingr_ids.length > 0){
+                const ingr_id_data = {
+                    "ingr_list": ingr_ids
+                };
+                console.log({ingr_id_data})
+                const updated_ingr_ids_in_recipe = await pb.collection('recipes_strict').update(new_strict_menu.id, ingr_id_data);
+                console.log(updated_ingr_ids_in_recipe);
+            }
+        }
+    }
+}
+
 </script>
 
 
@@ -111,8 +249,8 @@ const compare_ingr_recipes = async function (){
                 fill ingr_num
             </button> -->
 
-            <button id="compare_parsers_btn" class="btn btn-primary w-56" on:click={compare_ingr_recipes}>
-                compare ingr recipes to recipes
+            <button id="compare_parsers_btn" class="btn btn-primary w-56" on:click={migrate_menus}>
+                migrate menus
             </button>
             <div>
                 {#each results as curr}
