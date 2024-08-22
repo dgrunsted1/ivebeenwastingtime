@@ -261,6 +261,51 @@ async function get_ba_data(page){
     return result;
 }
 
+async function validate_recipe_data(recipe_data, url){
+    console.log(recipe_data);
+    let errors = {};
+    if (typeof recipe_data.title != "string" || recipe_data.title == ""){
+        errors.title = "Title is missing";
+    }
+
+    if (typeof recipe_data.author != "string" || recipe_data.author == ""){
+        errors.author = "Author is missing";
+    }
+
+    if (typeof recipe_data.description != "string" || recipe_data.description == ""){
+        errors.description = "Description is missing";
+    }
+
+    if (typeof recipe_data.image != "string" || recipe_data.image == ""){
+        errors.image = "Image is missing";
+    }
+
+    if (typeof recipe_data.time != "string" || recipe_data.time == ""){
+        errors.time = "Time is missing";
+    }
+
+    if (typeof recipe_data.servings != "string" || recipe_data.servings == ""){
+        errors.servings = "Servings is missing";
+    }
+
+    if (typeof recipe_data.expand.ingr_list != "object" || recipe_data.expand.ingr_list.length == 0){
+        errors.expand = "Ingredients are missing";
+    }
+
+    if (typeof recipe_data.directions != "object" || recipe_data.directions.length == 0){
+        errors.directions = "Directions are missing";
+    }
+    if (errors){
+        errors.url = url;
+        console.log(errors);
+        let data = {
+            data: errors,
+            function: "missing recipe data"
+        };
+        const result = await pb.collection('errors').create(data);
+    }
+}
+
 export const scrape = async function(url) {
         
         const start = Date.now();
@@ -276,6 +321,17 @@ export const scrape = async function(url) {
         }else if(url.includes("www.bonappetit.com")){
             site_selectors = selectors.ba;
         }else{
+            const url_match = url.match(/http(|s):\/\/(www.)?(.*?)\.(com|co\.uk|org|net)/);
+            if (url_match){
+                const error_data = {
+                    message: url_match[3] ?? url_match[0],
+                    url: url,
+                    function: "url not supported"
+                }
+                console.log(error_data);
+                await pb.collection('errors').create(error_data);
+            }
+            
             return {err: {title: "website not supported", msg: "supported websites include bon appetit, serious eats, and nytimes"}};
         }
         const selector_time = Date.now();
@@ -323,11 +379,13 @@ export const scrape = async function(url) {
                 set_view_time: `${(set_view_time-go_to_time)/1000}s`,
                 compare_time: `${((set_view_time-go_to_time)+(end-set_view_time)+(go_to_time-selector_time)+(selector_time-await_data)+(await_data-init_time)+(init_time-start))/1000}s`
             };
+            await validate_recipe_data(results, url);
             return results;
         }catch (e){
             await browser.close();
             let data = {
-                data: JSON.stringify({message: e.message, url: url}),
+                message: e.message,
+                url: url,
                 function: "prep scrape"
             };
             const result = await pb.collection('errors').create(data);
