@@ -476,7 +476,5 @@
                     failed: {failed}
                 </div>
         </div>
-    {:else}
-
     {/if}
 </div>
