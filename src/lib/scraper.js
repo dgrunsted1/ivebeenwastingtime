@@ -328,7 +328,6 @@ export const scrape = async function(url) {
                     url: url,
                     function: "url not supported"
                 }
-                console.log(error_data);
                 await pb.collection('errors').create(error_data);
             }
             
