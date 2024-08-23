@@ -4,11 +4,11 @@ import { currentUser, pb } from '/src/lib/pocketbase.js';
 const selectors = {
         serious_eats: {
             title: 'h1',
-            author: '#mntl-bylines__item_4-0 > div > a',
+            author: '#mntl-bylines__item_1-0 > div > a',
             description: '#heading_1-0 > p',
             image: 'img',
-            time: '#meta-text_1-0 > span.meta-text__data',
-            servings: '#meta-text_6-0 > span.meta-text__data',
+            time: '#recipe-decision-block__container_1-0 > div.project-meta__times-container > div.total-time.project-meta__total-time > span > span.meta-text__data',
+            servings: '#recipe-decision-block__container_1-0 > div.project-meta__results-container > div > span > span.meta-text__data',
             ingredients: [{
                             group: '#structured-ingredients_1-0 > *',
                             list: '#structured-ingredients_1-0 > ul:nth-child(LIST_INDEX) > *',
@@ -23,8 +23,8 @@ const selectors = {
                             item: '#structured-ingredients_1-0 > ul > li:nth-child(ITEM_INDEX)'
                         }],
             directions: [{
-                            group: '#mntl-sc-block_3-0 > *',
-                            item: '#mntl-sc-block_3-0 > li:nth-child(ITEM_INDEX) > p'
+                            group: '#mntl-sc-block_45-0 > *',
+                            item: '#mntl-sc-block_45-0 > li:nth-child(ITEM_INDEX) > p'
                         }]
                         // #mntl-sc-block_3-0
                         // #ingredient-list_1-0 > li:nth-child(2)
