@@ -262,43 +262,40 @@ async function get_ba_data(page){
 }
 
 async function validate_recipe_data(recipe_data, url){
-    let errors = {};
+    let errors = [];
     if (typeof recipe_data.title != "string" || recipe_data.title == ""){
-        errors.title = recipe_data.title;
+        errors.push("title");
     }
 
     if (typeof recipe_data.author != "string" || recipe_data.author == ""){
-        errors.author = recipe_data.author;
+        errors.push("author");
     }
 
     if (typeof recipe_data.description != "string" || recipe_data.description == ""){
-        errors.description = recipe_data.description;
+        errors.push("description");
     }
 
     if (typeof recipe_data.image != "string" || recipe_data.image == ""){
-        errors.image = recipe_data.image;
+        errors.push("image");
     }
 
     if (typeof recipe_data.time != "string" || recipe_data.time == ""){
-        errors.time = recipe_data.time;
+        errors.push("time");
     }
 
     if (typeof recipe_data.servings != "string" || recipe_data.servings == ""){
-        errors.servings = recipe_data.servings;
+        errors.push("servings");
     }
 
     if (typeof recipe_data.expand.ingr_list != "object" || recipe_data.expand.ingr_list.length == 0){
-        errors.expand = recipe_data.expand.ingr_list;
+        errors.push("ingrs");
     }
 
     if (typeof recipe_data.directions != "object" || recipe_data.directions.length == 0){
-        errors.directions = recipe_data.directions;
+        errors.push("directions");
     }
     if (errors){
-        let data = {
-            data: errors,
-            function: "missing recipe data"
-        };
+        console.log(errors)
         const error_data = {
             "function": "missing recipe data",
             "data": errors,
