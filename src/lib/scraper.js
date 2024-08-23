@@ -262,47 +262,51 @@ async function get_ba_data(page){
 }
 
 async function validate_recipe_data(recipe_data, url){
-    console.log(recipe_data);
     let errors = {};
     if (typeof recipe_data.title != "string" || recipe_data.title == ""){
-        errors.title = "Title is missing";
+        errors.title = recipe_data.title;
     }
 
     if (typeof recipe_data.author != "string" || recipe_data.author == ""){
-        errors.author = "Author is missing";
+        errors.author = recipe_data.author;
     }
 
     if (typeof recipe_data.description != "string" || recipe_data.description == ""){
-        errors.description = "Description is missing";
+        errors.description = recipe_data.description;
     }
 
     if (typeof recipe_data.image != "string" || recipe_data.image == ""){
-        errors.image = "Image is missing";
+        errors.image = recipe_data.image;
     }
 
     if (typeof recipe_data.time != "string" || recipe_data.time == ""){
-        errors.time = "Time is missing";
+        errors.time = recipe_data.time;
     }
 
     if (typeof recipe_data.servings != "string" || recipe_data.servings == ""){
-        errors.servings = "Servings is missing";
+        errors.servings = recipe_data.servings;
     }
 
     if (typeof recipe_data.expand.ingr_list != "object" || recipe_data.expand.ingr_list.length == 0){
-        errors.expand = "Ingredients are missing";
+        errors.expand = recipe_data.expand.ingr_list;
     }
 
     if (typeof recipe_data.directions != "object" || recipe_data.directions.length == 0){
-        errors.directions = "Directions are missing";
+        errors.directions = recipe_data.directions;
     }
     if (errors){
-        errors.url = url;
-        console.log(errors);
         let data = {
             data: errors,
             function: "missing recipe data"
         };
-        const result = await pb.collection('errors').create(data);
+        const error_data = {
+            "function": "missing recipe data",
+            "data": errors,
+            "message": "",
+            "url": url
+        };
+        
+        const error_record = await pb.collection('errors').create(error_data);
     }
 }
 
