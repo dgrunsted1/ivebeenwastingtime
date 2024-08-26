@@ -15,6 +15,7 @@
 			{href:"/gallery", display: "Gallery"},
 			{href:"/recipes", display: "Recipes"},
     	];
+		
 	</script>
 		<!-- {#if !is_homepage} -->
 			<!-- <div> -->
