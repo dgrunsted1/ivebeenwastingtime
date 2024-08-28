@@ -6,14 +6,9 @@
 
     	let page_links = ($currentUser) ? [
 			{href:"/gallery", display: "Gallery"},
-			{href:"/today", display: "Today"},
-			{href:"/recipes", display: "Recipes"},
-			{href:"/my_menus", display: "My Menus"},
-			{href:"/menu", display: "Create Menu"},
-			{href:"/add_recipe", display: "Add Recipe"}
+			{href:"/upload", display: "Upload"}
     	] : [
-			{href:"/gallery", display: "Gallery"},
-			{href:"/recipes", display: "Recipes"},
+			{href:"/gallery", display: "Gallery"}
     	];
 		
 	</script>
