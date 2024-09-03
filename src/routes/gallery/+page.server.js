@@ -5,7 +5,7 @@ import { currentUser, pb } from '/src/lib/pocketbase';
 export async function load() {
 
     let photos = await pb.collection('photos').getList(1, 200, {
-        filter: `album != 'recipes'`,
+        filter: `album != 'recipes' && album != 'landing_page'`,
         fields: 'album,id,file'
     }); 
     let output = [];
